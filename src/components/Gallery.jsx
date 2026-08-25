@@ -248,15 +248,57 @@ function MobileScrollRiver({ images, onCardClick }) {
 }
 
 /* ─────────────────────────────────────────────────────────────── */
+/*  SKELETON GRID                                                  */
+/* ─────────────────────────────────────────────────────────────── */
+function GallerySkeletonGrid() {
+  return (
+    <div className="container">
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '1.25rem',
+        }}
+      >
+        {[1, 2, 3, 4, 5, 6].map((n) => (
+          <div
+            key={n}
+            style={{
+              height: n % 2 === 0 ? '340px' : '260px',
+              borderRadius: '24px',
+              overflow: 'hidden',
+              background: 'linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(201,169,110,0.08) 50%, rgba(255,255,255,0.03) 100%)',
+              backgroundSize: '200% 100%',
+              animation: 'pulseShimmer 1.8s infinite ease-in-out',
+              border: '1px solid var(--border-subtle, rgba(255,255,255,0.08))',
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────── */
 /*  ROOT EXPORT                                                    */
 /* ─────────────────────────────────────────────────────────────── */
 export default function Gallery() {
-  const [images, setImages]   = useState([]);
-  const [active, setActive]   = useState(null);
+  const [images, setImages]     = useState([]);
+  const [loading, setLoading]   = useState(true);
+  const [active, setActive]     = useState(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setImages(getGalleryImages());
+    let mounted = true;
+    import('../utils/adminStorage').then(({ getGalleryImagesAsync }) => {
+      getGalleryImagesAsync().then((gallery) => {
+        if (mounted) {
+          setImages(gallery || []);
+          setLoading(false);
+        }
+      });
+    });
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
@@ -274,6 +316,12 @@ export default function Gallery() {
       position: 'relative',
       overflow: 'hidden',
     }}>
+      <style>{`
+        @keyframes pulseShimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
       <div aria-hidden style={{
         position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%,-50%)',
         width: '700px', height: '700px', borderRadius: '50%', pointerEvents: 'none',
@@ -299,7 +347,31 @@ export default function Gallery() {
           </p>
         </motion.div>
 
-        {isMobile ? (
+        {loading ? (
+          <GallerySkeletonGrid />
+        ) : images.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              textAlign: 'center',
+              padding: '5rem 2rem',
+              borderRadius: '24px',
+              border: '1px dashed var(--border-subtle, rgba(255,255,255,0.15))',
+              background: 'var(--bg-card, rgba(255,255,255,0.02))',
+              maxWidth: '600px',
+              margin: '0 auto',
+            }}
+          >
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📷</div>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
+              No Gallery Photos Uploaded Yet
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: 0 }}>
+              Images uploaded through the Admin Panel will automatically appear here. Log in via the footer lock icon to upload your first image!
+            </p>
+          </motion.div>
+        ) : isMobile ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
