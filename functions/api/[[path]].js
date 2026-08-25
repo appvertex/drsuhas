@@ -18,7 +18,13 @@
 export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
-  const path = url.pathname.replace('/api/', '').split('/').filter(Boolean);
+
+  // If request is NOT for /api/*, delegate directly to static asset router (index.html)
+  if (!url.pathname.startsWith('/api')) {
+    return context.next();
+  }
+
+  const path = url.pathname.replace(/^\/api\/?/, '').split('/').filter(Boolean);
   const method = request.method;
 
   // CORS Headers for API
