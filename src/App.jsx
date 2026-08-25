@@ -42,31 +42,23 @@ export default function App() {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
-        {/* Admin Routes (Custom standalone layout) */}
+        {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/blog" element={<AdminBlog />} />
         <Route path="/admin/gallery" element={<AdminGallery />} />
 
-        {/* Website Routes */}
-        <Route
-          path="*"
-          element={
-            <Layout>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/services" element={<ServicesPage />} />
-                <Route path="/services/:slug" element={<ServiceDetailPage />} />
-                <Route path="/gallery" element={<GalleryPage />} />
-                <Route path="/blog" element={<BlogPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                {/* Catch-all 404 route */}
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Layout>
-          }
-        />
+        {/* Public Website Routes */}
+        <Route path="/" element={<Layout><HomePage /></Layout>} />
+        <Route path="/about" element={<Layout><AboutPage /></Layout>} />
+        <Route path="/services" element={<Layout><ServicesPage /></Layout>} />
+        <Route path="/services/:slug" element={<Layout><ServiceDetailPage /></Layout>} />
+        <Route path="/gallery" element={<Layout><GalleryPage /></Layout>} />
+        <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
+        <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
+
+        {/* Catch-all 404 route */}
+        <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
       </Routes>
     </Suspense>
   );

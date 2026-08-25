@@ -84,14 +84,12 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
       {/* HelmetProvider enables dynamic SEO metadata per page */}
       <HelmetProvider>
-        <BrowserRouter basename={baseUrl}>
+        <BrowserRouter>
           <App />
         </BrowserRouter>
       </HelmetProvider>
