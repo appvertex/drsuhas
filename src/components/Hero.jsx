@@ -26,11 +26,13 @@ const staggerContainer = {
   },
 };
 
-const heroImage = `${import.meta.env.BASE_URL}images/hero-doctor.png`;
+const heroImageLight = `${import.meta.env.BASE_URL}images/hero-doctor.png`;
+const heroImageDark  = `${import.meta.env.BASE_URL}images/hero-doctor-dark.jpg`;
 
 export default function Hero() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const heroImage = isDark ? heroImageDark : heroImageLight;
 
   return (
     <section
