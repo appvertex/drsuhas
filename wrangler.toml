@@ -1,0 +1,17 @@
+name = "dr-suhas-site"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-08-25"
+
+# Cloudflare D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "dr-suhas-db"
+database_id = "YOUR_D1_DATABASE_ID"
+
+# Cloudflare R2 Object Storage Bucket Binding
+[[r2_buckets]]
+binding = "IMAGES_BUCKET"
+bucket_name = "dr-suhas-images"
+
+[vars]
+ADMIN_PASSWORD = "admin123"

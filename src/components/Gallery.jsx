@@ -1,0 +1,330 @@
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getGalleryImages } from '../utils/adminStorage';
+
+/* ─────────────────────────────────────────────────────────────── */
+/*  LIGHTBOX                                                        */
+/* ─────────────────────────────────────────────────────────────── */
+function Lightbox({ img, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <AnimatePresence>
+      {img && (
+        <motion.div
+          key="lb-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          onClick={onClose}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1000,
+            background: 'rgba(3,3,7,0.93)',
+            backdropFilter: 'blur(20px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '1.5rem',
+          }}
+        >
+          <motion.div
+            key="lb-card"
+            initial={{ opacity: 0, scale: 0.88, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.88, y: 30 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative', maxWidth: '900px', width: '100%',
+              borderRadius: '24px', overflow: 'hidden',
+              boxShadow: '0 60px 120px rgba(0,0,0,0.7)',
+            }}
+          >
+            <img src={img.src} alt={img.title}
+              style={{ width: '100%', display: 'block', maxHeight: '85vh', objectFit: 'cover' }} />
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)',
+            }}>
+              <div style={{ color: 'var(--accent-gold,#c9a96e)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>
+                {img.label}
+              </div>
+              <div style={{ color: '#fff', fontFamily: 'var(--font-display,Georgia,serif)', fontSize: '1.4rem', fontWeight: 500 }}>
+                {img.title}
+              </div>
+            </div>
+            <button onClick={onClose} aria-label="Close lightbox" style={{
+              position: 'absolute', top: '1rem', right: '1rem',
+              background: 'rgba(0,0,0,0.55)', border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: '50%', width: '40px', height: '40px',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#fff', backdropFilter: 'blur(8px)',
+            }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/*  DESKTOP – MAGNETIC PULL GRID                                   */
+/* ─────────────────────────────────────────────────────────────── */
+const STRENGTH = 18;
+const LIFT     = 28;
+
+function MagneticCard({ img, index, onClick }) {
+  const cardRef = useRef(null);
+  const rafRef  = useRef(null);
+  const rectRef = useRef(null); // Cache bounding rect
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0, mx: 50, my: 50, lifted: false });
+
+  const applyTilt = useCallback((clientX, clientY) => {
+    if (!rectRef.current) return;
+    const { left, top, width, height } = rectRef.current;
+    const px = (clientX - left) / width;
+    const py = (clientY - top)  / height;
+    setTilt({ rx: (py - 0.5) * -STRENGTH * 2, ry: (px - 0.5) * STRENGTH * 2, mx: px * 100, my: py * 100, lifted: true });
+  }, []);
+
+  const reset = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    rectRef.current = null;
+    setTilt({ rx: 0, ry: 0, mx: 50, my: 50, lifted: false });
+  }, []);
+
+  const onMouseEnter = () => {
+    if (cardRef.current) {
+      rectRef.current = cardRef.current.getBoundingClientRect();
+    }
+  };
+
+  const onMouseMove = (e) => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => applyTilt(e.clientX, e.clientY));
+  };
+
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
+
+  const gridColSpan = img.span === 'wide' ? 2 : 1;
+  const gridRowSpan = img.span === 'tall' ? 2 : 1;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50, scale: 0.92 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.7, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      style={{ gridColumn: `span ${gridColSpan}`, gridRow: `span ${gridRowSpan}`, minHeight: img.span === 'tall' ? '480px' : '260px' }}
+    >
+      <div
+        style={{ width: '100%', height: '100%', perspective: '900px', cursor: 'pointer' }}
+        onMouseEnter={onMouseEnter}
+        onMouseMove={onMouseMove}
+        onMouseLeave={reset}
+        onClick={() => onClick(img)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick(img);
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={`View image: ${img.title}`}
+      >
+        <div ref={cardRef} style={{
+          width: '100%', height: '100%', borderRadius: '28px', overflow: 'hidden',
+          position: 'relative', willChange: 'transform', transformStyle: 'preserve-3d',
+          transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateZ(${tilt.lifted ? LIFT : 0}px)`,
+          transition: tilt.lifted ? 'transform 0.08s linear' : 'transform 0.55s cubic-bezier(0.22,1,0.36,1)',
+          boxShadow: tilt.lifted ? '0 40px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.06)' : '0 8px 32px rgba(0,0,0,0.35)',
+        }}>
+          <img src={img.src} alt={img.title} draggable={false} loading="lazy" style={{
+            width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+            transform: tilt.lifted ? 'scale(1.06)' : 'scale(1)',
+            transition: tilt.lifted ? 'transform 0.08s linear' : 'transform 0.55s cubic-bezier(0.22,1,0.36,1)',
+            userSelect: 'none', pointerEvents: 'none',
+          }} />
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none', mixBlendMode: 'screen',
+            background: `radial-gradient(circle at ${tilt.mx}% ${tilt.my}%, rgba(255,255,255,0.18) 0%, transparent 65%)`,
+            opacity: tilt.lifted ? 1 : 0,
+            transition: tilt.lifted ? 'opacity 0.08s linear' : 'opacity 0.4s ease',
+          }} />
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: 'linear-gradient(to top, rgba(5,5,10,0.88) 0%, rgba(5,5,10,0.2) 45%, transparent 70%)',
+            display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+            padding: '1.75rem', opacity: tilt.lifted ? 1 : 0.72, transition: 'opacity 0.3s ease',
+          }}>
+            <span style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--accent-gold,#c9a96e)', marginBottom: '0.4rem' }}>
+              {img.label}
+            </span>
+            <span style={{ fontFamily: 'var(--font-display,Georgia,serif)', fontWeight: 500, fontSize: '1.15rem', color: '#fff', lineHeight: 1.25 }}>
+              {img.title}
+            </span>
+          </div>
+          <div style={{
+            position: 'absolute', inset: -1, borderRadius: '28px', pointerEvents: 'none',
+            border: `1px solid rgba(201,169,110,${tilt.lifted ? 0.35 : 0})`,
+            transition: 'border-color 0.3s ease',
+          }} />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/*  MOBILE – NATIVE CSS SCROLL RIVER                               */
+/* ─────────────────────────────────────────────────────────────── */
+function MobileScrollRiver({ images, onCardClick }) {
+  return (
+    <div style={{ width: '100%', padding: '0 1rem' }}>
+      <div style={{
+        display: 'flex',
+        gap: '16px',
+        overflowX: 'auto',
+        scrollSnapType: 'x mandatory',
+        paddingBottom: '2rem',
+        scrollbarWidth: 'none', /* Firefox */
+        msOverflowStyle: 'none',  /* IE and Edge */
+      }} className="hide-scrollbar">
+        {images.map((img, i) => (
+          <div
+            key={img.id || i}
+            onClick={() => onCardClick(img)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onCardClick(img);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={`View image: ${img.title}`}
+            style={{
+              flexShrink: 0,
+              width: '85vw',
+              maxWidth: '320px',
+              height: '400px',
+              borderRadius: '24px',
+              overflow: 'hidden',
+              position: 'relative',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+              scrollSnapAlign: 'center',
+              cursor: 'pointer'
+            }}
+          >
+            <img src={img.src} alt={img.title} loading="lazy" style={{
+              width: '100%', height: '100%', objectFit: 'cover',
+            }} />
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0,
+              background: 'linear-gradient(to top, rgba(3,3,10,0.92) 0%, transparent 100%)',
+              padding: '1.4rem 1.2rem 1.1rem',
+              pointerEvents: 'none',
+            }}>
+              <div style={{ fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--accent-gold,#c9a96e)', marginBottom: '0.3rem' }}>
+                {img.label}
+              </div>
+              <div style={{ fontFamily: 'var(--font-display,Georgia,serif)', fontWeight: 500, fontSize: '1rem', color: '#fff', lineHeight: 1.3 }}>
+                {img.title}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/*  ROOT EXPORT                                                    */
+/* ─────────────────────────────────────────────────────────────── */
+export default function Gallery() {
+  const [images, setImages]   = useState([]);
+  const [active, setActive]   = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setImages(getGalleryImages());
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mq.matches);
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  return (
+    <section id="gallery" style={{
+      padding: 'clamp(5rem, 10vw, 9rem) 0',
+      background: 'var(--bg-primary)',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <div aria-hidden style={{
+        position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%,-50%)',
+        width: '700px', height: '700px', borderRadius: '50%', pointerEvents: 'none',
+        background: 'radial-gradient(circle, rgba(201,169,110,0.05) 0%, transparent 70%)',
+      }} />
+
+      <div style={{ position: 'relative', zIndex: 1 }}>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 4vw, 4.5rem)', padding: '0 1.5rem' }}
+        >
+          <div className="text-eyebrow" style={{ marginBottom: '1rem' }}>Clinic & Care</div>
+          <h2 className="h-2">
+            A visual narrative of<br />
+            <span className="text-gradient">technology and calm.</span>
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '1.2rem', letterSpacing: '0.04em' }}>
+            {isMobile ? 'Swipe to explore' : 'Hover to feel the pull'}
+          </p>
+        </motion.div>
+
+        {isMobile ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <MobileScrollRiver images={images} onCardClick={setActive} />
+          </motion.div>
+        ) : (
+          <div className="container">
+            <div className="mag-grid" style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridAutoRows: '260px',
+              gap: '1.25rem',
+            }}>
+              {images.map((img, i) => (
+                <MagneticCard key={img.id || i} img={img} index={i} onClick={setActive} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <Lightbox img={active} onClose={() => setActive(null)} />
+    </section>
+  );
+}
