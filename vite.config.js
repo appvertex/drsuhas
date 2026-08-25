@@ -4,8 +4,8 @@ import path from 'path';
 import fs from 'fs';
 
 export default defineConfig(({ command }) => ({
-  // GitHub Pages deployment base path
-  base: '/testdr.suhas/',
+  // Cloudflare Pages deployment base path
+  base: '/',
   plugins: [
     react(),
     {

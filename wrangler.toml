@@ -1,4 +1,4 @@
-name = "dr-suhas-site"
+name = "drsuhas"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-08-25"
 
