@@ -2,11 +2,5 @@ name = "drsuhas"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-08-25"
 
-# Cloudflare D1 Database Binding
-[[d1_databases]]
-binding = "DB"
-database_name = "dr-suhas-db"
-database_id = "74c106b2-368a-41d1-8154-e9965be76dfd"
-
 [vars]
 ADMIN_PASSWORD = "admin123"
