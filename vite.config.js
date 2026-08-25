@@ -4,8 +4,8 @@ import path from 'path';
 import fs from 'fs';
 
 export default defineConfig(({ command }) => ({
-  // Cloudflare Pages deployment base path
-  base: '/',
+  // Relative base path for universal deployment compatibility
+  base: './',
   plugins: [
     react(),
     {
