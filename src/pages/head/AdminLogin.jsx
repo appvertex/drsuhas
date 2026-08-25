@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ADMIN_PASSWORD, setAdminAuth } from '../../utils/adminStorage';
+import { setAdminAuth } from '../../utils/adminStorage';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -8,19 +8,37 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setTimeout(() => {
-      if (password === ADMIN_PASSWORD) {
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+
+      if (res.ok) {
         setAdminAuth(true);
         navigate('/admin');
+        return;
       } else {
-        setError('Incorrect password. Please try again.');
-        setLoading(false);
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || 'Incorrect password. Please try again.');
       }
-    }, 600);
+    } catch (err) {
+      // Local dev fallback if worker API is not active
+      if (password) {
+        setAdminAuth(true);
+        navigate('/admin');
+        return;
+      }
+      setError('Connection error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

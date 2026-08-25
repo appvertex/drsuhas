@@ -245,8 +245,6 @@ export async function deleteGalleryImage(id) {
 }
 
 /* ─── AUTH ───────────────────────────────────────────────────── */
-export const ADMIN_PASSWORD = 'admin123';
-
 export function setAdminAuth(val) {
   if (val) sessionStorage.setItem('adminAuth', '1');
   else sessionStorage.removeItem('adminAuth');
