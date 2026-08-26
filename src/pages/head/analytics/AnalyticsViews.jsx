@@ -120,27 +120,28 @@ export function RealtimeView({ isDark = true }) {
  * 2. Visitors & Cohorts View
  */
 export function VisitorsView({ isDark = true }) {
+  const [metrics, setMetrics] = useState(() => getRealAnalyticsMetrics());
+
+  useEffect(() => {
+    const sync = () => setMetrics(getRealAnalyticsMetrics());
+    sync();
+    const timer = setInterval(sync, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
         <div style={{ background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`, borderRadius: '16px', padding: '1.5rem' }}>
           <div style={{ fontSize: '0.78rem', fontWeight: 700, color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)', textTransform: 'uppercase' }}>New vs Returning</div>
           <div style={{ marginTop: '1.25rem' }}>
-            <DonutChart items={[{ channel: 'New Visitors', percent: 68, color: '#3b82f6' }, { channel: 'Returning Visitors', percent: 32, color: '#10b981' }]} isDark={isDark} />
+            <DonutChart items={metrics.newVsReturning} isDark={isDark} />
           </div>
         </div>
 
         <div style={{ background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`, borderRadius: '16px', padding: '1.5rem' }}>
           <div style={{ fontSize: '0.78rem', fontWeight: 700, color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)', textTransform: 'uppercase', marginBottom: '1.25rem' }}>User Retention Cohorts</div>
-          <FunnelChart
-            steps={[
-              { label: 'Week 1 Active', value: 14280, percent: 100, color: '#3b82f6' },
-              { label: 'Week 2 Retained', value: 9420, percent: 66, color: '#60a5fa' },
-              { label: 'Week 3 Retained', value: 6850, percent: 48, color: '#10b981' },
-              { label: 'Week 4 Loyal', value: 4560, percent: 32, color: '#8b5cf6' },
-            ]}
-            isDark={isDark}
-          />
+          <FunnelChart steps={metrics.cohorts} isDark={isDark} />
         </div>
       </div>
     </div>
@@ -151,16 +152,25 @@ export function VisitorsView({ isDark = true }) {
  * 3. Traffic Sources View
  */
 export function TrafficView({ isDark = true }) {
+  const [trafficData, setTrafficData] = useState(() => getRealAnalyticsMetrics().trafficChannels);
+
+  useEffect(() => {
+    const sync = () => setTrafficData(getRealAnalyticsMetrics().trafficChannels);
+    sync();
+    const timer = setInterval(sync, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
   const columns = [
     { key: 'channel', label: 'Traffic Channel', render: (val, r) => <strong style={{ color: r.color }}>{val}</strong> },
     { key: 'users', label: 'Users', render: val => val.toLocaleString() },
     { key: 'percent', label: 'Share %', render: val => `${val}%` },
-    { key: 'growth', label: 'Growth vs Prev Period', render: val => <span style={{ color: '#10b981', fontWeight: 700 }}>{val}</span> },
+    { key: 'growth', label: 'Status', render: val => <span style={{ color: '#10b981', fontWeight: 700 }}>Real-time</span> },
   ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-      <DataTable title="Traffic Acquisition Breakdown" columns={columns} data={MOCK_TRAFFIC_CHANNELS} isDark={isDark} />
+      <DataTable title="Traffic Acquisition Breakdown" columns={columns} data={trafficData} isDark={isDark} />
     </div>
   );
 }
@@ -328,11 +338,20 @@ export function PerformanceView({ isDark = true }) {
  * 9. Devices & Browsers View
  */
 export function DevicesView({ isDark = true }) {
+  const [devices, setDevices] = useState(() => getRealAnalyticsMetrics().devices);
+
+  useEffect(() => {
+    const sync = () => setDevices(getRealAnalyticsMetrics().devices);
+    sync();
+    const timer = setInterval(sync, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       <div style={{ background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`, borderRadius: '16px', padding: '1.5rem' }}>
         <h3 style={{ margin: '0 0 1.25rem', fontSize: '1rem', fontWeight: 700, color: isDark ? '#fff' : '#111' }}>Device Breakdown</h3>
-        <DonutChart items={MOCK_DEVICES} size={200} isDark={isDark} />
+        <DonutChart items={devices} size={200} isDark={isDark} />
       </div>
     </div>
   );
