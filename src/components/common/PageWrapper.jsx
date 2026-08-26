@@ -1,10 +1,9 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { trackPageView } from '../../utils/analyticsTracker';
 
 /**
- * PageWrapper - Shared page transition wrapper.
- * Used by every route page to provide consistent enter/exit animations.
- * Defined once here to eliminate the repeated declaration across all pages.
+ * PageWrapper - Shared page transition wrapper with automatic real analytics telemetry tracking.
  */
 const pageVariants = {
   initial: { opacity: 0, y: 20 },
@@ -12,15 +11,21 @@ const pageVariants = {
   exit: { opacity: 0, y: -10, transition: { duration: 0.3 } },
 };
 
-export const PageWrapper = memo(({ children }) => (
-  <motion.div
-    initial="initial"
-    animate="animate"
-    exit="exit"
-    variants={pageVariants}
-  >
-    {children}
-  </motion.div>
-));
+export const PageWrapper = memo(({ children }) => {
+  useEffect(() => {
+    trackPageView(window.location.pathname);
+  }, []);
+
+  return (
+    <motion.div
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={pageVariants}
+    >
+      {children}
+    </motion.div>
+  );
+});
 
 PageWrapper.displayName = 'PageWrapper';

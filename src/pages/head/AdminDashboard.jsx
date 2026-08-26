@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
+import { getRealAnalyticsMetrics } from '../../utils/analyticsTracker';
 import {
   MOCK_KPIS, MOCK_TIMESERIES_DAILY, MOCK_TRAFFIC_CHANNELS, MOCK_TOP_PAGES,
   MOCK_SERVICES_ANALYTICS, MOCK_DEVICES, DATE_RANGES
@@ -19,6 +20,19 @@ import {
 export default function AdminDashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get('tab') || 'overview';
+
+  // Real Telemetry Data
+  const [realMetrics, setRealMetrics] = useState(getRealAnalyticsMetrics);
+
+  useEffect(() => {
+    const refreshData = () => setRealMetrics(getRealAnalyticsMetrics());
+    window.addEventListener('storage', refreshData);
+    const timer = setInterval(refreshData, 3500);
+    return () => {
+      window.removeEventListener('storage', refreshData);
+      clearInterval(timer);
+    };
+  }, []);
 
   // Global Controls State
   const [dateRange, setDateRange]       = useState('30d');
@@ -209,6 +223,10 @@ export default function AdminDashboard() {
               {/* KPI Cards Grid */}
               <div style={styles.kpiGrid}>
                 {Object.entries(MOCK_KPIS).map(([key, kpi]) => {
+                  let realVal = kpi.value;
+                  if (key === 'activeUsers') realVal = realMetrics.activeUsers;
+                  if (key === 'pageViews') realVal = realMetrics.totalPageViews;
+                  if (key === 'sessions') realVal = realMetrics.uniqueSessions;
                   const isUp = kpi.change > 0;
 
                   return (
@@ -245,7 +263,7 @@ export default function AdminDashboard() {
                       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: '0.8rem' }}>
                         <div>
                           <div style={{ fontSize: '1.8rem', fontWeight: 800, lineHeight: 1 }}>
-                            {typeof kpi.value === 'number' ? kpi.value.toLocaleString() : kpi.value}
+                            {typeof realVal === 'number' ? realVal.toLocaleString() : realVal}
                           </div>
                           {comparePrev && (
                             <div style={{ fontSize: '0.72rem', color: isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)', marginTop: '0.35rem' }}>
@@ -284,7 +302,7 @@ export default function AdminDashboard() {
                 <div style={{ ...styles.chartCard, background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}` }}>
                   <h3 style={{ margin: '0 0 0.3rem', fontSize: '1.05rem', fontWeight: 700 }}>Device Distribution</h3>
                   <p style={{ margin: '0 0 1.5rem', fontSize: '0.8rem', color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}>Mobile, Desktop, and Tablet user breakdown</p>
-                  <DonutChart items={MOCK_DEVICES} size={180} isDark={isDark} />
+                  <DonutChart items={realMetrics.devices} size={180} isDark={isDark} />
                 </div>
               </div>
 

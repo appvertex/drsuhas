@@ -3,36 +3,40 @@ import { NavLink, useNavigate, Navigate } from 'react-router-dom';
 import { isAdminAuthed, setAdminAuth } from '../../utils/adminStorage';
 import {
   LayoutDashboard, Activity, Users, Globe, FileText, Stethoscope,
-  Image as ImageIcon, BookOpen, Calendar, Mail, Search, ShieldCheck,
+  Image as ImageIcon, BookOpen, Calendar, Mail, Search,
   Zap, Smartphone, MapPin, Layers, Target, BarChart2, Settings,
-  ChevronLeft, ChevronRight, LogOut, ExternalLink, Sun, Moon
+  ChevronLeft, ChevronRight, LogOut, ExternalLink
 } from 'lucide-react';
 
 export const ADMIN_NAV_ITEMS = [
-  { group: 'ANALYTICS & INSIGHTS', items: [
-    { to: '/admin', id: 'overview', end: true, label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/admin?tab=realtime', id: 'realtime', label: 'Realtime', icon: Activity, badge: 'Live' },
-    { to: '/admin?tab=visitors', id: 'visitors', label: 'Visitors', icon: Users },
-    { to: '/admin?tab=traffic', id: 'traffic', label: 'Traffic Sources', icon: Globe },
-    { to: '/admin?tab=pages', id: 'pages', label: 'Pages', icon: FileText },
-    { to: '/admin?tab=services', id: 'services', label: 'Services', icon: Stethoscope },
-    { to: '/admin?tab=gallery-analytics', id: 'gallery-analytics', label: 'Gallery', icon: ImageIcon },
-    { to: '/admin?tab=blog-analytics', id: 'blog-analytics', label: 'Blog', icon: BookOpen },
-    { to: '/admin?tab=appointments-analytics', id: 'appointments-analytics', label: 'Appointments', icon: Calendar },
-    { to: '/admin?tab=contact-analytics', id: 'contact-analytics', label: 'Contact Forms', icon: Mail },
-    { to: '/admin?tab=seo', id: 'seo', label: 'Search Console & SEO', icon: Search },
-    { to: '/admin?tab=performance', id: 'performance', label: 'Performance', icon: Zap },
-    { to: '/admin?tab=devices', id: 'devices', label: 'Devices', icon: Smartphone },
-    { to: '/admin?tab=countries', id: 'countries', label: 'Countries', icon: MapPin },
-    { to: '/admin?tab=events', id: 'events', label: 'Events', icon: Layers },
-    { to: '/admin?tab=conversions', id: 'conversions', label: 'Conversions', icon: Target },
-    { to: '/admin?tab=reports', id: 'reports', label: 'Reports', icon: BarChart2 },
-    { to: '/admin?tab=settings', id: 'settings', label: 'Settings', icon: Settings },
-  ]},
-  { group: 'CONTENT MANAGEMENT', items: [
-    { to: '/admin/blog', id: 'admin-blog', label: 'Manage Blog Posts', icon: BookOpen },
-    { to: '/admin/gallery', id: 'admin-gallery', label: 'Manage Gallery', icon: ImageIcon },
-  ]}
+  {
+    group: 'CONTENT MANAGEMENT',
+    items: [
+      { to: '/admin/blog', id: 'admin-blog', label: 'Manage Blog Posts', icon: BookOpen },
+      { to: '/admin/gallery', id: 'admin-gallery', label: 'Manage Gallery Images', icon: ImageIcon },
+    ]
+  },
+  {
+    group: 'ANALYTICS & TELEMETRY',
+    items: [
+      { to: '/admin', id: 'overview', end: true, label: 'Dashboard Overview', icon: LayoutDashboard },
+      { to: '/admin?tab=realtime', id: 'realtime', label: 'Realtime Telemetry', icon: Activity, badge: 'Live' },
+      { to: '/admin?tab=visitors', id: 'visitors', label: 'Visitors & Cohorts', icon: Users },
+      { to: '/admin?tab=traffic', id: 'traffic', label: 'Traffic Channels', icon: Globe },
+      { to: '/admin?tab=pages', id: 'pages', label: 'Top Pages', icon: FileText },
+      { to: '/admin?tab=services', id: 'services', label: 'Surgical Services', icon: Stethoscope },
+      { to: '/admin?tab=appointments-analytics', id: 'appointments-analytics', label: 'Appointments Log', icon: Calendar },
+      { to: '/admin?tab=contact-analytics', id: 'contact-analytics', label: 'Contact Messages', icon: Mail },
+      { to: '/admin?tab=seo', id: 'seo', label: 'Search Console & SEO', icon: Search },
+      { to: '/admin?tab=performance', id: 'performance', label: 'Core Web Vitals', icon: Zap },
+      { to: '/admin?tab=devices', id: 'devices', label: 'Devices & Browsers', icon: Smartphone },
+      { to: '/admin?tab=countries', id: 'countries', label: 'Visitor Locations', icon: MapPin },
+      { to: '/admin?tab=events', id: 'events', label: 'Event Log Stream', icon: Layers },
+      { to: '/admin?tab=conversions', id: 'conversions', label: 'Conversions & Funnel', icon: Target },
+      { to: '/admin?tab=reports', id: 'reports', label: 'Reports', icon: BarChart2 },
+      { to: '/admin?tab=settings', id: 'settings', label: 'Settings', icon: Settings },
+    ]
+  }
 ];
 
 export default function AdminLayout({ children, currentTab, onTabSelect }) {
@@ -51,7 +55,7 @@ export default function AdminLayout({ children, currentTab, onTabSelect }) {
   return (
     <div style={s.shell}>
       {/* ── Sidebar ────────────────────────────────────────── */}
-      <aside style={{ ...s.sidebar, width: collapsed ? '80px' : '260px' }}>
+      <aside style={{ ...s.sidebar, width: collapsed ? '70px' : '260px' }}>
         <div style={s.sidebarInner}>
           
           {/* Header & Brand */}
@@ -61,7 +65,7 @@ export default function AdminLayout({ children, currentTab, onTabSelect }) {
             </div>
             {!collapsed && (
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={s.brandName}>Analytics Studio</div>
+                <div style={s.brandName}>Admin Portal</div>
                 <div style={s.brandSub}>Dr. Suhas S Kumar</div>
               </div>
             )}
@@ -81,10 +85,13 @@ export default function AdminLayout({ children, currentTab, onTabSelect }) {
             {ADMIN_NAV_ITEMS.map((grp, gIdx) => (
               <div key={gIdx} style={{ marginBottom: '1.25rem' }}>
                 {!collapsed && <div style={s.navGroupTitle}>{grp.group}</div>}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                   {grp.items.map((item) => {
                     const Icon = item.icon;
-                    const isActive = onTabSelect
+                    const isPageLink = item.to.startsWith('/admin/blog') || item.to.startsWith('/admin/gallery');
+                    const isActive = isPageLink
+                      ? window.location.pathname === item.to
+                      : onTabSelect
                       ? currentTab === item.id
                       : window.location.pathname === item.to;
 
@@ -92,21 +99,23 @@ export default function AdminLayout({ children, currentTab, onTabSelect }) {
                       <button
                         key={item.id}
                         onClick={() => {
-                          if (onTabSelect && item.to.startsWith('/admin?tab=')) {
+                          if (isPageLink) {
+                            navigate(item.to);
+                          } else if (onTabSelect && item.to.startsWith('/admin?tab=')) {
                             onTabSelect(item.id);
-                          } else if (item.to !== window.location.pathname) {
+                          } else {
                             navigate(item.to);
                           }
                         }}
                         title={collapsed ? item.label : undefined}
                         style={{
                           ...s.navItem,
-                          ...(isActive ? s.navItemActive : {}),
+                          ...(isActive ? (isPageLink ? s.navItemContentActive : s.navItemActive) : {}),
                           justifyContent: collapsed ? 'center' : 'flex-start',
                           padding: collapsed ? '0.65rem' : '0.6rem 0.75rem',
                         }}
                       >
-                        <Icon size={18} style={{ opacity: isActive ? 1 : 0.7, flexShrink: 0 }} />
+                        <Icon size={18} style={{ opacity: isActive ? 1 : 0.75, flexShrink: 0 }} />
                         {!collapsed && (
                           <span style={{ flex: 1, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                             {item.label}
@@ -170,8 +179,8 @@ const s = {
   },
   sidebar: {
     flexShrink: 0,
-    background: 'rgba(15,15,26,0.95)',
-    borderRight: '1px solid rgba(255,255,255,0.07)',
+    background: 'rgba(15,15,26,0.98)',
+    borderRight: '1px solid rgba(255,255,255,0.08)',
     position: 'sticky',
     top: 0,
     height: '100vh',
@@ -219,7 +228,7 @@ const s = {
     fontSize: '0.65rem',
     fontWeight: 700,
     letterSpacing: '0.08em',
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(201,169,110,0.85)',
     padding: '0 0.5rem',
     marginBottom: '0.4rem',
   },
@@ -231,7 +240,7 @@ const s = {
     background: 'transparent',
     border: 'none',
     borderRadius: '10px',
-    color: 'rgba(255,255,255,0.6)',
+    color: 'rgba(255,255,255,0.65)',
     fontSize: '0.85rem',
     fontWeight: 500,
     cursor: 'pointer',
@@ -239,8 +248,13 @@ const s = {
     transition: 'all 0.15s ease',
   },
   navItemActive: {
-    background: 'rgba(59,130,246,0.15)',
+    background: 'rgba(59,130,246,0.18)',
     color: '#60a5fa',
+    fontWeight: 600,
+  },
+  navItemContentActive: {
+    background: 'rgba(201,169,110,0.18)',
+    color: '#c9a96e',
     fontWeight: 600,
   },
   liveBadge: {
