@@ -5,8 +5,15 @@ import LuxuryCredentials from './LuxuryCredentials';
 import { DoctorLocations } from './sections/DoctorLocations';
 import { ParallaxCTA } from './sections/ParallaxCTA';
 import { milestones } from '../data/content';
+import { useTheme } from '../hooks';
 
 export default function DoctorDetailPage() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const doctorImg = isDark
+    ? `${import.meta.env.BASE_URL}images/hero-doctor-dark.jpg`
+    : `${import.meta.env.BASE_URL}images/hero-doctor.png`;
+
   return (
     <>
       {/* Hero */}
@@ -40,7 +47,8 @@ export default function DoctorDetailPage() {
 
         <div className="doctor-hero-portrait">
           <img
-            src={`${import.meta.env.BASE_URL}images/hero-doctor.png`}
+            key={doctorImg}
+            src={doctorImg}
             alt="Dr. Suhas S Kumar"
             fetchPriority="high"
             decoding="async"

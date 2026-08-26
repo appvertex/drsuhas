@@ -71,17 +71,19 @@ export default function Hero() {
         {/* Doctor image wrapper — animates as ONE unit so the ::before
             blend-overlay never flashes ahead of the image underneath it. */}
         <motion.div
+          key={heroImage}
           className="hero-img-wrapper"
           style={{ width: '100%', height: '100%', '--hero-image': `url(${heroImage})` }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.1, ease: EASE }}
+          transition={{ duration: 0.8, ease: EASE }}
         >
           {/* Scale-only reveal on the img — opacity handled by the parent */}
           <motion.img
-            initial={{ scale: 1.08 }}
+            key={heroImage}
+            initial={{ scale: 1.05 }}
             animate={{ scale: 1 }}
-            transition={{ duration: 1.4, ease: EASE }}
+            transition={{ duration: 1.0, ease: EASE }}
             src={heroImage}
             alt="Dr. Suhas S Kumar - Consultant General &amp; Laparoscopic Surgeon"
             fetchPriority="high"

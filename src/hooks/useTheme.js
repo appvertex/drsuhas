@@ -1,24 +1,60 @@
 import { useState, useEffect } from 'react';
 
 /**
- * useTheme - Manages the site theme (light/dark) with localStorage persistence
- * and system preference detection. Single source of truth for theme state.
+ * useTheme - Manages the site theme (light/dark) with localStorage persistence,
+ * system preference detection, and synchronized state across all components via
+ * MutationObserver and custom events.
  */
 export function useTheme() {
-  const [theme, setTheme] = useState(() => {
+  const getInitialTheme = () => {
     if (typeof window === 'undefined') return 'light';
-    return (
-      window.localStorage.getItem('site-theme') ||
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    );
-  });
+    const stored = window.localStorage.getItem('site-theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  };
+
+  const [theme, setTheme] = useState(getInitialTheme);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem('site-theme', theme);
-  }, [theme]);
+    const syncTheme = () => {
+      const current = document.documentElement.dataset.theme || getInitialTheme();
+      setTheme(current);
+    };
 
-  const toggleTheme = () => setTheme(t => (t === 'dark' ? 'light' : 'dark'));
+    // Ensure document attribute is initialized
+    if (!document.documentElement.dataset.theme) {
+      document.documentElement.dataset.theme = theme;
+    }
+
+    // Listen for custom theme-change events across components
+    window.addEventListener('theme-change', syncTheme);
+    window.addEventListener('storage', syncTheme);
+
+    // MutationObserver to watch attribute updates on <html> element
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-theme') {
+          syncTheme();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => {
+      window.removeEventListener('theme-change', syncTheme);
+      window.removeEventListener('storage', syncTheme);
+      observer.disconnect();
+    };
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = nextTheme;
+    window.localStorage.setItem('site-theme', nextTheme);
+    setTheme(nextTheme);
+    window.dispatchEvent(new Event('theme-change'));
+  };
 
   return { theme, toggleTheme };
 }
