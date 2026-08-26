@@ -69,35 +69,36 @@ export default function AdminGallery() {
   return (
     <AdminLayout>
       <div style={styles.page}>
-        {/* Toast */}
+        {/* Toast Notification */}
         {toast && <div style={styles.toast}>{toast}</div>}
 
-        {/* Confirm dialog */}
+        {/* Delete Confirmation Modal */}
         {confirm && (
           <div style={styles.overlay}>
             <div style={styles.dialog}>
               <div style={styles.dialogIcon}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" strokeLinecap="round">
                   <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
                 </svg>
               </div>
               <div style={styles.dialogTitle}>Delete this image?</div>
-              <p style={styles.dialogDesc}>This action cannot be undone.</p>
+              <p style={styles.dialogDesc}>This action cannot be undone and will remove the item from the gallery.</p>
               <div style={styles.dialogBtns}>
                 <button onClick={() => setConfirm(null)} style={styles.cancelBtn}>Cancel</button>
-                <button onClick={() => handleDelete(confirm)} style={styles.deleteBtn}>Delete</button>
+                <button onClick={() => handleDelete(confirm)} style={styles.deleteBtn}>Delete Image</button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ── GRID VIEW ─────────────────────────────── */}
+        {/* ── GRID LIST VIEW ────────────────────────────── */}
         {mode === 'list' && (
           <>
             <div style={styles.header}>
               <div>
-                <h1 style={styles.heading}>Gallery</h1>
-                <p style={styles.sub}>{images.length} images in gallery</p>
+                <h1 style={styles.heading}>Gallery Images</h1>
+                <p style={styles.sub}>{images.length} images in clinic gallery</p>
               </div>
               <button onClick={openAdd} style={styles.addBtn}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -110,28 +111,52 @@ export default function AdminGallery() {
             {images.length === 0 ? (
               <div style={styles.empty}>
                 <div style={styles.emptyIcon}>🖼️</div>
-                <div style={styles.emptyText}>No gallery images yet. Add your first one!</div>
+                <div style={styles.emptyText}>No gallery images uploaded yet. Click "Add Image" to upload your first image!</div>
               </div>
             ) : (
               <div style={styles.imgGrid}>
                 {images.map(img => (
                   <div key={img.id} style={styles.imgCard}>
                     <div style={styles.imgWrap}>
-                      <img src={img.src} alt={img.title} style={styles.img}
+                      <img
+                        src={img.src}
+                        alt={img.title}
+                        style={styles.img}
                         onError={e => {
                           e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
-                        }} />
-                      {/* Hover overlay with actions */}
-                      <div style={styles.imgOverlay}>
-                        <button onClick={() => openEdit(img)} style={styles.oBtn}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        }}
+                      />
+                      
+                      {/* Top-Right Quick Delete Icon */}
+                      <button
+                        onClick={() => setConfirm(img.id)}
+                        title="Delete Image"
+                        style={styles.quickDelBtn}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                        </svg>
+                      </button>
+
+                      {/* Span badge */}
+                      <div style={styles.spanBadge}>{img.span}</div>
+                    </div>
+
+                    <div style={styles.imgInfo}>
+                      <div style={styles.imgTitle}>{img.title}</div>
+                      <div style={styles.imgLabel}>{img.label}</div>
+
+                      {/* Always Visible Action Bar */}
+                      <div style={styles.cardActionsRow}>
+                        <button onClick={() => openEdit(img)} style={styles.cardEditBtn}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                           </svg>
                           Edit
                         </button>
-                        <button onClick={() => setConfirm(img.id)} style={{ ...styles.oBtn, ...styles.oBtnRed }}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <button onClick={() => setConfirm(img.id)} style={styles.cardDelBtn}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                             <polyline points="3 6 5 6 21 6"/>
                             <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
                           </svg>
@@ -146,7 +171,7 @@ export default function AdminGallery() {
           </>
         )}
 
-        {/* ── FORM VIEW ────────────────────────────── */}
+        {/* ── FORM VIEW (Add / Edit) ─────────────────── */}
         {(mode === 'add' || mode === 'edit') && (
           <>
             <div style={styles.header}>
@@ -193,40 +218,46 @@ export default function AdminGallery() {
                   </label>
                 </div>
 
-                {/* Span selector */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={fieldStyles.label}>Grid Span</label>
-                  <div style={styles.spanBtns}>
-                    {SPANS.map(s => (
-                      <button
-                        key={s}
-                        onClick={() => setForm(f => ({ ...f, span: s }))}
-                        style={{
-                          ...styles.spanBtn,
-                          ...(form.span === s ? styles.spanBtnActive : {}),
-                        }}
-                      >
-                        {s === 'normal' ? '1×1 Normal' : s === 'wide' ? '2×1 Wide' : '1×2 Tall'}
-                      </button>
-                    ))}
+                {form.src && (
+                  <div>
+                    <div style={styles.previewLabel}>Preview</div>
+                    <img src={form.src} alt="preview" style={styles.imgPreview}
+                      onError={e => { e.target.style.display = 'none'; }} />
                   </div>
-                  <p style={styles.spanHint}>
-                    Wide = spans 2 columns. Tall = spans 2 rows.
-                  </p>
-                </div>
+                )}
 
-                <button
-                  onClick={handleSave}
-                  disabled={!form.src.trim() || !form.title.trim()}
-                  style={{ ...styles.saveBtn, opacity: (!form.src.trim() || !form.title.trim()) ? 0.5 : 1 }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                    <polyline points="17 21 17 13 7 13 7 21"/>
-                    <polyline points="7 3 7 8 15 8"/>
-                  </svg>
-                  Save Image
-                </button>
+                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                  <button
+                    onClick={handleSave}
+                    disabled={!form.src.trim() || !form.title.trim()}
+                    style={{ ...styles.saveBtn, flex: 1, opacity: (!form.src.trim() || !form.title.trim()) ? 0.5 : 1 }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                      <polyline points="17 21 17 13 7 13 7 21"/>
+                      <polyline points="7 3 7 8 15 8"/>
+                    </svg>
+                    Save Image
+                  </button>
+
+                  {mode === 'edit' && (
+                    <button
+                      type="button"
+                      onClick={() => setConfirm(editId)}
+                      style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+                        padding: '0.85rem 1.25rem', borderRadius: '10px',
+                        background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)',
+                        color: '#f87171', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600,
+                      }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      </svg>
+                      Delete Image
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </>
@@ -255,29 +286,27 @@ const fieldStyles = {
   },
   input: {
     background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '10px', padding: '0.75rem 1rem',
-    color: '#fff', fontSize: '0.9rem', outline: 'none', width: '100%', boxSizing: 'border-box',
-    fontFamily: "'Inter', system-ui, sans-serif",
+    borderRadius: '10px', padding: '0.75rem 1rem', color: '#fff',
+    fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
   },
 };
 
 const styles = {
-  page: { padding: '2.5rem', maxWidth: '1200px', margin: '0 auto', position: 'relative' },
+  page: { color: '#fff', width: '100%' },
   toast: {
-    position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9999,
-    background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.3)',
-    borderRadius: '12px', padding: '0.75rem 1.25rem',
-    color: '#34d399', fontSize: '0.88rem', fontWeight: 600,
-    boxShadow: '0 10px 30px rgba(0,0,0,0.4)',
+    position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 1100,
+    background: '#c9a96e', color: '#0a0a0f', fontWeight: 700,
+    padding: '0.75rem 1.5rem', borderRadius: '12px',
+    boxShadow: '0 8px 24px rgba(0,0,0,0.4)', fontSize: '0.9rem',
   },
   overlay: {
-    position: 'fixed', inset: 0, zIndex: 999,
-    background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    position: 'fixed', inset: 0, zIndex: 1000,
+    background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
   },
   dialog: {
-    background: '#1a1a25', border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '20px', padding: '2rem', maxWidth: '340px', width: '90%', textAlign: 'center',
+    background: '#12121a', border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '20px', padding: '2rem', maxWidth: '380px', width: '90%', textAlign: 'center',
   },
   dialogIcon: {
     width: '56px', height: '56px', borderRadius: '50%',
@@ -285,15 +314,15 @@ const styles = {
     display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem',
   },
   dialogTitle: { color: '#fff', fontSize: '1.1rem', fontWeight: 700 },
-  dialogDesc: { color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', margin: '0.5rem 0 1.5rem' },
+  dialogDesc: { color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', margin: '0.5rem 0 1.5rem', lineHeight: 1.5 },
   dialogBtns: { display: 'flex', gap: '0.75rem', justifyContent: 'center' },
   cancelBtn: {
-    padding: '0.65rem 1.5rem', borderRadius: '10px',
+    padding: '0.65rem 1.25rem', borderRadius: '10px',
     background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
     color: 'rgba(255,255,255,0.7)', cursor: 'pointer', fontSize: '0.9rem',
   },
   deleteBtn: {
-    padding: '0.65rem 1.5rem', borderRadius: '10px',
+    padding: '0.65rem 1.25rem', borderRadius: '10px',
     background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
     color: '#f87171', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600,
   },
@@ -324,79 +353,61 @@ const styles = {
   emptyText: { color: 'rgba(255,255,255,0.4)', fontSize: '0.95rem' },
   imgGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-    gap: '1rem',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+    gap: '1.25rem',
   },
   imgCard: {
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '16px', overflow: 'hidden',
+    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column',
   },
-  imgWrap: { position: 'relative', aspectRatio: '4/3', overflow: 'hidden' },
-  img: { width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s' },
-  imgOverlay: {
-    position: 'absolute', inset: 0,
-    background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem',
-    opacity: 0,
-    transition: 'opacity 0.25s',
-    // Note: hover handled by CSS class — we'll use onMouseEnter/onMouseLeave trick via inline
-  },
-  oBtn: {
-    display: 'flex', alignItems: 'center', gap: '0.4rem',
-    padding: '0.5rem 0.9rem', borderRadius: '8px',
-    background: 'rgba(201,169,110,0.2)', border: '1px solid rgba(201,169,110,0.35)',
-    color: '#c9a96e', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600,
-  },
-  oBtnRed: {
-    background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
-    color: '#f87171',
+  imgWrap: { position: 'relative', height: '180px', overflow: 'hidden' },
+  img: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  quickDelBtn: {
+    position: 'absolute', top: '0.6rem', right: '0.6rem', zIndex: 10,
+    width: '32px', height: '32px', borderRadius: '50%',
+    background: 'rgba(239,68,68,0.85)', border: 'none',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
   },
   spanBadge: {
-    position: 'absolute', top: '0.5rem', right: '0.5rem',
-    background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '999px', padding: '0.15rem 0.55rem',
-    color: 'rgba(255,255,255,0.7)', fontSize: '0.65rem', fontWeight: 600,
+    position: 'absolute', bottom: '0.6rem', left: '0.6rem', zIndex: 10,
+    background: 'rgba(0,0,0,0.65)', border: '1px solid rgba(255,255,255,0.15)',
+    borderRadius: '999px', padding: '0.15rem 0.6rem',
+    color: 'rgba(255,255,255,0.85)', fontSize: '0.65rem', fontWeight: 700,
     textTransform: 'uppercase', letterSpacing: '0.05em',
   },
-  imgInfo: { padding: '0.85rem 1rem' },
-  imgTitle: { color: '#fff', fontWeight: 600, fontSize: '0.85rem' },
-  imgLabel: { color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', marginTop: '0.2rem' },
-  formWrap: {
-    display: 'grid', gridTemplateColumns: '1fr 400px', gap: '2rem',
-    alignItems: 'start',
+  imgInfo: { padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column' },
+  imgTitle: { color: '#fff', fontWeight: 600, fontSize: '0.95rem', marginBottom: '0.2rem' },
+  imgLabel: { color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', flex: 1 },
+  cardActionsRow: { display: 'flex', gap: '0.5rem', marginTop: '1rem' },
+  cardEditBtn: {
+    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
+    padding: '0.55rem 0.85rem', borderRadius: '8px',
+    background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.3)',
+    color: '#c9a96e', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
   },
-  formLeft: {},
-  formRight: { display: 'flex', flexDirection: 'column', gap: '1.25rem' },
-  previewBox: {
-    borderRadius: '16px', overflow: 'hidden',
-    border: '1px solid rgba(255,255,255,0.08)',
-    background: 'rgba(255,255,255,0.03)',
-    aspectRatio: '4/3',
+  cardDelBtn: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
+    padding: '0.55rem 0.85rem', borderRadius: '8px',
+    background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)',
+    color: '#f87171', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
   },
-  previewImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
-  previewPlaceholder: {
-    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-    height: '100%', gap: '0.75rem', color: 'rgba(255,255,255,0.25)', fontSize: '0.82rem',
+  formGrid: {
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem',
   },
-  spanBtns: { display: 'flex', gap: '0.5rem', flexWrap: 'wrap' },
-  spanBtn: {
-    padding: '0.5rem 1rem', borderRadius: '8px',
-    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-    color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '0.82rem',
-    transition: 'background 0.15s, color 0.15s',
+  previewLabel: {
+    fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em',
+    textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)', marginBottom: '0.4rem',
   },
-  spanBtnActive: {
-    background: 'rgba(201,169,110,0.15)', border: '1px solid rgba(201,169,110,0.35)',
-    color: '#c9a96e', fontWeight: 600,
-  },
-  spanHint: {
-    color: 'rgba(255,255,255,0.25)', fontSize: '0.75rem', margin: 0, lineHeight: 1.4,
+  imgPreview: {
+    width: '100%', height: '180px', objectFit: 'cover', borderRadius: '12px',
+    border: '1px solid rgba(255,255,255,0.1)',
   },
   saveBtn: {
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-    padding: '0.9rem',
+    padding: '0.85rem 1.25rem',
     background: 'linear-gradient(135deg, #c9a96e, #e0c080)',
-    border: 'none', borderRadius: '12px',
-    color: '#0a0a0f', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer',
+    border: 'none', borderRadius: '10px',
+    color: '#0a0a0f', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
   },
 };
