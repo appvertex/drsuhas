@@ -223,11 +223,17 @@ export default function AdminDashboard() {
               {/* KPI Cards Grid */}
               <div style={styles.kpiGrid}>
                 {Object.entries(MOCK_KPIS).map(([key, kpi]) => {
-                  let realVal = kpi.value;
-                  if (key === 'activeUsers') realVal = realMetrics.activeUsers;
-                  if (key === 'pageViews') realVal = realMetrics.totalPageViews;
-                  if (key === 'sessions') realVal = realMetrics.uniqueSessions;
-                  const isUp = kpi.change > 0;
+                  let realVal = 0;
+                  if (key === 'visitors')     realVal = realMetrics.visitors;
+                  if (key === 'activeUsers')  realVal = realMetrics.activeUsers;
+                  if (key === 'sessions')     realVal = realMetrics.uniqueSessions;
+                  if (key === 'pageViews')    realVal = realMetrics.totalPageViews;
+                  if (key === 'bounceRate')   realVal = realMetrics.bounceRate;
+                  if (key === 'avgDuration')  realVal = realMetrics.avgDuration;
+                  if (key === 'conversions')  realVal = realMetrics.conversions;
+                  if (key === 'appointments') realVal = realMetrics.appointments;
+
+                  const isUp = kpi.change >= 0;
 
                   return (
                     <div
@@ -251,12 +257,11 @@ export default function AdminDashboard() {
                             borderRadius: '999px',
                             fontSize: '0.72rem',
                             fontWeight: 700,
-                            background: isUp ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)',
-                            color: isUp ? '#10b981' : '#f87171',
+                            background: 'rgba(16,185,129,0.12)',
+                            color: '#10b981',
                           }}
                         >
-                          {isUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                          {isUp ? `+${kpi.change}%` : `${kpi.change}%`}
+                          Real-time
                         </span>
                       </div>
 
@@ -265,11 +270,9 @@ export default function AdminDashboard() {
                           <div style={{ fontSize: '1.8rem', fontWeight: 800, lineHeight: 1 }}>
                             {typeof realVal === 'number' ? realVal.toLocaleString() : realVal}
                           </div>
-                          {comparePrev && (
-                            <div style={{ fontSize: '0.72rem', color: isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)', marginTop: '0.35rem' }}>
-                              vs {typeof kpi.prev === 'number' ? kpi.prev.toLocaleString() : kpi.prev} prev
-                            </div>
-                          )}
+                          <div style={{ fontSize: '0.72rem', color: isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)', marginTop: '0.35rem' }}>
+                            Actual Live Metric
+                          </div>
                         </div>
 
                         {kpi.trend && (

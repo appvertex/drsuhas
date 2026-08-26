@@ -3,6 +3,7 @@ import {
   MOCK_LIVE_EVENTS, MOCK_TOP_PAGES, MOCK_SERVICES_ANALYTICS, MOCK_SEO_KEYWORDS,
   MOCK_CORE_WEB_VITALS, MOCK_DEVICES, MOCK_COUNTRIES, MOCK_TRAFFIC_CHANNELS, MOCK_APPOINTMENTS_LIST
 } from './analyticsData';
+import { getStoredEvents, getRealAnalyticsMetrics } from '../../../utils/analyticsTracker';
 import { DataTable } from './AnalyticsTables';
 import { DonutChart, HorizontalBarChart, FunnelChart } from './AnalyticsCharts';
 import { Activity, Clock, ShieldCheck, Zap, Globe, Smartphone, CheckCircle, AlertTriangle, FileText, Calendar } from 'lucide-react';
@@ -11,31 +12,18 @@ import { Activity, Clock, ShieldCheck, Zap, Globe, Smartphone, CheckCircle, Aler
  * 1. Realtime Analytics View
  */
 export function RealtimeView({ isDark = true }) {
-  const [liveUsers, setLiveUsers] = useState(24);
-  const [events, setEvents] = useState(MOCK_LIVE_EVENTS);
+  const [liveUsers, setLiveUsers] = useState(1);
+  const [events, setEvents] = useState(() => getStoredEvents());
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Simulate live jitter
-      const change = Math.floor(Math.random() * 5) - 2;
-      setLiveUsers(u => Math.max(12, u + change));
-
-      // Occasional new event
-      if (Math.random() > 0.6) {
-        const types = ['Page View', 'Service Click', 'Gallery Open', 'Appointment Request'];
-        const pages = ['/services/hernia-surgery', '/services/laparoscopic-surgery', '/contact', '/gallery'];
-        const newEvt = {
-          id: Date.now(),
-          time: 'Just now',
-          type: types[Math.floor(Math.random() * types.length)],
-          desc: `Viewed ${pages[Math.floor(Math.random() * pages.length)]}`,
-          location: 'Bengaluru, India',
-          device: Math.random() > 0.5 ? 'Mobile' : 'Desktop',
-        };
-        setEvents(prev => [newEvt, ...prev.slice(0, 7)]);
-      }
-    }, 3500);
-
+    const sync = () => {
+      const stored = getStoredEvents();
+      setEvents(stored);
+      const metrics = getRealAnalyticsMetrics();
+      setLiveUsers(metrics.activeUsers);
+    };
+    sync();
+    const interval = setInterval(sync, 2500);
     return () => clearInterval(interval);
   }, []);
 
@@ -217,12 +205,31 @@ export function ServicesView({ isDark = true }) {
  * 6. Appointments View
  */
 export function AppointmentsView({ isDark = true }) {
+  const [apts, setApts] = useState(() => {
+    try {
+      const raw = localStorage.getItem('admin_appointments');
+      if (raw) return JSON.parse(raw);
+    } catch {/* ignore */}
+    return [];
+  });
+
+  useEffect(() => {
+    const refresh = () => {
+      try {
+        const raw = localStorage.getItem('admin_appointments');
+        if (raw) setApts(JSON.parse(raw));
+      } catch {/* ignore */}
+    };
+    window.addEventListener('storage', refresh);
+    return () => window.removeEventListener('storage', refresh);
+  }, []);
+
   const columns = [
     { key: 'id', label: 'Booking ID', render: v => <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{v}</span> },
     { key: 'name', label: 'Patient Name', render: v => <strong>{v}</strong> },
     { key: 'phone', label: 'Contact Phone' },
     { key: 'service', label: 'Service Requested' },
-    { key: 'date', label: 'Date & Time', render: (v, r) => `${v} (${r.time})` },
+    { key: 'date', label: 'Date & Time', render: (v, r) => r.time ? `${v} (${r.time})` : v },
     { key: 'source', label: 'Channel Source' },
     { key: 'status', label: 'Status', render: v => (
       <span style={{
@@ -230,12 +237,12 @@ export function AppointmentsView({ isDark = true }) {
         background: v === 'Confirmed' ? 'rgba(16,185,129,0.15)' : v === 'Pending' ? 'rgba(245,158,11,0.15)' : 'rgba(59,130,246,0.15)',
         color: v === 'Confirmed' ? '#10b981' : v === 'Pending' ? '#f59e0b' : '#3b82f6',
       }}>
-        {v}
+        {v || 'Confirmed'}
       </span>
     )},
   ];
 
-  return <DataTable title="Appointment Requests & Consultations" description="Real-time patient bookings, status, and lead channels" columns={columns} data={MOCK_APPOINTMENTS_LIST} isDark={isDark} exportFilename="appointments.csv" />;
+  return <DataTable title="Appointment Requests & Consultations" description="Real-time patient bookings submitted through website contact form" columns={columns} data={apts} isDark={isDark} exportFilename="appointments.csv" />;
 }
 
 /**

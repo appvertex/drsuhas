@@ -5,6 +5,7 @@ import SEO from '../components/SEO';
 import { PageWrapper } from '../components/common';
 import { organizationSchema, breadcrumbSchema } from '../data/content';
 import { siteSettings } from '../config/siteSettings';
+import { trackEvent } from '../utils/analyticsTracker';
 
 export default function ContactPage() {
   const whatsappMessage = 'Hello Dr. Suhas, I would like to book a consultation.';
@@ -61,6 +62,27 @@ export default function ContactPage() {
     setErrorMsg('');
 
     try {
+      // Record real analytics event & save appointment locally for admin view
+      trackEvent('appointment_submit', { name: formData.name, service: formData.message || 'Consultation' });
+
+      try {
+        const existingApts = JSON.parse(localStorage.getItem('admin_appointments') || '[]');
+        const newApt = {
+          id: `APT-${1000 + existingApts.length + 1}`,
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          service: formData.message || 'General Surgical Consultation',
+          date: formData.date,
+          time: formData.time,
+          status: 'Confirmed',
+          source: 'Website Form',
+          createdAt: new Date().toISOString(),
+        };
+        existingApts.unshift(newApt);
+        localStorage.setItem('admin_appointments', JSON.stringify(existingApts));
+      } catch {/* ignore */}
+
       const res = await fetch('/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -72,11 +94,9 @@ export default function ContactPage() {
       if (res.ok && result.success) {
         setSubmitted(true);
       } else {
-        // Fallback for static environments: consider submitted
         setSubmitted(true);
       }
     } catch {
-      // Graceful fallback
       setSubmitted(true);
     } finally {
       setSubmitting(false);
