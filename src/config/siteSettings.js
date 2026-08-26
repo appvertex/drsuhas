@@ -21,9 +21,9 @@ export const siteSettings = {
     }
   ],
   socials: {
-    facebook: 'https://facebook.com',
-    instagram: 'https://instagram.com',
-    twitter: 'https://twitter.com',
-    linkedin: 'https://linkedin.com'
+    facebook: '',
+    instagram: '',
+    twitter: '',
+    linkedin: ''
   }
 };

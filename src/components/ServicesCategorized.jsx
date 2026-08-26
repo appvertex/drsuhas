@@ -1,27 +1,43 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Activity, Zap, Shield, HeartPulse } from 'lucide-react';
-
+import { ArrowRight } from 'lucide-react';
 import { categories } from '../data/content';
 
 function SegmentedPillToggle({ categories, activeTab, onSelect }) {
   return (
-    <div style={{
-      display: 'inline-flex',
-      background: 'var(--bg-secondary)',
-      border: '1px solid var(--border-subtle)',
-      borderRadius: '16px',
-      padding: '5px',
-      gap: '4px',
-      flexWrap: 'wrap',
-    }}>
+    <div
+      role="tablist"
+      aria-label="Service categories"
+      style={{
+        display: 'inline-flex',
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--border-subtle)',
+        borderRadius: '16px',
+        padding: '5px',
+        gap: '4px',
+        flexWrap: 'wrap',
+      }}
+    >
       {categories.map((cat) => {
         const isActive = activeTab === cat.id;
         return (
           <button
             key={cat.id}
+            id={`tab-${cat.id}`}
+            role="tab"
+            aria-selected={isActive}
+            aria-controls={`tabpanel-${cat.id}`}
             onClick={() => onSelect(cat.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                const currentIndex = categories.findIndex((c) => c.id === activeTab);
+                const nextIndex = e.key === 'ArrowRight'
+                  ? (currentIndex + 1) % categories.length
+                  : (currentIndex - 1 + categories.length) % categories.length;
+                onSelect(categories[nextIndex].id);
+              }
+            }}
             style={{
               position: 'relative',
               padding: '0.7rem 1.5rem',
@@ -70,13 +86,15 @@ function SubServiceCard({ service, index }) {
       <img
         src={service.image}
         alt={service.title}
+        width="600"
+        height="340"
         style={{
           position: 'absolute',
           inset: 0,
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          zIndex: 0
+          zIndex: 0,
         }}
         loading="lazy"
       />
@@ -134,7 +152,7 @@ function SubServiceCard({ service, index }) {
         </div>
 
         <div>
-          <h4 style={{ 
+          <h3 style={{ 
             fontFamily: 'var(--font-display)',
             fontSize: '1.25rem', 
             fontWeight: 600,
@@ -143,7 +161,7 @@ function SubServiceCard({ service, index }) {
             lineHeight: 1.25
           }}>
             {service.title}
-          </h4>
+          </h3>
           
           <p style={{ 
             fontSize: '0.85rem', 
@@ -217,9 +235,9 @@ export default function ServicesCategorized() {
         {/* Section Header */}
         <div style={{ maxWidth: '700px', marginBottom: '4rem' }}>
           <div className="text-eyebrow" style={{ marginBottom: '1.25rem' }}>Service Directory</div>
-          <h2 className="h-2" style={{ marginBottom: '1.25rem' }}>
+          <h1 className="h-2" style={{ marginBottom: '1.25rem' }}>
             Comprehensive clinical <span className="text-gradient">expertise.</span>
-          </h2>
+          </h1>
           <p className="text-lead" style={{ fontSize: '1.1rem' }}>
             Navigate our specialized surgical treatments and advanced procedures structured by clinical category.
           </p>
@@ -239,6 +257,9 @@ export default function ServicesCategorized() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
+              id={`tabpanel-${activeTab}`}
+              role="tabpanel"
+              aria-labelledby={`tab-${activeTab}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

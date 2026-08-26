@@ -409,27 +409,40 @@ export const breadcrumbSchema = (items) => ({
   })),
 });
 
+export const faqItems = [
+  {
+    question: 'What is laparoscopic surgery?',
+    answer: 'Laparoscopic surgery is a minimally invasive surgical technique where operations are performed through small incisions using a camera and specialized instruments, resulting in less pain and faster recovery.'
+  },
+  {
+    question: 'What are the benefits compared to traditional surgery?',
+    answer: 'Benefits include smaller incisions, less pain, reduced blood loss, shorter hospital stays, quicker recovery, and less scarring.'
+  },
+  {
+    question: 'How long is the recovery time?',
+    answer: 'Most patients can return to normal activities within 1-2 weeks, though this varies depending on the procedure. Dr. Suhas provides personalised recovery guidance for every patient.'
+  },
+  {
+    question: 'Is laparoscopic surgery safe?',
+    answer: 'Yes, laparoscopic surgery is widely regarded as safe and effective. Dr. Suhas has performed over 1000 successful procedures with a strong track record of patient safety.'
+  },
+  {
+    question: 'What conditions can be treated with laparoscopic surgery?',
+    answer: 'Common conditions include gallstones, hernias, appendicitis, gastrointestinal issues, and certain types of cancer. Dr. Suhas can advise whether laparoscopic surgery is appropriate for your condition.'
+  }
+];
+
 export const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'What is laparoscopic surgery?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Laparoscopic surgery uses small incisions, a camera, and specialized instruments to reduce pain and recovery time.',
-      },
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
     },
-    {
-      '@type': 'Question',
-      name: 'What conditions can be treated with laparoscopic surgery?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Common conditions include gallstones, hernias, appendicitis, gastrointestinal issues, and selected cancer cases.',
-      },
-    },
-  ],
+  })),
 };
 
 export const buildServiceSchema = (service) => ({

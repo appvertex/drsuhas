@@ -71,13 +71,21 @@ export default function StatsCounter() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
+  // Filter valid stats with real positive numbers > 0
+  const validStats = STATS.filter(s => typeof s.value === 'number' && s.value > 0);
+
+  // If no stats exist or values are 0, hide the component completely (never display fake 0+)
+  if (validStats.length === 0) {
+    return null;
+  }
+
   return (
     <section className="stats-section-wrapper" ref={ref}>
       <div className="stats-counter__glow" />
       <div className="stats-counter">
         <div className="stats-counter__highlight" />
         <div className="stats-counter__grid">
-          {STATS.map((stat, i) => (
+          {validStats.map((stat, i) => (
             <StatItem key={stat.label} {...stat} index={i} inView={inView} />
           ))}
         </div>

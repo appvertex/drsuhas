@@ -353,20 +353,27 @@ export default function Layout({ children }) {
             </div>
           </motion.div>
 
-          {/* Social Column */}
-          <motion.div
-            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
-          >
-            <div className="footer-section-label">Follow Us</div>
-            <p className="text-body" style={{ marginBottom: '1.25rem', fontSize: '0.85rem', lineHeight: 1.6 }}>
-              Stay connected for surgical updates and patient stories.
-            </p>
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              {SOCIAL_ICONS.map(social => (
-                <SocialButton key={social.label} social={social} />
-              ))}
-            </div>
-          </motion.div>
+          {/* Social Column - Only shown if verified profiles exist */}
+          {(() => {
+            const genericUrls = ['https://facebook.com', 'https://instagram.com', 'https://twitter.com', 'https://linkedin.com', ''];
+            const activeSocials = SOCIAL_ICONS.filter(s => s.href && !genericUrls.includes(s.href.replace(/\/$/, '')));
+            if (activeSocials.length === 0) return null;
+            return (
+              <motion.div
+                variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
+              >
+                <div className="footer-section-label">Follow Us</div>
+                <p className="text-body" style={{ marginBottom: '1.25rem', fontSize: '0.85rem', lineHeight: 1.6 }}>
+                  Stay connected for surgical updates and patient stories.
+                </p>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  {activeSocials.map(social => (
+                    <SocialButton key={social.label} social={social} />
+                  ))}
+                </div>
+              </motion.div>
+            );
+          })()}
         </motion.div>
 
         {/* Footer bottom bar */}

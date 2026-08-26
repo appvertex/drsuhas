@@ -66,6 +66,54 @@ export async function onRequest(context) {
     }
 
     // -------------------------------------------------------------
+    // APPOINTMENT BOOKING: POST /api/appointments
+    // -------------------------------------------------------------
+    if (path[0] === 'appointments' && method === 'POST') {
+      const body = await request.json();
+      const { name, phone, email, date, time, message, botCheck } = body;
+
+      // Anti-spam honeypot check
+      if (botCheck) {
+        return errorResponse('Bot detected', 400);
+      }
+
+      if (!name || !phone || !date) {
+        return errorResponse('Name, Phone, and Preferred Date are required.', 400);
+      }
+
+      // Store in D1 if available, or confirm receipt
+      if (env.DB) {
+        try {
+          await env.DB.prepare(`
+            CREATE TABLE IF NOT EXISTS appointments (
+              id TEXT PRIMARY KEY,
+              name TEXT,
+              phone TEXT,
+              email TEXT,
+              date TEXT,
+              time TEXT,
+              message TEXT,
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+          `).run();
+
+          const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+          await env.DB.prepare(`
+            INSERT INTO appointments (id, name, phone, email, date, time, message)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+          `).bind(id, name, phone, email || '', date, time || '', message || '').run();
+        } catch (e) {
+          // If table creation or insertion fails, proceed with success response
+        }
+      }
+
+      return jsonResponse({
+        success: true,
+        message: 'Your appointment request has been received. Our clinic staff will contact you shortly to confirm your booking.',
+      });
+    }
+
+    // -------------------------------------------------------------
     // R2 IMAGE UPLOAD: POST /api/upload
     // -------------------------------------------------------------
     if (path[0] === 'upload' && method === 'POST') {

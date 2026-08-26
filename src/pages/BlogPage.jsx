@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, User, ArrowRight, BookOpen, X, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react';
 import SEO from '../components/SEO';
 import { PageWrapper } from '../components/common';
 import { siteSettings } from '../config/siteSettings';
@@ -61,32 +62,25 @@ function BlogSkeletonGrid() {
 export default function BlogPage() {
   const [blogPosts, setBlogPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
     let mounted = true;
     getBlogsAsync().then((posts) => {
       if (mounted) {
-        setBlogPosts(posts || []);
+        // Filter out placeholder/draft content (e.g. title: 'hi', 'text', empty content)
+        const validPosts = (posts || []).filter(p => {
+          if (!p.title || !p.title.trim()) return false;
+          const cleanTitle = p.title.trim().toLowerCase();
+          if (['hi', 'text', 'test', '3t4wefq', 'fg', 'jhv'].includes(cleanTitle)) return false;
+          if (p.status === 'draft') return false;
+          return true;
+        });
+        setBlogPosts(validPosts);
         setLoading(false);
       }
     });
     return () => { mounted = false; };
   }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setSelectedPost(null);
-    };
-    if (selectedPost) {
-      window.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
-    };
-  }, [selectedPost]);
 
   return (
     <PageWrapper>
@@ -155,185 +149,98 @@ export default function BlogPage() {
               animate="show"
               style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}
             >
-              {blogPosts.map((post) => (
-                <motion.article 
-                  key={post.id || post.slug}
-                  variants={cardVariants}
-                  className="editorial-card"
-                  onClick={() => setSelectedPost(post)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setSelectedPost(post);
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`Read full article: ${post.title}`}
-                  style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', cursor: 'pointer' }}
-                >
-                  {/* Image Frame */}
-                  <div style={{ height: '220px', overflow: 'hidden', position: 'relative' }}>
-                    <img 
-                      src={post.image || 'https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&fit=crop&w=800&q=80'} 
-                      alt={post.title} 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                    <span style={{
-                      position: 'absolute',
-                      top: '1.5rem',
-                      left: '1.5rem',
-                      background: 'var(--bg-primary)',
-                      border: '1px solid var(--border-subtle)',
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '999px',
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                      color: 'var(--accent-gold)',
-                      letterSpacing: '0.05em',
-                      textTransform: 'uppercase'
-                    }}>
-                      {post.category || 'Medical'}
-                    </span>
-                  </div>
+              {blogPosts.map((post) => {
+                const targetPath = `/blog/${post.slug || post.id}`;
+                return (
+                  <motion.article 
+                    key={post.id || post.slug}
+                    variants={cardVariants}
+                    style={{ height: '100%' }}
+                  >
+                    <Link
+                      to={targetPath}
+                      className="editorial-card"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                        overflow: 'hidden',
+                        textDecoration: 'none',
+                        color: 'inherit',
+                      }}
+                      aria-label={`Read full article: ${post.title}`}
+                    >
+                      {/* Image Frame */}
+                      <div style={{ height: '220px', overflow: 'hidden', position: 'relative' }}>
+                        <img 
+                          src={post.image || 'https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&fit=crop&w=800&q=80'} 
+                          alt={post.title || 'Medical article'} 
+                          loading="lazy"
+                          width="800"
+                          height="450"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                        <span style={{
+                          position: 'absolute',
+                          top: '1.5rem',
+                          left: '1.5rem',
+                          background: 'var(--bg-primary)',
+                          border: '1px solid var(--border-subtle)',
+                          padding: '0.25rem 0.75rem',
+                          borderRadius: '999px',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          color: 'var(--accent-gold)',
+                          letterSpacing: '0.05em',
+                          textTransform: 'uppercase'
+                        }}>
+                          {post.category || 'General Surgery'}
+                        </span>
+                      </div>
 
-                  {/* Text Body */}
-                  <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                    
-                    {/* Meta details */}
-                    <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Calendar size={14} /> {post.date}
-                      </span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <User size={14} /> {post.author}
-                      </span>
-                    </div>
+                      {/* Text Body */}
+                      <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                        
+                        {/* Meta details */}
+                        <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <Calendar size={14} /> {post.date}
+                          </span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <User size={14} /> {post.author || 'Dr. Suhas S Kumar'}
+                          </span>
+                        </div>
 
-                    <h3 className="h-3" style={{ marginBottom: '1rem', lineHeight: 1.3 }}>
-                      {post.title}
-                    </h3>
-                    
-                    <p className="text-body" style={{ flex: 1, marginBottom: '2rem', fontSize: '0.9rem', lineHeight: 1.6 }}>
-                      {post.excerpt}
-                    </p>
+                        <h2 className="h-3" style={{ marginBottom: '1rem', lineHeight: 1.3, color: 'var(--text-primary)' }}>
+                          {post.title}
+                        </h2>
+                        
+                        <p className="text-body" style={{ flex: 1, marginBottom: '2rem', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                          {post.excerpt}
+                        </p>
 
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      color: 'var(--accent-gold)',
-                      fontFamily: 'var(--font-display)',
-                      fontWeight: 600,
-                      fontSize: '0.875rem'
-                    }}>
-                      Read Article <ArrowRight size={16} />
-                    </div>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          color: 'var(--accent-gold)',
+                          fontFamily: 'var(--font-display)',
+                          fontWeight: 600,
+                          fontSize: '0.875rem'
+                        }}>
+                          Read Article <ArrowRight size={16} />
+                        </div>
 
-                  </div>
-                </motion.article>
-              ))}
+                      </div>
+                    </Link>
+                  </motion.article>
+                );
+              })}
             </motion.div>
           )}
 
         </div>
       </section>
-
-      {/* Article Detail Modal */}
-      <AnimatePresence>
-        {selectedPost && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedPost(null)}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 1000,
-              backgroundColor: 'rgba(0, 0, 0, 0.85)',
-              backdropFilter: 'blur(10px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '2rem'
-            }}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                backgroundColor: 'var(--bg-secondary)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '24px',
-                maxWidth: '800px',
-                width: '100%',
-                maxHeight: '85vh',
-                overflowY: 'auto',
-                position: 'relative',
-                boxShadow: 'var(--shadow-lg)'
-              }}
-            >
-              <button
-                onClick={() => setSelectedPost(null)}
-                style={{
-                  position: 'absolute',
-                  top: '1.5rem',
-                  right: '1.5rem',
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--text-primary)',
-                  cursor: 'pointer',
-                  zIndex: 10
-                }}
-                aria-label="Close modal"
-              >
-                <X size={20} />
-              </button>
-
-              <div style={{ height: '300px', width: '100%', position: 'relative' }}>
-                <img
-                  src={selectedPost.image || 'https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&fit=crop&w=800&q=80'}
-                  alt={selectedPost.title}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
-
-              <div style={{ padding: '3rem' }}>
-                <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Calendar size={16} /> {selectedPost.date}
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <User size={16} /> {selectedPost.author}
-                  </span>
-                </div>
-
-                <h2 className="h-2" style={{ marginBottom: '2rem' }}>{selectedPost.title}</h2>
-
-                <div
-                  style={{
-                    color: 'var(--text-secondary)',
-                    lineHeight: 1.8,
-                    fontSize: '1rem',
-                    whiteSpace: 'pre-line'
-                  }}
-                >
-                  {selectedPost.content}
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </PageWrapper>
   );
 }

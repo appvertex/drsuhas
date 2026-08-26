@@ -5,18 +5,37 @@ import { getGalleryImages } from '../utils/adminStorage';
 /* ─────────────────────────────────────────────────────────────── */
 /*  LIGHTBOX                                                        */
 /* ─────────────────────────────────────────────────────────────── */
-function Lightbox({ img, onClose }) {
+function Lightbox({ img, images = [], onClose, onNext, onPrev }) {
+  const [touchStart, setTouchStart] = useState(null);
+
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight' && onNext) onNext();
+      if (e.key === 'ArrowLeft' && onPrev) onPrev();
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, [onClose, onNext, onPrev]);
+
+  const handleTouchStart = (e) => setTouchStart(e.touches[0].clientX);
+  const handleTouchEnd = (e) => {
+    if (!touchStart) return;
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStart - touchEnd;
+    if (diff > 50 && onNext) onNext();
+    if (diff < -50 && onPrev) onPrev();
+    setTouchStart(null);
+  };
 
   return (
     <AnimatePresence>
       {img && (
         <motion.div
           key="lb-backdrop"
+          role="dialog"
+          aria-label={`Image detail: ${img.title}`}
+          aria-modal="true"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -24,49 +43,97 @@ function Lightbox({ img, onClose }) {
           onClick={onClose}
           style={{
             position: 'fixed', inset: 0, zIndex: 1000,
-            background: 'rgba(3,3,7,0.93)',
+            background: 'rgba(3,3,7,0.94)',
             backdropFilter: 'blur(20px)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: '1.5rem',
           }}
         >
           <motion.div
-            key="lb-card"
-            initial={{ opacity: 0, scale: 0.88, y: 30 }}
+            key={img.id || img.src}
+            initial={{ opacity: 0, scale: 0.92, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.88, y: 30 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, scale: 0.92, y: 20 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
             style={{
               position: 'relative', maxWidth: '900px', width: '100%',
               borderRadius: '24px', overflow: 'hidden',
-              boxShadow: '0 60px 120px rgba(0,0,0,0.7)',
+              boxShadow: '0 60px 120px rgba(0,0,0,0.8)',
             }}
           >
-            <img src={img.src} alt={img.title}
-              style={{ width: '100%', display: 'block', maxHeight: '85vh', objectFit: 'cover' }} />
+            <img
+              src={img.src}
+              alt={img.title || 'Clinic gallery detail image'}
+              onError={(e) => {
+                e.target.src = 'https://placehold.co/800x500/1a1a2e/555?text=Image+Unavailable';
+              }}
+              style={{ width: '100%', display: 'block', maxHeight: '80vh', objectFit: 'cover' }}
+            />
             <div style={{
               position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem',
-              background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%)',
             }}>
-              <div style={{ color: 'var(--accent-gold,#c9a96e)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>
-                {img.label}
-              </div>
-              <div style={{ color: '#fff', fontFamily: 'var(--font-display,Georgia,serif)', fontSize: '1.4rem', fontWeight: 500 }}>
+              {img.label && (
+                <div style={{ color: 'var(--accent-gold,#c9a96e)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>
+                  {img.label}
+                </div>
+              )}
+              <div style={{ color: '#fff', fontFamily: 'var(--font-display,Georgia,serif)', fontSize: '1.35rem', fontWeight: 500 }}>
                 {img.title}
               </div>
             </div>
+
+            {/* Close Button */}
             <button onClick={onClose} aria-label="Close lightbox" style={{
               position: 'absolute', top: '1rem', right: '1rem',
-              background: 'rgba(0,0,0,0.55)', border: '1px solid rgba(255,255,255,0.15)',
+              background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.2)',
               borderRadius: '50%', width: '40px', height: '40px',
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#fff', backdropFilter: 'blur(8px)',
+              color: '#fff', backdropFilter: 'blur(8px)', zIndex: 10,
             }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
+
+            {/* Navigation Buttons */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={onPrev}
+                  aria-label="Previous image"
+                  style={{
+                    position: 'absolute', top: '50%', left: '1rem', transform: 'translateY(-50%)',
+                    background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '50%', width: '44px', height: '44px',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#fff', backdropFilter: 'blur(8px)', zIndex: 10,
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                  </svg>
+                </button>
+                <button
+                  onClick={onNext}
+                  aria-label="Next image"
+                  style={{
+                    position: 'absolute', top: '50%', right: '1rem', transform: 'translateY(-50%)',
+                    background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '50%', width: '44px', height: '44px',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#fff', backdropFilter: 'blur(8px)', zIndex: 10,
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </button>
+              </>
+            )}
           </motion.div>
         </motion.div>
       )}
@@ -338,10 +405,10 @@ export default function Gallery() {
           style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 4vw, 4.5rem)', padding: '0 1.5rem' }}
         >
           <div className="text-eyebrow" style={{ marginBottom: '1rem' }}>Clinic & Care</div>
-          <h2 className="h-2">
+          <h1 className="h-2">
             A visual narrative of<br />
             <span className="text-gradient">technology and calm.</span>
-          </h2>
+          </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '1.2rem', letterSpacing: '0.04em' }}>
             {isMobile ? 'Swipe to explore' : 'Hover to feel the pull'}
           </p>
@@ -396,7 +463,23 @@ export default function Gallery() {
         )}
       </div>
 
-      <Lightbox img={active} onClose={() => setActive(null)} />
+      <Lightbox
+        img={active}
+        images={images}
+        onClose={() => setActive(null)}
+        onNext={() => {
+          if (!active || images.length === 0) return;
+          const currentIndex = images.findIndex((item) => item.id === active.id || item.src === active.src);
+          const nextIndex = (currentIndex + 1) % images.length;
+          setActive(images[nextIndex]);
+        }}
+        onPrev={() => {
+          if (!active || images.length === 0) return;
+          const currentIndex = images.findIndex((item) => item.id === active.id || item.src === active.src);
+          const prevIndex = (currentIndex - 1 + images.length) % images.length;
+          setActive(images[prevIndex]);
+        }}
+      />
     </section>
   );
 }

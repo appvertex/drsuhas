@@ -10,12 +10,14 @@ import SEO from './components/SEO';
  * Each page is a separate JS chunk, loaded only when navigated to.
  * This dramatically reduces initial bundle size and improves LCP.
  */
-const HomePage = lazy(() => import('./pages/HomePage'));
+import HomePage from './pages/HomePage';
+
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
 const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 /* Admin pages inside head folder */
@@ -55,6 +57,7 @@ export default function App() {
         <Route path="/services/:slug" element={<Layout><ServiceDetailPage /></Layout>} />
         <Route path="/gallery" element={<Layout><GalleryPage /></Layout>} />
         <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
+        <Route path="/blog/:slug" element={<Layout><BlogPostPage /></Layout>} />
         <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
 
         {/* Catch-all 404 route */}

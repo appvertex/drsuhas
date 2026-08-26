@@ -1,29 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, HelpCircle } from 'lucide-react';
-
-const faqItems = [
-  {
-    question: 'What is laparoscopic surgery?',
-    answer: 'Laparoscopic surgery is a minimally invasive surgical technique where operations are performed through small incisions using a camera and specialized instruments, resulting in less pain and faster recovery.'
-  },
-  {
-    question: 'What are the benefits compared to traditional surgery?',
-    answer: 'Benefits include smaller incisions, less pain, reduced blood loss, shorter hospital stays, quicker recovery, and less scarring.'
-  },
-  {
-    question: 'How long is the recovery time?',
-    answer: 'Most patients can return to normal activities within 1-2 weeks, though this varies depending on the procedure. Dr. Suhas provides personalised recovery guidance for every patient.'
-  },
-  {
-    question: 'Is laparoscopic surgery safe?',
-    answer: 'Yes, laparoscopic surgery is widely regarded as safe and effective. Dr. Suhas has performed over 1000 successful procedures with a strong track record of patient safety.'
-  },
-  {
-    question: 'What conditions can be treated with laparoscopic surgery?',
-    answer: 'Common conditions include gallstones, hernias, appendicitis, gastrointestinal issues, and certain types of cancer. Dr. Suhas can advise whether laparoscopic surgery is appropriate for your condition.'
-  }
-];
+import { Plus, Minus } from 'lucide-react';
+import { faqItems } from '../data/content';
 
 export default function FAQ() {
   const [activeIndex, setActiveIndex] = useState(-1);
