@@ -213,18 +213,38 @@ export default function AdminBlog() {
                   </div>
                 )}
 
-                <button
-                  onClick={handleSave}
-                  disabled={!form.title.trim() || !form.excerpt.trim()}
-                  style={{ ...styles.saveBtn, opacity: (!form.title.trim() || !form.excerpt.trim()) ? 0.5 : 1 }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                    <polyline points="17 21 17 13 7 13 7 21"/>
-                    <polyline points="7 3 7 8 15 8"/>
-                  </svg>
-                  Save Post
-                </button>
+                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                  <button
+                    onClick={handleSave}
+                    disabled={!form.title.trim() || !form.excerpt.trim()}
+                    style={{ ...styles.saveBtn, flex: 1, opacity: (!form.title.trim() || !form.excerpt.trim()) ? 0.5 : 1 }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                      <polyline points="17 21 17 13 7 13 7 21"/>
+                      <polyline points="7 3 7 8 15 8"/>
+                    </svg>
+                    Save Post
+                  </button>
+
+                  {mode === 'edit' && (
+                    <button
+                      type="button"
+                      onClick={() => setConfirm(editId)}
+                      style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+                        padding: '0.85rem 1.25rem', borderRadius: '10px',
+                        background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)',
+                        color: '#f87171', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600,
+                      }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      </svg>
+                      Delete Post
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </>

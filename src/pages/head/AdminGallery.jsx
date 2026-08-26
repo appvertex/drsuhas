@@ -138,12 +138,6 @@ export default function AdminGallery() {
                           Delete
                         </button>
                       </div>
-                      {/* Span badge */}
-                      <div style={styles.spanBadge}>{img.span}</div>
-                    </div>
-                    <div style={styles.imgInfo}>
-                      <div style={styles.imgTitle}>{img.title}</div>
-                      <div style={styles.imgLabel}>{img.label}</div>
                     </div>
                   </div>
                 ))}
@@ -158,35 +152,29 @@ export default function AdminGallery() {
             <div style={styles.header}>
               <div>
                 <h1 style={styles.heading}>{mode === 'add' ? 'Add New Image' : 'Edit Image'}</h1>
-                <p style={styles.sub}>Fill in the details below and click Save.</p>
+                <p style={styles.sub}>Fill in the image details and click Save.</p>
               </div>
-              <button onClick={() => setMode('list')} style={styles.backBtn}>← Back to Gallery</button>
+              <button onClick={() => setMode('list')} style={styles.backBtn}>
+                ← Back to gallery
+              </button>
             </div>
 
-            <div style={styles.formWrap}>
-              <div style={styles.formLeft}>
-                {/* Image preview */}
-                <div style={styles.previewBox}>
-                  {form.src ? (
-                    <img src={form.src} alt="preview" style={styles.previewImg}
-                      onError={e => { e.target.style.display = 'none'; }} />
-                  ) : (
-                    <div style={styles.previewPlaceholder}>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeLinecap="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21 15 16 10 5 21"/>
-                      </svg>
-                      <span>Image preview will appear here</span>
-                    </div>
-                  )}
+            <div style={styles.formGrid}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <Field label="Title *" name="title" value={form.title} onChange={handleChange} placeholder="e.g. Operating Theatre" />
+                <Field label="Sub-label" name="label" value={form.label} onChange={handleChange} placeholder="e.g. Advanced Surgery Unit" />
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <label style={fieldStyles.label}>Grid Span</label>
+                  <select name="span" value={form.span} onChange={handleChange} style={fieldStyles.input}>
+                    {SPANS.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
                 </div>
               </div>
 
-              <div style={styles.formRight}>
-                <Field label="Image URL *" name="src" value={form.src} onChange={handleChange}
-                  placeholder="https://images.unsplash.com/..." />
-                
-                {/* File Upload to Cloudflare R2 */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <Field label="Image URL *" name="src" value={form.src} onChange={handleChange} placeholder="https://..." />
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   <label style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>
                     Or Upload File to Cloudflare R2
@@ -196,20 +184,14 @@ export default function AdminGallery() {
                     padding: '0.75rem 1rem', borderRadius: '10px',
                     background: 'rgba(255,255,255,0.04)', border: '1px dashed rgba(201,169,110,0.4)',
                     color: '#c9a96e', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
-                    transition: 'all 0.2s ease',
                   }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
                     </svg>
-                    {uploading ? 'Uploading to R2...' : 'Select File from Device'}
+                    {uploading ? 'Uploading to R2...' : 'Select Image from Device'}
                     <input type="file" accept="image/*" onChange={handleFileUpload} disabled={uploading} style={{ display: 'none' }} />
                   </label>
                 </div>
-
-                <Field label="Title *" name="title" value={form.title} onChange={handleChange}
-                  placeholder="e.g. Advanced Operating Theatre" />
-                <Field label="Label / Caption" name="label" value={form.label} onChange={handleChange}
-                  placeholder="e.g. State-of-the-Art Surgical Suite" />
 
                 {/* Span selector */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
