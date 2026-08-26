@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Navigate, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import { LoadingFallback } from './components/common';
 import { NotFound } from './components/common';
@@ -46,7 +46,7 @@ export default function App() {
       <Routes>
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin" element={<Navigate to="/admin/blog" replace />} />
         <Route path="/admin/blog" element={<AdminBlog />} />
         <Route path="/admin/gallery" element={<AdminGallery />} />
 

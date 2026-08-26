@@ -15,27 +15,6 @@ export const ADMIN_NAV_ITEMS = [
       { to: '/admin/blog', id: 'admin-blog', label: 'Manage Blog Posts', icon: BookOpen },
       { to: '/admin/gallery', id: 'admin-gallery', label: 'Manage Gallery Images', icon: ImageIcon },
     ]
-  },
-  {
-    group: 'ANALYTICS & TELEMETRY',
-    items: [
-      { to: '/admin', id: 'overview', end: true, label: 'Dashboard Overview', icon: LayoutDashboard },
-      { to: '/admin?tab=realtime', id: 'realtime', label: 'Realtime Telemetry', icon: Activity, badge: 'Live' },
-      { to: '/admin?tab=visitors', id: 'visitors', label: 'Visitors & Cohorts', icon: Users },
-      { to: '/admin?tab=traffic', id: 'traffic', label: 'Traffic Channels', icon: Globe },
-      { to: '/admin?tab=pages', id: 'pages', label: 'Top Pages', icon: FileText },
-      { to: '/admin?tab=services', id: 'services', label: 'Surgical Services', icon: Stethoscope },
-      { to: '/admin?tab=appointments-analytics', id: 'appointments-analytics', label: 'Appointments Log', icon: Calendar },
-      { to: '/admin?tab=contact-analytics', id: 'contact-analytics', label: 'Contact Messages', icon: Mail },
-      { to: '/admin?tab=seo', id: 'seo', label: 'Search Console & SEO', icon: Search },
-      { to: '/admin?tab=performance', id: 'performance', label: 'Core Web Vitals', icon: Zap },
-      { to: '/admin?tab=devices', id: 'devices', label: 'Devices & Browsers', icon: Smartphone },
-      { to: '/admin?tab=countries', id: 'countries', label: 'Visitor Locations', icon: MapPin },
-      { to: '/admin?tab=events', id: 'events', label: 'Event Log Stream', icon: Layers },
-      { to: '/admin?tab=conversions', id: 'conversions', label: 'Conversions & Funnel', icon: Target },
-      { to: '/admin?tab=reports', id: 'reports', label: 'Reports', icon: BarChart2 },
-      { to: '/admin?tab=settings', id: 'settings', label: 'Settings', icon: Settings },
-    ]
   }
 ];
 
