@@ -12,7 +12,7 @@ export default function DoctorDetailPage() {
   const isDark = theme === 'dark';
   const doctorImg = isDark
     ? `${import.meta.env.BASE_URL}images/hero-doctor-dark.jpg`
-    : `${import.meta.env.BASE_URL}images/hero-doctor.png`;
+    : `${import.meta.env.BASE_URL}images/hero-doctor.jpg`;
 
   return (
     <>

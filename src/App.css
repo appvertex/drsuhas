@@ -137,8 +137,8 @@
 
 .navbar.scrolled {
   background: var(--nav-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border-subtle);
   padding: 1rem 0;
 }
@@ -250,8 +250,8 @@
   right: 0;
   z-index: 49;
   background: var(--nav-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-top: 1px solid var(--border-subtle);
   display: flex;
   justify-content: space-around;
@@ -685,8 +685,8 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 1000;
 }
 
@@ -703,8 +703,8 @@
   max-width: 380px;
   max-height: 85vh;
   background: var(--bg-card);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-strong);
   border-radius: 28px;
   z-index: 1001;
@@ -1003,8 +1003,8 @@
   position: relative;
   border-radius: 22px;
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 10px 32px rgba(30, 80, 180, 0.06);
   padding: 2rem 1.5rem 1.6rem;
@@ -1297,8 +1297,8 @@
   position: relative;
   z-index: 1;
   background: rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.75);
   border-radius: 36px;
   box-shadow: 

@@ -63,8 +63,8 @@
   --radius-full: 9999px;
 
   /* ─── Shadow Scale ───────────────────────────────────────────────── */
-  --blur-md: blur(12px);
-  --blur-lg: blur(24px);
+  --blur-md: blur(8px);
+  --blur-lg: blur(12px);
   --shadow-xs: 0 2px 8px rgba(30, 80, 180, 0.05);
   --shadow-sm: 0 8px 24px rgba(30, 80, 180, 0.08);
   --shadow-md: 0 12px 32px rgba(30, 80, 180, 0.10);

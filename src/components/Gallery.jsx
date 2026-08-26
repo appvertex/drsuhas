@@ -149,50 +149,54 @@ const LIFT     = 28;
 
 function MagneticCard({ img, index, onClick }) {
   const cardRef = useRef(null);
-  const rafRef  = useRef(null);
-  const rectRef = useRef(null); // Cache bounding rect
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0, mx: 50, my: 50, lifted: false });
-
-  const applyTilt = useCallback((clientX, clientY) => {
-    if (!rectRef.current) return;
-    const { left, top, width, height } = rectRef.current;
-    const px = (clientX - left) / width;
-    const py = (clientY - top)  / height;
-    setTilt({ rx: (py - 0.5) * -STRENGTH * 2, ry: (px - 0.5) * STRENGTH * 2, mx: px * 100, my: py * 100, lifted: true });
-  }, []);
-
-  const reset = useCallback(() => {
-    cancelAnimationFrame(rafRef.current);
-    rectRef.current = null;
-    setTilt({ rx: 0, ry: 0, mx: 50, my: 50, lifted: false });
-  }, []);
+  const glowRef = useRef(null);
+  const rectRef = useRef(null);
 
   const onMouseEnter = () => {
     if (cardRef.current) {
       rectRef.current = cardRef.current.getBoundingClientRect();
+      cardRef.current.style.transition = 'transform 0.1s ease-out';
     }
   };
 
   const onMouseMove = (e) => {
-    cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => applyTilt(e.clientX, e.clientY));
+    if (!rectRef.current || !cardRef.current) return;
+    const { left, top, width, height } = rectRef.current;
+    const px = (e.clientX - left) / width;
+    const py = (e.clientY - top) / height;
+    const rx = (py - 0.5) * -16;
+    const ry = (px - 0.5) * 16;
+    cardRef.current.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(12px)`;
+    if (glowRef.current) {
+      glowRef.current.style.opacity = '1';
+      glowRef.current.style.background = `radial-gradient(circle at ${px * 100}% ${py * 100}%, rgba(255,255,255,0.15) 0%, transparent 65%)`;
+    }
   };
 
-  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
+  const reset = () => {
+    rectRef.current = null;
+    if (cardRef.current) {
+      cardRef.current.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
+      cardRef.current.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0px)';
+    }
+    if (glowRef.current) {
+      glowRef.current.style.opacity = '0';
+    }
+  };
 
   const gridColSpan = img.span === 'wide' ? 2 : 1;
   const gridRowSpan = img.span === 'tall' ? 2 : 1;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50, scale: 0.92 }}
+      initial={{ opacity: 0, y: 30, scale: 0.96 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.7, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      style={{ gridColumn: `span ${gridColSpan}`, gridRow: `span ${gridRowSpan}`, minHeight: img.span === 'tall' ? '480px' : '260px' }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.5, delay: Math.min(index * 0.06, 0.3), ease: [0.22, 1, 0.36, 1] }}
+      style={{ gridColumn: `span ${gridColSpan}`, gridRow: `span ${gridRowSpan}`, minHeight: img.span === 'tall' ? '460px' : '250px' }}
     >
       <div
-        style={{ width: '100%', height: '100%', perspective: '900px', cursor: 'pointer' }}
+        style={{ width: '100%', height: '100%', perspective: '800px', cursor: 'pointer' }}
         onMouseEnter={onMouseEnter}
         onMouseMove={onMouseMove}
         onMouseLeave={reset}
@@ -208,23 +212,17 @@ function MagneticCard({ img, index, onClick }) {
         aria-label={`View image: ${img.title}`}
       >
         <div ref={cardRef} style={{
-          width: '100%', height: '100%', borderRadius: '28px', overflow: 'hidden',
-          position: 'relative', willChange: 'transform', transformStyle: 'preserve-3d',
-          transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateZ(${tilt.lifted ? LIFT : 0}px)`,
-          transition: tilt.lifted ? 'transform 0.08s linear' : 'transform 0.55s cubic-bezier(0.22,1,0.36,1)',
-          boxShadow: tilt.lifted ? '0 40px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.06)' : '0 8px 32px rgba(0,0,0,0.35)',
+          width: '100%', height: '100%', borderRadius: '24px', overflow: 'hidden',
+          position: 'relative', transformStyle: 'preserve-3d',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
         }}>
           <img src={img.src} alt={img.title} draggable={false} loading="lazy" style={{
             width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-            transform: tilt.lifted ? 'scale(1.06)' : 'scale(1)',
-            transition: tilt.lifted ? 'transform 0.08s linear' : 'transform 0.55s cubic-bezier(0.22,1,0.36,1)',
             userSelect: 'none', pointerEvents: 'none',
           }} />
-          <div style={{
+          <div ref={glowRef} style={{
             position: 'absolute', inset: 0, pointerEvents: 'none', mixBlendMode: 'screen',
-            background: `radial-gradient(circle at ${tilt.mx}% ${tilt.my}%, rgba(255,255,255,0.18) 0%, transparent 65%)`,
-            opacity: tilt.lifted ? 1 : 0,
-            transition: tilt.lifted ? 'opacity 0.08s linear' : 'opacity 0.4s ease',
+            opacity: 0, transition: 'opacity 0.3s ease',
           }} />
           <div style={{
             position: 'absolute', inset: 0, pointerEvents: 'none',

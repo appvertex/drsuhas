@@ -26,7 +26,7 @@ const staggerContainer = {
   },
 };
 
-const heroImageLight = `${import.meta.env.BASE_URL}images/hero-doctor.png`;
+const heroImageLight = `${import.meta.env.BASE_URL}images/hero-doctor.jpg`;
 const heroImageDark  = `${import.meta.env.BASE_URL}images/hero-doctor-dark.jpg`;
 
 export default function Hero() {

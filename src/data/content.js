@@ -148,7 +148,7 @@ export const publications = [
 
 export const galleryImages = [
   {
-    src: `${import.meta.env.BASE_URL}images/hero-doctor.png`,
+    src: `${import.meta.env.BASE_URL}images/hero-doctor.jpg`,
     title: 'Dr. Suhas S Kumar',
     label: 'Consultant General & Laparoscopic Surgeon',
     span: 'tall',
