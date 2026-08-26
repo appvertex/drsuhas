@@ -117,6 +117,7 @@ export default function AdminGallery() {
               <div style={styles.imgGrid}>
                 {images.map(img => (
                   <div key={img.id} style={styles.imgCard}>
+                    {/* Image */}
                     <div style={styles.imgWrap}>
                       <img
                         src={img.src}
@@ -126,41 +127,21 @@ export default function AdminGallery() {
                           e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
                         }}
                       />
-                      
-                      {/* Top-Right Quick Delete Icon */}
-                      <button
-                        onClick={() => setConfirm(img.id)}
-                        title="Delete Image"
-                        style={styles.quickDelBtn}
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
-                          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                        </svg>
-                      </button>
-
-                      {/* Span badge */}
                       <div style={styles.spanBadge}>{img.span}</div>
                     </div>
 
-                    <div style={styles.imgInfo}>
-                      <div style={styles.imgTitle}>{img.title}</div>
-                      <div style={styles.imgLabel}>{img.label}</div>
-
-                      {/* Always Visible Action Bar */}
-                      <div style={styles.cardActionsRow}>
+                    {/* ── NAME BAR: always visible below every image ── */}
+                    <div style={styles.nameBar}>
+                      <div style={styles.nameBarText}>
+                        <span style={styles.imgTitle}>{img.title}</span>
+                        {img.label ? <span style={styles.imgLabel}>{img.label}</span> : null}
+                      </div>
+                      <div style={styles.nameBarBtns}>
                         <button onClick={() => openEdit(img)} style={styles.cardEditBtn}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                          </svg>
-                          Edit
+                          ✏️ Edit
                         </button>
                         <button onClick={() => setConfirm(img.id)} style={styles.cardDelBtn}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                            <polyline points="3 6 5 6 21 6"/>
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                          </svg>
-                          Delete
+                          🗑️ Delete
                         </button>
                       </div>
                     </div>
@@ -358,10 +339,24 @@ const styles = {
   },
   imgCard: {
     background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+    borderRadius: '16px', display: 'flex', flexDirection: 'column',
+    overflow: 'visible',
   },
-  imgWrap: { position: 'relative', height: '180px', overflow: 'hidden' },
+  imgWrap: { position: 'relative', height: '180px', overflow: 'hidden', borderRadius: '16px 16px 0 0' },
   img: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  nameBar: {
+    background: 'rgba(255,255,255,0.05)',
+    borderTop: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '0 0 16px 16px',
+    padding: '0.75rem 1rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '0.75rem',
+    flexWrap: 'wrap',
+  },
+  nameBarText: { flex: 1, minWidth: 0 },
+  nameBarBtns: { display: 'flex', gap: '0.5rem', flexShrink: 0 },
   quickDelBtn: {
     position: 'absolute', top: '0.6rem', right: '0.6rem', zIndex: 10,
     width: '32px', height: '32px', borderRadius: '50%',
