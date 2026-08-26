@@ -1,44 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate, Navigate } from 'react-router-dom';
 import { isAdminAuthed, setAdminAuth } from '../../utils/adminStorage';
+import {
+  LayoutDashboard, Activity, Users, Globe, FileText, Stethoscope,
+  Image as ImageIcon, BookOpen, Calendar, Mail, Search, ShieldCheck,
+  Zap, Smartphone, MapPin, Layers, Target, BarChart2, Settings,
+  ChevronLeft, ChevronRight, LogOut, ExternalLink, Sun, Moon
+} from 'lucide-react';
 
-const NAV = [
-  {
-    to: '/admin',
-    end: true,
-    label: 'Dashboard',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-      </svg>
-    ),
-  },
-  {
-    to: '/admin/blog',
-    label: 'Blog Posts',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
-        <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
-      </svg>
-    ),
-  },
-  {
-    to: '/admin/gallery',
-    label: 'Gallery',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-        <polyline points="21 15 16 10 5 21"/>
-      </svg>
-    ),
-  },
+export const ADMIN_NAV_ITEMS = [
+  { group: 'ANALYTICS & INSIGHTS', items: [
+    { to: '/admin', id: 'overview', end: true, label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/admin?tab=realtime', id: 'realtime', label: 'Realtime', icon: Activity, badge: 'Live' },
+    { to: '/admin?tab=visitors', id: 'visitors', label: 'Visitors', icon: Users },
+    { to: '/admin?tab=traffic', id: 'traffic', label: 'Traffic Sources', icon: Globe },
+    { to: '/admin?tab=pages', id: 'pages', label: 'Pages', icon: FileText },
+    { to: '/admin?tab=services', id: 'services', label: 'Services', icon: Stethoscope },
+    { to: '/admin?tab=gallery-analytics', id: 'gallery-analytics', label: 'Gallery', icon: ImageIcon },
+    { to: '/admin?tab=blog-analytics', id: 'blog-analytics', label: 'Blog', icon: BookOpen },
+    { to: '/admin?tab=appointments-analytics', id: 'appointments-analytics', label: 'Appointments', icon: Calendar },
+    { to: '/admin?tab=contact-analytics', id: 'contact-analytics', label: 'Contact Forms', icon: Mail },
+    { to: '/admin?tab=seo', id: 'seo', label: 'Search Console & SEO', icon: Search },
+    { to: '/admin?tab=performance', id: 'performance', label: 'Performance', icon: Zap },
+    { to: '/admin?tab=devices', id: 'devices', label: 'Devices', icon: Smartphone },
+    { to: '/admin?tab=countries', id: 'countries', label: 'Countries', icon: MapPin },
+    { to: '/admin?tab=events', id: 'events', label: 'Events', icon: Layers },
+    { to: '/admin?tab=conversions', id: 'conversions', label: 'Conversions', icon: Target },
+    { to: '/admin?tab=reports', id: 'reports', label: 'Reports', icon: BarChart2 },
+    { to: '/admin?tab=settings', id: 'settings', label: 'Settings', icon: Settings },
+  ]},
+  { group: 'CONTENT MANAGEMENT', items: [
+    { to: '/admin/blog', id: 'admin-blog', label: 'Manage Blog Posts', icon: BookOpen },
+    { to: '/admin/gallery', id: 'admin-gallery', label: 'Manage Gallery', icon: ImageIcon },
+  ]}
 ];
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout({ children, currentTab, onTabSelect }) {
   const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
 
   if (!isAdminAuthed()) {
     return <Navigate to="/admin/login" replace />;
@@ -50,142 +49,229 @@ export default function AdminLayout({ children }) {
   }
 
   return (
-    <div style={styles.shell}>
-      {/* ─── Sidebar ────────────────────────────────── */}
-      <aside style={styles.sidebar}>
-        <div style={styles.sidebarInner}>
-          {/* Brand */}
-          <div style={styles.brand}>
-            <div style={styles.brandIcon}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="2.2" strokeLinecap="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
+    <div style={s.shell}>
+      {/* ── Sidebar ────────────────────────────────────────── */}
+      <aside style={{ ...s.sidebar, width: collapsed ? '80px' : '260px' }}>
+        <div style={s.sidebarInner}>
+          
+          {/* Header & Brand */}
+          <div style={s.brandRow}>
+            <div style={s.brandIcon}>
+              <Activity size={22} style={{ color: '#c9a96e' }} />
             </div>
-            <div>
-              <div style={styles.brandName}>Admin Portal</div>
-              <div style={styles.brandSub}>Dr. Suhas S Kumar</div>
-            </div>
+            {!collapsed && (
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={s.brandName}>Analytics Studio</div>
+                <div style={s.brandSub}>Dr. Suhas S Kumar</div>
+              </div>
+            )}
+            <button
+              onClick={() => setCollapsed(c => !c)}
+              title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+              style={s.collapseBtn}
+            >
+              {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            </button>
           </div>
 
-          <div style={styles.divider} />
+          <div style={s.divider} />
 
-          {/* Nav */}
-          <nav style={styles.nav}>
-            <div style={styles.navLabel}>Content</div>
-            {NAV.map(item => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                style={({ isActive }) => ({
-                  ...styles.navLink,
-                  ...(isActive ? styles.navLinkActive : {}),
-                })}
-              >
-                <span style={{ opacity: 0.8 }}>{item.icon}</span>
-                {item.label}
-              </NavLink>
+          {/* Navigation Groups */}
+          <nav style={s.navScroll}>
+            {ADMIN_NAV_ITEMS.map((grp, gIdx) => (
+              <div key={gIdx} style={{ marginBottom: '1.25rem' }}>
+                {!collapsed && <div style={s.navGroupTitle}>{grp.group}</div>}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  {grp.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = onTabSelect
+                      ? currentTab === item.id
+                      : window.location.pathname === item.to;
+
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          if (onTabSelect && item.to.startsWith('/admin?tab=')) {
+                            onTabSelect(item.id);
+                          } else if (item.to !== window.location.pathname) {
+                            navigate(item.to);
+                          }
+                        }}
+                        title={collapsed ? item.label : undefined}
+                        style={{
+                          ...s.navItem,
+                          ...(isActive ? s.navItemActive : {}),
+                          justifyContent: collapsed ? 'center' : 'flex-start',
+                          padding: collapsed ? '0.65rem' : '0.6rem 0.75rem',
+                        }}
+                      >
+                        <Icon size={18} style={{ opacity: isActive ? 1 : 0.7, flexShrink: 0 }} />
+                        {!collapsed && (
+                          <span style={{ flex: 1, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                            {item.label}
+                          </span>
+                        )}
+                        {!collapsed && item.badge && (
+                          <span style={s.liveBadge}>{item.badge}</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             ))}
           </nav>
 
           <div style={{ flex: 1 }} />
+          <div style={s.divider} />
 
-          {/* View Site link */}
-          <a href="/" target="_blank" rel="noopener noreferrer" style={styles.siteLink}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-            View Website
-          </a>
+          {/* Footer Actions */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ ...s.siteLink, justifyContent: collapsed ? 'center' : 'flex-start' }}
+              title={collapsed ? 'View Website' : undefined}
+            >
+              <ExternalLink size={16} />
+              {!collapsed && <span>View Website</span>}
+            </a>
 
-          {/* Logout */}
-          <button onClick={handleLogout} style={styles.logoutBtn}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Log Out
-          </button>
+            <button
+              onClick={handleLogout}
+              style={{ ...s.logoutBtn, justifyContent: collapsed ? 'center' : 'flex-start' }}
+              title={collapsed ? 'Log Out' : undefined}
+            >
+              <LogOut size={16} />
+              {!collapsed && <span>Log Out</span>}
+            </button>
+          </div>
+
         </div>
       </aside>
 
-      {/* ─── Main area ──────────────────────────────── */}
-      <main style={styles.main}>
+      {/* ── Main Area ──────────────────────────────────────── */}
+      <main style={s.main}>
         {children}
       </main>
     </div>
   );
 }
 
-const styles = {
+const s = {
   shell: {
-    display: 'flex', minHeight: '100vh',
-    background: '#0d0d14',
+    display: 'flex',
+    minHeight: '100vh',
+    background: '#0a0a12',
+    color: '#fff',
     fontFamily: "'Inter', system-ui, sans-serif",
   },
   sidebar: {
-    width: '260px', flexShrink: 0,
-    background: 'rgba(255,255,255,0.03)',
+    flexShrink: 0,
+    background: 'rgba(15,15,26,0.95)',
     borderRight: '1px solid rgba(255,255,255,0.07)',
-    position: 'sticky', top: 0, height: '100vh',
-    overflowY: 'auto',
+    position: 'sticky',
+    top: 0,
+    height: '100vh',
+    transition: 'width 0.25s ease',
+    zIndex: 100,
   },
   sidebarInner: {
-    display: 'flex', flexDirection: 'column',
-    height: '100%', padding: '1.5rem 1rem',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    padding: '1.25rem 0.85rem',
+    boxSizing: 'border-box',
   },
-  brand: {
-    display: 'flex', alignItems: 'center', gap: '0.75rem',
-    padding: '0.5rem 0.5rem 1rem',
+  brandRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.75rem',
+    padding: '0.2rem 0.2rem 0.6rem',
   },
   brandIcon: {
-    width: '44px', height: '44px', borderRadius: '12px', flexShrink: 0,
+    width: '38px',
+    height: '38px',
+    borderRadius: '10px',
     background: 'rgba(201,169,110,0.12)',
-    border: '1px solid rgba(201,169,110,0.2)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    border: '1px solid rgba(201,169,110,0.25)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
   },
   brandName: { color: '#fff', fontWeight: 700, fontSize: '0.9rem', lineHeight: 1.2 },
-  brandSub: { color: 'rgba(255,255,255,0.35)', fontSize: '0.72rem', marginTop: '2px' },
-  divider: {
-    height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.5rem 0 1rem',
+  brandSub:  { color: 'rgba(255,255,255,0.4)', fontSize: '0.72rem' },
+  collapseBtn: {
+    background: 'rgba(255,255,255,0.05)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '8px',
+    color: 'rgba(255,255,255,0.6)',
+    width: '28px', height: '28px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', flexShrink: 0,
   },
-  nav: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
-  navLabel: {
-    fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em',
-    textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)',
-    padding: '0 0.5rem', marginBottom: '0.25rem',
+  divider: { height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.75rem 0' },
+  navScroll: { overflowY: 'auto', flex: 1, paddingRight: '2px' },
+  navGroupTitle: {
+    fontSize: '0.65rem',
+    fontWeight: 700,
+    letterSpacing: '0.08em',
+    color: 'rgba(255,255,255,0.3)',
+    padding: '0 0.5rem',
+    marginBottom: '0.4rem',
   },
-  navLink: {
-    display: 'flex', alignItems: 'center', gap: '0.65rem',
-    padding: '0.7rem 0.75rem', borderRadius: '10px',
-    color: 'rgba(255,255,255,0.55)', textDecoration: 'none',
-    fontSize: '0.88rem', fontWeight: 500,
-    transition: 'background 0.15s, color 0.15s',
+  navItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.65rem',
+    width: '100%',
+    background: 'transparent',
+    border: 'none',
+    borderRadius: '10px',
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: '0.85rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    textAlign: 'left',
+    transition: 'all 0.15s ease',
   },
-  navLinkActive: {
-    background: 'rgba(201,169,110,0.12)',
-    color: '#c9a96e',
+  navItemActive: {
+    background: 'rgba(59,130,246,0.15)',
+    color: '#60a5fa',
+    fontWeight: 600,
+  },
+  liveBadge: {
+    background: 'rgba(16,185,129,0.15)',
+    color: '#10b981',
+    border: '1px solid rgba(16,185,129,0.3)',
+    fontSize: '0.65rem',
+    fontWeight: 700,
+    padding: '0.1rem 0.4rem',
+    borderRadius: '999px',
+    textTransform: 'uppercase',
   },
   siteLink: {
     display: 'flex', alignItems: 'center', gap: '0.5rem',
     padding: '0.6rem 0.75rem', borderRadius: '10px',
-    color: 'rgba(255,255,255,0.35)', textDecoration: 'none',
-    fontSize: '0.8rem', marginBottom: '0.5rem',
-    transition: 'color 0.15s',
+    color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+    fontSize: '0.82rem', fontWeight: 500,
   },
   logoutBtn: {
     display: 'flex', alignItems: 'center', gap: '0.5rem',
-    padding: '0.7rem 0.75rem', borderRadius: '10px',
-    background: 'rgba(239,68,68,0.08)',
-    border: '1px solid rgba(239,68,68,0.15)',
+    padding: '0.6rem 0.75rem', borderRadius: '10px',
+    background: 'rgba(239,68,68,0.1)',
+    border: '1px solid rgba(239,68,68,0.2)',
     color: '#f87171', cursor: 'pointer',
-    fontSize: '0.85rem', fontWeight: 500,
-    transition: 'background 0.15s',
+    fontSize: '0.82rem', fontWeight: 600,
     width: '100%',
   },
   main: {
-    flex: 1, overflowY: 'auto',
-    background: '#0d0d14',
+    flex: 1,
+    overflowY: 'auto',
+    background: '#0a0a12',
+    minHeight: '100vh',
   },
 };

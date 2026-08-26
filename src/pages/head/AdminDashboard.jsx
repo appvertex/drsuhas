@@ -1,219 +1,410 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
-import { getBlogs, getGalleryImages } from '../../utils/adminStorage';
+import {
+  MOCK_KPIS, MOCK_TIMESERIES_DAILY, MOCK_TRAFFIC_CHANNELS, MOCK_TOP_PAGES,
+  MOCK_SERVICES_ANALYTICS, MOCK_DEVICES, DATE_RANGES
+} from './analytics/analyticsData';
+import { SparklineChart, LineAreaChart, HorizontalBarChart, DonutChart } from './analytics/AnalyticsCharts';
+import {
+  RealtimeView, VisitorsView, TrafficView, PagesView, ServicesView,
+  AppointmentsView, SEOView, PerformanceView, DevicesView, CountriesView
+} from './analytics/AnalyticsViews';
+import {
+  Search, Calendar as CalendarIcon, RefreshCw, Download, Sun, Moon,
+  Bell, User, TrendingUp, TrendingDown, ArrowUpRight, CheckCircle2,
+  Sliders, ShieldCheck, Zap, BarChart2
+} from 'lucide-react';
 
 export default function AdminDashboard() {
-  const blogs   = getBlogs();
-  const gallery = getGalleryImages();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentTab = searchParams.get('tab') || 'overview';
 
-  const stats = [
-    { value: blogs.length,   label: 'Blog Posts',     color: '#c9a96e', icon: blogIcon() },
-    { value: gallery.length, label: 'Gallery Images',  color: '#60a5fa', icon: galleryIcon() },
-  ];
+  // Global Controls State
+  const [dateRange, setDateRange]       = useState('30d');
+  const [comparePrev, setComparePrev]   = useState(true);
+  const [searchQuery, setSearchQuery]   = useState('');
+  const [theme, setTheme]               = useState('dark'); // 'dark' | 'light'
+  const [autoRefresh, setAutoRefresh]   = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [toastMsg, setToastMsg]         = useState('');
+
+  const isDark = theme === 'dark';
+
+  const handleTabSelect = (tabId) => {
+    setSearchParams({ tab: tabId });
+  };
+
+  const showToast = (msg) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(''), 2500);
+  };
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+      showToast('✓ Analytics data refreshed');
+    }, 600);
+  };
+
+  const toggleTheme = () => {
+    setTheme(t => t === 'dark' ? 'light' : 'dark');
+  };
+
+  const handleGlobalExport = (type) => {
+    showToast(`✓ Exported ${type.toUpperCase()} analytics report`);
+  };
 
   return (
-    <AdminLayout>
-      <div style={styles.page}>
-        {/* Header */}
-        <div style={styles.header}>
-          <div>
-            <h1 style={styles.heading}>Dashboard</h1>
-            <p style={styles.sub}>Welcome back! Here's an overview of your content.</p>
+    <AdminLayout currentTab={currentTab} onTabSelect={handleTabSelect}>
+      <div style={{ ...styles.page, background: isDark ? '#0a0a12' : '#f8fafc', color: isDark ? '#fff' : '#0f172a' }}>
+
+        {/* ── Toast Notification ─────────────────────────────────────────────── */}
+        {toastMsg && (
+          <div style={styles.toast}>
+            {toastMsg}
           </div>
-          <div style={styles.badge}>
-            <div style={styles.dot} />
-            Live
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div style={styles.statsGrid}>
-          {stats.map(s => (
-            <div key={s.label} style={{ ...styles.statCard, '--accent': s.color }}>
-              <div style={{ ...styles.statIcon, background: `${s.color}18`, border: `1px solid ${s.color}30` }}>
-                {s.icon}
-              </div>
-              <div style={{ ...styles.statValue, color: s.color }}>{s.value}</div>
-              <div style={styles.statLabel}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Quick Actions */}
-        <div style={styles.sectionTitle}>Quick Actions</div>
-        <div style={styles.cardsGrid}>
-          <Link to="/admin/blog" style={{ textDecoration: 'none' }}>
-            <div style={{ ...styles.actionCard, '--glow': 'rgba(201,169,110,0.15)' }}>
-              <div style={{ ...styles.actionIconWrap, background: 'rgba(201,169,110,0.1)', border: '1px solid rgba(201,169,110,0.2)' }}>
-                {blogIcon('#c9a96e', 28)}
-              </div>
-              <h2 style={styles.actionTitle}>Manage Blog</h2>
-              <p style={styles.actionDesc}>
-                Add, edit or remove blog posts and medical articles that appear on your website.
-              </p>
-              <div style={{ ...styles.actionCta, color: '#c9a96e' }}>
-                Go to Blog
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                </svg>
-              </div>
-            </div>
-          </Link>
-
-          <Link to="/admin/gallery" style={{ textDecoration: 'none' }}>
-            <div style={{ ...styles.actionCard, '--glow': 'rgba(96,165,250,0.15)' }}>
-              <div style={{ ...styles.actionIconWrap, background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.2)' }}>
-                {galleryIcon('#60a5fa', 28)}
-              </div>
-              <h2 style={styles.actionTitle}>Manage Gallery</h2>
-              <p style={styles.actionDesc}>
-                Upload and manage gallery images that showcase your clinic and surgical facilities.
-              </p>
-              <div style={{ ...styles.actionCta, color: '#60a5fa' }}>
-                Go to Gallery
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                </svg>
-              </div>
-            </div>
-          </Link>
-        </div>
-
-        {/* Recent blogs */}
-        {blogs.length > 0 && (
-          <>
-            <div style={styles.sectionTitle}>Recent Blog Posts</div>
-            <div style={styles.list}>
-              {blogs.slice(0, 4).map(post => (
-                <div key={post.id} style={styles.listItem}>
-                  <img src={post.image} alt={post.title} style={styles.listImg} onError={e => { e.target.style.display = 'none'; }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={styles.listTitle}>{post.title}</div>
-                    <div style={styles.listMeta}>{post.category} · {post.date}</div>
-                  </div>
-                  <Link to="/admin/blog" style={styles.listEdit}>Edit</Link>
-                </div>
-              ))}
-            </div>
-          </>
         )}
+
+        {/* ── Top Header Bar ──────────────────────────────────────────────────── */}
+        <header style={{ ...styles.topHeader, background: isDark ? 'rgba(15,15,26,0.85)' : 'rgba(255,255,255,0.85)', borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}` }}>
+          
+          {/* Global Search Input */}
+          <div style={styles.searchWrap}>
+            <Search size={16} style={{ color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)' }} />
+            <input
+              type="text"
+              placeholder="Search metrics, reports, services, or keywords..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              style={{ ...styles.searchInput, color: isDark ? '#fff' : '#111', background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)' }}
+            />
+          </div>
+
+          {/* Action Toolbar */}
+          <div style={styles.toolbar}>
+            
+            {/* Date Range Selector */}
+            <div style={styles.dateSelectorWrap}>
+              <CalendarIcon size={15} style={{ color: '#3b82f6' }} />
+              <select
+                value={dateRange}
+                onChange={e => setDateRange(e.target.value)}
+                style={{ ...styles.selectInput, color: isDark ? '#fff' : '#111', background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' }}
+              >
+                {DATE_RANGES.map(d => (
+                  <option key={d.id} value={d.id} style={{ background: isDark ? '#12121e' : '#fff', color: isDark ? '#fff' : '#111' }}>
+                    {d.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Compare Toggle */}
+            <button
+              onClick={() => setComparePrev(c => !c)}
+              style={{
+                ...styles.toolBtn,
+                background: comparePrev ? 'rgba(59,130,246,0.15)' : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'),
+                color: comparePrev ? '#60a5fa' : (isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'),
+                border: `1px solid ${comparePrev ? 'rgba(59,130,246,0.3)' : (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)')}`,
+              }}
+              title="Compare with Previous Period"
+            >
+              <Sliders size={14} />
+              <span>Compare</span>
+            </button>
+
+            {/* Refresh Button */}
+            <button
+              onClick={handleRefresh}
+              style={{ ...styles.toolBtn, color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}
+              title="Refresh Data"
+            >
+              <RefreshCw size={14} style={{ animation: isRefreshing ? 'spin 0.8s linear infinite' : 'none' }} />
+            </button>
+
+            {/* Export Dropdown */}
+            <button
+              onClick={() => handleGlobalExport('csv')}
+              style={styles.exportBtn}
+              title="Export Report CSV"
+            >
+              <Download size={14} />
+              <span>Export</span>
+            </button>
+
+            {/* Theme Toggle */}
+            <button onClick={toggleTheme} style={styles.iconBtn} title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}>
+              {isDark ? <Sun size={17} style={{ color: '#f59e0b' }} /> : <Moon size={17} style={{ color: '#3b82f6' }} />}
+            </button>
+
+            {/* Notifications */}
+            <div style={{ position: 'relative' }}>
+              <button onClick={() => setShowNotifications(s => !s)} style={styles.iconBtn} title="Notifications">
+                <Bell size={17} />
+                <span style={styles.notifBadge}>3</span>
+              </button>
+
+              {showNotifications && (
+                <div style={{ ...styles.notifDropdown, background: isDark ? '#13131e' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)'}` }}>
+                  <div style={{ padding: '0.75rem 1rem', borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`, fontWeight: 700, fontSize: '0.85rem' }}>
+                    Notifications
+                  </div>
+                  <div style={{ padding: '0.5rem 0' }}>
+                    <div style={{ padding: '0.6rem 1rem', fontSize: '0.8rem', borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)'}` }}>
+                      <strong style={{ color: '#10b981' }}>New Booking:</strong> Consultation for Hernia Surgery requested.
+                    </div>
+                    <div style={{ padding: '0.6rem 1rem', fontSize: '0.8rem', borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)'}` }}>
+                      <strong style={{ color: '#3b82f6' }}>Traffic Spike:</strong> +34% visitors from Organic Search today.
+                    </div>
+                    <div style={{ padding: '0.6rem 1rem', fontSize: '0.8rem' }}>
+                      <strong style={{ color: '#c9a96e' }}>SEO Ranking:</strong> Keyword "#1 laparoscopic surgeon" moved to #1.
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Admin Profile */}
+            <div style={styles.adminProfile}>
+              <div style={styles.avatar}>
+                <User size={16} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '0.82rem', fontWeight: 700 }}>Dr. Suhas</span>
+                <span style={{ fontSize: '0.68rem', color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}>Administrator</span>
+              </div>
+            </div>
+
+          </div>
+        </header>
+
+        {/* ── Main Dashboard Content ──────────────────────────────────────────── */}
+        <div style={styles.contentBody}>
+
+          {/* Tab Header Title */}
+          <div style={styles.tabHeader}>
+            <div>
+              <h1 style={styles.tabTitle}>
+                {currentTab === 'overview' ? 'Executive Analytics Dashboard' : currentTab.toUpperCase()}
+              </h1>
+              <p style={styles.tabSub}>
+                Real-time patient traffic, surgical service performance, conversions, and SEO metrics.
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <span style={styles.livePulseDot} />
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#10b981' }}>Live Telemetry Active</span>
+            </div>
+          </div>
+
+          {/* ── 1. OVERVIEW TAB VIEW ────────────────────────────────────────── */}
+          {currentTab === 'overview' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              
+              {/* KPI Cards Grid */}
+              <div style={styles.kpiGrid}>
+                {Object.entries(MOCK_KPIS).map(([key, kpi]) => {
+                  const isUp = kpi.change > 0;
+
+                  return (
+                    <div
+                      key={key}
+                      style={{
+                        ...styles.kpiCard,
+                        background: isDark ? 'rgba(255,255,255,0.03)' : '#ffffff',
+                        border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}>
+                          {key.replace(/([A-Z])/g, ' $1')}
+                        </span>
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.2rem',
+                            padding: '0.15rem 0.5rem',
+                            borderRadius: '999px',
+                            fontSize: '0.72rem',
+                            fontWeight: 700,
+                            background: isUp ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)',
+                            color: isUp ? '#10b981' : '#f87171',
+                          }}
+                        >
+                          {isUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                          {isUp ? `+${kpi.change}%` : `${kpi.change}%`}
+                        </span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: '0.8rem' }}>
+                        <div>
+                          <div style={{ fontSize: '1.8rem', fontWeight: 800, lineHeight: 1 }}>
+                            {typeof kpi.value === 'number' ? kpi.value.toLocaleString() : kpi.value}
+                          </div>
+                          {comparePrev && (
+                            <div style={{ fontSize: '0.72rem', color: isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)', marginTop: '0.35rem' }}>
+                              vs {typeof kpi.prev === 'number' ? kpi.prev.toLocaleString() : kpi.prev} prev
+                            </div>
+                          )}
+                        </div>
+
+                        {kpi.trend && (
+                          <SparklineChart data={kpi.trend} color={isUp ? '#10b981' : '#3b82f6'} height={32} />
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Main Charts Row */}
+              <div style={styles.chartsGrid}>
+                {/* Visitors & Sessions Area Chart */}
+                <div style={{ ...styles.chartCard, background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}` }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700 }}>Traffic & Sessions Trend</h3>
+                      <p style={{ margin: '0.2.rem 0 0', fontSize: '0.8rem', color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}>Daily unique visitors and active sessions</p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', fontWeight: 600 }}>
+                      <span style={{ color: '#3b82f6' }}>● Visitors</span>
+                      <span style={{ color: '#10b981' }}>- - Sessions</span>
+                    </div>
+                  </div>
+                  <LineAreaChart data={MOCK_TIMESERIES_DAILY} isDark={isDark} />
+                </div>
+
+                {/* Donut Device Share Chart */}
+                <div style={{ ...styles.chartCard, background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}` }}>
+                  <h3 style={{ margin: '0 0 0.3rem', fontSize: '1.05rem', fontWeight: 700 }}>Device Distribution</h3>
+                  <p style={{ margin: '0 0 1.5rem', fontSize: '0.8rem', color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}>Mobile, Desktop, and Tablet user breakdown</p>
+                  <DonutChart items={MOCK_DEVICES} size={180} isDark={isDark} />
+                </div>
+              </div>
+
+              {/* Secondary Grid: Top Pages & Top Services */}
+              <div style={styles.chartsGrid}>
+                <div style={{ ...styles.chartCard, background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}` }}>
+                  <h3 style={{ margin: '0 0 1.25rem', fontSize: '1.05rem', fontWeight: 700 }}>Top Visited Pages</h3>
+                  <HorizontalBarChart items={MOCK_TOP_PAGES.slice(0, 5)} isDark={isDark} />
+                </div>
+
+                <div style={{ ...styles.chartCard, background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}` }}>
+                  <h3 style={{ margin: '0 0 1.25rem', fontSize: '1.05rem', fontWeight: 700 }}>Surgical Service Interest</h3>
+                  <HorizontalBarChart items={MOCK_SERVICES_ANALYTICS.slice(0, 5)} isDark={isDark} />
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* ── 2. SUB VIEWS HANDLER ────────────────────────────────────────── */}
+          {currentTab === 'realtime'               && <RealtimeView isDark={isDark} />}
+          {currentTab === 'visitors'               && <VisitorsView isDark={isDark} />}
+          {currentTab === 'traffic'                && <TrafficView isDark={isDark} />}
+          {currentTab === 'pages'                  && <PagesView isDark={isDark} />}
+          {currentTab === 'services'               && <ServicesView isDark={isDark} />}
+          {currentTab === 'gallery-analytics'     && <PagesView isDark={isDark} />}
+          {currentTab === 'blog-analytics'        && <PagesView isDark={isDark} />}
+          {currentTab === 'appointments-analytics' && <AppointmentsView isDark={isDark} />}
+          {currentTab === 'contact-analytics'      && <AppointmentsView isDark={isDark} />}
+          {currentTab === 'seo'                    && <SEOView isDark={isDark} />}
+          {currentTab === 'performance'            && <PerformanceView isDark={isDark} />}
+          {currentTab === 'devices'                && <DevicesView isDark={isDark} />}
+          {currentTab === 'countries'              && <CountriesView isDark={isDark} />}
+          {currentTab === 'events'                 && <RealtimeView isDark={isDark} />}
+          {currentTab === 'conversions'            && <VisitorsView isDark={isDark} />}
+          {currentTab === 'reports'                && <PagesView isDark={isDark} />}
+          {currentTab === 'settings'               && <PerformanceView isDark={isDark} />}
+
+        </div>
+
       </div>
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+      `}</style>
     </AdminLayout>
   );
 }
 
-function blogIcon(color = 'currentColor', size = 22) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-      <polyline points="14 2 14 8 20 8"/>
-      <line x1="16" y1="13" x2="8" y2="13"/>
-      <line x1="16" y1="17" x2="8" y2="17"/>
-      <polyline points="10 9 9 9 8 9"/>
-    </svg>
-  );
-}
-
-function galleryIcon(color = 'currentColor', size = 22) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round">
-      <rect x="3" y="3" width="18" height="18" rx="2"/>
-      <circle cx="8.5" cy="8.5" r="1.5"/>
-      <polyline points="21 15 16 10 5 21"/>
-    </svg>
-  );
-}
-
+/* ── Dashboard Inline Styles ────────────────────────────────────────── */
 const styles = {
-  page: { padding: '2.5rem', maxWidth: '1100px', margin: '0 auto' },
-  header: {
+  page: { minHeight: '100vh', transition: 'background 0.2s, color 0.2s' },
+  toast: {
+    position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 2000,
+    background: 'linear-gradient(135deg,#c9a96e,#e0c080)',
+    color: '#0a0a0f', fontWeight: 700, padding: '0.8rem 1.5rem',
+    borderRadius: '12px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', fontSize: '0.9rem',
+  },
+  topHeader: {
+    position: 'sticky', top: 0, zIndex: 90,
+    backdropFilter: 'blur(12px)',
+    padding: '0.85rem 2rem',
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem',
+    gap: '1.5rem', flexWrap: 'wrap',
   },
-  heading: {
-    fontSize: '2rem', fontWeight: 800, color: '#fff',
-    margin: 0, letterSpacing: '-0.03em',
+  searchWrap: { position: 'relative', flex: 1, maxWidth: '420px', minWidth: '220px' },
+  searchInput: {
+    width: '100%', padding: '0.6rem 1rem 0.6rem 2.4rem',
+    borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)',
+    fontSize: '0.85rem', outline: 'none', fontFamily: 'inherit',
   },
-  sub: { color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', margin: '0.3rem 0 0' },
-  badge: {
-    display: 'flex', alignItems: 'center', gap: '0.4rem',
-    background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)',
-    borderRadius: '999px', padding: '0.35rem 0.85rem',
-    color: '#34d399', fontSize: '0.8rem', fontWeight: 600,
+  toolbar: { display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' },
+  dateSelectorWrap: { display: 'flex', alignItems: 'center', gap: '0.4rem' },
+  selectInput: {
+    padding: '0.55rem 0.85rem', borderRadius: '10px',
+    border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.82rem',
+    fontWeight: 600, outline: 'none', cursor: 'pointer',
   },
-  dot: {
-    width: '7px', height: '7px', borderRadius: '50%',
-    background: '#34d399', animation: 'pulse 2s infinite',
+  toolBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+    padding: '0.55rem 0.85rem', borderRadius: '10px',
+    fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
   },
-  statsGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-    gap: '1rem', marginBottom: '2.5rem',
+  exportBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+    padding: '0.55rem 1.1rem', borderRadius: '10px',
+    background: 'linear-gradient(135deg, #c9a96e, #e0c080)',
+    color: '#0a0a0f', fontWeight: 700, border: 'none',
+    fontSize: '0.82rem', cursor: 'pointer',
   },
-  statCard: {
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '16px', padding: '1.5rem', textAlign: 'center',
-  },
-  statIcon: {
-    width: '50px', height: '50px', borderRadius: '14px',
+  iconBtn: {
+    width: '36px', height: '36px', borderRadius: '10px',
+    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    margin: '0 auto 0.75rem',
+    cursor: 'pointer', position: 'relative', color: '#fff',
   },
-  statValue: { fontSize: '2.5rem', fontWeight: 800, lineHeight: 1 },
-  statLabel: { color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', marginTop: '0.4rem' },
-  sectionTitle: {
-    fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.1em',
-    textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)',
-    marginBottom: '1rem', marginTop: '0.5rem',
-  },
-  cardsGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '1.25rem', marginBottom: '2.5rem',
-  },
-  actionCard: {
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '20px', padding: '2rem',
-    cursor: 'pointer', transition: 'background 0.2s, border-color 0.2s, transform 0.15s',
-    height: '100%', boxSizing: 'border-box',
-  },
-  actionIconWrap: {
-    width: '56px', height: '56px', borderRadius: '16px',
+  notifBadge: {
+    position: 'absolute', top: '-4px', right: '-4px',
+    background: '#ef4444', color: '#fff', fontSize: '0.65rem',
+    fontWeight: 800, width: '16px', height: '16px', borderRadius: '50%',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    marginBottom: '1.25rem',
   },
-  actionTitle: {
-    color: '#fff', fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.6rem',
+  notifDropdown: {
+    position: 'absolute', top: '46px', right: 0, width: '280px',
+    borderRadius: '14px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', zIndex: 200,
   },
-  actionDesc: {
-    color: 'rgba(255,255,255,0.45)', fontSize: '0.85rem', lineHeight: 1.6,
-    margin: '0 0 1.25rem',
+  adminProfile: { display: 'flex', alignItems: 'center', gap: '0.6rem', paddingLeft: '0.5rem' },
+  avatar: {
+    width: '34px', height: '34px', borderRadius: '50%',
+    background: 'rgba(201,169,110,0.2)', border: '1px solid rgba(201,169,110,0.4)',
+    color: '#c9a96e', display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  actionCta: {
-    display: 'flex', alignItems: 'center', gap: '0.4rem',
-    fontSize: '0.85rem', fontWeight: 600,
-  },
-  list: {
-    display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem',
-  },
-  listItem: {
-    display: 'flex', alignItems: 'center', gap: '1rem',
-    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: '14px', padding: '0.85rem 1rem',
-  },
-  listImg: {
-    width: '52px', height: '52px', borderRadius: '10px',
-    objectFit: 'cover', flexShrink: 0,
-  },
-  listTitle: {
-    color: '#fff', fontSize: '0.88rem', fontWeight: 600,
-    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-  },
-  listMeta: { color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem', marginTop: '0.2rem' },
-  listEdit: {
-    fontSize: '0.78rem', fontWeight: 600, color: '#c9a96e',
-    textDecoration: 'none', flexShrink: 0,
-    padding: '0.3rem 0.75rem',
-    background: 'rgba(201,169,110,0.1)',
-    borderRadius: '8px',
-  },
+  contentBody: { padding: '2rem' },
+  tabHeader: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' },
+  tabTitle: { fontSize: '1.85rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' },
+  tabSub: { fontSize: '0.88rem', opacity: 0.5, margin: '0.25rem 0 0' },
+  livePulseDot: { width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', animation: 'pulse 1.5s infinite' },
+  kpiGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' },
+  kpiCard: { borderRadius: '16px', padding: '1.25rem', transition: 'transform 0.15s, border-color 0.15s' },
+  chartsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' },
+  chartCard: { borderRadius: '20px', padding: '1.5rem' },
 };
