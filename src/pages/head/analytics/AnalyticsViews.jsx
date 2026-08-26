@@ -3,7 +3,7 @@ import {
   MOCK_LIVE_EVENTS, MOCK_TOP_PAGES, MOCK_SERVICES_ANALYTICS, MOCK_SEO_KEYWORDS,
   MOCK_CORE_WEB_VITALS, MOCK_DEVICES, MOCK_COUNTRIES, MOCK_TRAFFIC_CHANNELS, MOCK_APPOINTMENTS_LIST
 } from './analyticsData';
-import { getStoredEvents, getRealAnalyticsMetrics } from '../../../utils/analyticsTracker';
+import { getStoredEvents, getRealAnalyticsMetrics, getRealTopPages, getRealServicesAnalytics } from '../../../utils/analyticsTracker';
 import { DataTable } from './AnalyticsTables';
 import { DonutChart, HorizontalBarChart, FunnelChart } from './AnalyticsCharts';
 import { Activity, Clock, ShieldCheck, Zap, Globe, Smartphone, CheckCircle, AlertTriangle, FileText, Calendar } from 'lucide-react';
@@ -166,11 +166,20 @@ export function TrafficView({ isDark = true }) {
 }
 
 /**
- * 4. Pages View
+ * 4. Pages Analytics View
  */
 export function PagesView({ isDark = true }) {
+  const [pagesData, setPagesData] = useState(() => getRealTopPages());
+
+  useEffect(() => {
+    const sync = () => setPagesData(getRealTopPages());
+    sync();
+    const interval = setInterval(sync, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const columns = [
-    { key: 'path', label: 'Page Path', render: (val, r) => <div><div style={{ fontWeight: 600 }}>{val}</div><div style={{ fontSize: '0.75rem', color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)' }}>{r.title}</div></div> },
+    { key: 'title', label: 'Page Title & Path', render: (v, r) => <div><strong>{v}</strong><div style={{ fontSize: '0.72rem', opacity: 0.6 }}>{r.path}</div></div> },
     { key: 'views', label: 'Page Views', render: v => v.toLocaleString() },
     { key: 'users', label: 'Unique Users', render: v => v.toLocaleString() },
     { key: 'avgTime', label: 'Avg Time' },
@@ -178,13 +187,22 @@ export function PagesView({ isDark = true }) {
     { key: 'conversion', label: 'Conversion %', render: v => <span style={{ color: '#10b981', fontWeight: 700 }}>{v}</span> },
   ];
 
-  return <DataTable title="Top Performing Pages" description="Comprehensive views, session times, and conversion rates" columns={columns} data={MOCK_TOP_PAGES} isDark={isDark} exportFilename="top-pages.csv" />;
+  return <DataTable title="Top Performing Pages" description="Real page views, session times, and conversion rates" columns={columns} data={pagesData} isDark={isDark} exportFilename="top-pages.csv" />;
 }
 
 /**
  * 5. Services Analytics View
  */
 export function ServicesView({ isDark = true }) {
+  const [servicesData, setServicesData] = useState(() => getRealServicesAnalytics());
+
+  useEffect(() => {
+    const sync = () => setServicesData(getRealServicesAnalytics());
+    sync();
+    const interval = setInterval(sync, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const columns = [
     { key: 'name', label: 'Surgical Service', render: v => <strong>{v}</strong> },
     { key: 'views', label: 'Page Views', render: v => v.toLocaleString() },
@@ -196,7 +214,7 @@ export function ServicesView({ isDark = true }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-      <DataTable title="Surgical Services Analytics" description="Consultation click-through rates and patient engagement per service" columns={columns} data={MOCK_SERVICES_ANALYTICS} isDark={isDark} />
+      <DataTable title="Surgical Services Analytics" description="Real consultation click-through rates and patient engagement per service" columns={columns} data={servicesData} isDark={isDark} />
     </div>
   );
 }

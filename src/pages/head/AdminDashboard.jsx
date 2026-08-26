@@ -313,12 +313,12 @@ export default function AdminDashboard() {
               <div style={styles.chartsGrid}>
                 <div style={{ ...styles.chartCard, background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}` }}>
                   <h3 style={{ margin: '0 0 1.25rem', fontSize: '1.05rem', fontWeight: 700 }}>Top Visited Pages</h3>
-                  <HorizontalBarChart items={MOCK_TOP_PAGES.slice(0, 5)} isDark={isDark} />
+                  <HorizontalBarChart items={realMetrics.topPages.slice(0, 5)} isDark={isDark} />
                 </div>
 
                 <div style={{ ...styles.chartCard, background: isDark ? 'rgba(255,255,255,0.03)' : '#fff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}` }}>
                   <h3 style={{ margin: '0 0 1.25rem', fontSize: '1.05rem', fontWeight: 700 }}>Surgical Service Interest</h3>
-                  <HorizontalBarChart items={MOCK_SERVICES_ANALYTICS.slice(0, 5)} isDark={isDark} />
+                  <HorizontalBarChart items={realMetrics.servicesAnalytics.slice(0, 5)} isDark={isDark} />
                 </div>
               </div>
 
