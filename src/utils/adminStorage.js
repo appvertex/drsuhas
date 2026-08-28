@@ -199,6 +199,13 @@ export const DEFAULT_SITE_SETTINGS = {
   floatingWhatsApp: '919538765487',
 };
 
+export function formatWaNumber(num) {
+  if (!num) return '919538765487';
+  const digits = String(num).replace(/\D/g, '');
+  if (digits.length === 10) return `91${digits}`;
+  return digits;
+}
+
 const SETTINGS_KEY = 'admin_site_settings';
 let memorySettings = null;
 

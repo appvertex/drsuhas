@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { siteSettings } from '../config/siteSettings';
-import { getSiteSettings, getSiteSettingsAsync } from '../utils/adminStorage';
+import { getSiteSettings, getSiteSettingsAsync, formatWaNumber } from '../utils/adminStorage';
 
 export default function FloatingWhatsApp() {
   const [settings, setSettings] = useState(getSiteSettings);
@@ -24,7 +24,8 @@ export default function FloatingWhatsApp() {
     };
   }, []);
 
-  const waNum = settings.floatingWhatsApp || siteSettings.whatsappNumber;
+  const rawNum = settings.floatingWhatsApp || siteSettings.whatsappNumber;
+  const waNum = formatWaNumber(rawNum);
 
   return (
     <motion.a

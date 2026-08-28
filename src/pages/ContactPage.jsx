@@ -5,7 +5,7 @@ import SEO from '../components/SEO';
 import { PageWrapper } from '../components/common';
 import { siteSettings } from '../config/siteSettings';
 import { organizationSchema, breadcrumbSchema } from '../data/content';
-import { getSiteSettings, getSiteSettingsAsync } from '../utils/adminStorage';
+import { getSiteSettings, getSiteSettingsAsync, formatWaNumber } from '../utils/adminStorage';
 
 const inputStyle = {
   width: '100%',
@@ -88,7 +88,7 @@ export default function ContactPage() {
     setErrorMsg('');
 
     // Format WhatsApp Message to send directly to configured WhatsApp number
-    const targetPhone = (appSettings.appointmentWhatsApp || '919538765487').replace(/\D/g, '');
+    const targetPhone = formatWaNumber(appSettings.appointmentWhatsApp || '919538765487');
     const waMessage = 
 `🏥 *NEW APPOINTMENT BOOKING REQUEST*
 
@@ -142,7 +142,7 @@ _Submitted via Dr. Suhas S Kumar Website_`;
     }
   };
 
-  const targetWaNum = (appSettings.appointmentWhatsApp || '919538765487').replace(/\D/g, '');
+  const targetWaNum = formatWaNumber(appSettings.appointmentWhatsApp || '919538765487');
   const currentWaUrl = `https://wa.me/${targetWaNum}?text=${encodeURIComponent(
 `🏥 *NEW APPOINTMENT BOOKING REQUEST*
 
