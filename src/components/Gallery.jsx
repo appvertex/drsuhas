@@ -152,8 +152,10 @@ function MagneticCard({ img, index, onClick }) {
   const cardRef = useRef(null);
   const glowRef = useRef(null);
   const rectRef = useRef(null);
+  const [isLifted, setIsLifted] = useState(false);
 
   const onMouseEnter = () => {
+    setIsLifted(true);
     if (cardRef.current) {
       rectRef.current = cardRef.current.getBoundingClientRect();
       cardRef.current.style.transition = 'transform 0.1s ease-out';
@@ -175,6 +177,7 @@ function MagneticCard({ img, index, onClick }) {
   };
 
   const reset = () => {
+    setIsLifted(false);
     rectRef.current = null;
     if (cardRef.current) {
       cardRef.current.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
@@ -229,7 +232,7 @@ function MagneticCard({ img, index, onClick }) {
             position: 'absolute', inset: 0, pointerEvents: 'none',
             background: 'linear-gradient(to top, rgba(5,5,10,0.88) 0%, rgba(5,5,10,0.2) 45%, transparent 70%)',
             display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-            padding: '1.75rem', opacity: tilt.lifted ? 1 : 0.72, transition: 'opacity 0.3s ease',
+            padding: '1.75rem', opacity: isLifted ? 1 : 0.72, transition: 'opacity 0.3s ease',
           }}>
             <span style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--accent-gold,#c9a96e)', marginBottom: '0.4rem' }}>
               {img.label}
@@ -240,7 +243,7 @@ function MagneticCard({ img, index, onClick }) {
           </div>
           <div style={{
             position: 'absolute', inset: -1, borderRadius: '28px', pointerEvents: 'none',
-            border: `1px solid rgba(201,169,110,${tilt.lifted ? 0.35 : 0})`,
+            border: `1px solid rgba(201,169,110,${isLifted ? 0.35 : 0})`,
             transition: 'border-color 0.3s ease',
           }} />
         </div>
