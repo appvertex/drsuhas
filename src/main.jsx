@@ -15,15 +15,15 @@ import './App.css';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
   }
 
   componentDidCatch(error, info) {
-    console.error('[ErrorBoundary caught error]:', error, info);
+    console.error('[ErrorBoundary caught error]:', error?.message, error?.stack, info);
   }
 
   render() {
@@ -54,25 +54,61 @@ class ErrorBoundary extends React.Component {
           >
             Something went wrong
           </h1>
-          <p style={{ color: 'var(--text-secondary, #58738F)', marginBottom: '2rem', maxWidth: '400px' }}>
+          <p style={{ color: 'var(--text-secondary, #58738F)', marginBottom: '1rem', maxWidth: '400px' }}>
             We&apos;re sorry — an unexpected error occurred. Please try refreshing the page.
           </p>
-          <button
-            onClick={() => window.location.reload()}
-            style={{
-              padding: '0.75rem 1.5rem',
-              background: 'var(--primary-blue, #2D6BFF)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '9999px',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '1rem',
-              fontFamily: 'inherit',
-            }}
-          >
-            Refresh Page
-          </button>
+          {this.state.error && (
+            <pre style={{
+              background: 'rgba(239,68,68,0.08)',
+              border: '1px solid rgba(239,68,68,0.2)',
+              borderRadius: '8px',
+              padding: '0.75rem 1rem',
+              fontSize: '0.75rem',
+              color: '#ef4444',
+              maxWidth: '500px',
+              textAlign: 'left',
+              marginBottom: '2rem',
+              overflowX: 'auto',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+            }}>
+              {this.state.error.message}
+            </pre>
+          )}
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                padding: '0.75rem 1.5rem',
+                background: 'var(--primary-blue, #2D6BFF)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '9999px',
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: '1rem',
+                fontFamily: 'inherit',
+              }}
+            >
+              Refresh Page
+            </button>
+            <button
+              onClick={() => { this.setState({ hasError: false, error: null }); window.history.back(); }}
+              style={{
+                padding: '0.75rem 1.5rem',
+                background: 'transparent',
+                color: 'var(--text-secondary, #58738F)',
+                border: '1px solid var(--border-subtle, #ccc)',
+                borderRadius: '9999px',
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: '1rem',
+                fontFamily: 'inherit',
+              }}
+            >
+              Go Back
+            </button>
+          </div>
         </div>
       );
     }

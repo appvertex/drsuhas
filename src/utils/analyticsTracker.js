@@ -40,21 +40,29 @@ function getDeviceType() {
 
 
 function getBrowserName() {
-  const ua = navigator.userAgent;
-  if (ua.indexOf("Chrome") > -1) return "Chrome";
-  if (ua.indexOf("Safari") > -1) return "Safari";
-  if (ua.indexOf("Firefox") > -1) return "Firefox";
-  if (ua.indexOf("Edg") > -1) return "Edge";
-  return "Other Browser";
+  try {
+    const ua = navigator.userAgent;
+    if (ua.indexOf('Chrome') > -1) return 'Chrome';
+    if (ua.indexOf('Safari') > -1) return 'Safari';
+    if (ua.indexOf('Firefox') > -1) return 'Firefox';
+    if (ua.indexOf('Edg') > -1) return 'Edge';
+    return 'Other Browser';
+  } catch {
+    return 'Other Browser';
+  }
 }
 
 function getReferralChannel() {
-  const ref = document.referrer;
-  if (!ref) return 'Direct Access';
-  if (ref.includes('google') || ref.includes('bing') || ref.includes('yahoo')) return 'Organic Search';
-  if (ref.includes('facebook') || ref.includes('instagram') || ref.includes('linkedin') || ref.includes('twitter') || ref.includes('t.co')) return 'Social Media';
-  if (ref.includes(window.location.hostname)) return 'Internal Navigation';
-  return 'Referrals';
+  try {
+    const ref = document.referrer;
+    if (!ref) return 'Direct Access';
+    if (ref.includes('google') || ref.includes('bing') || ref.includes('yahoo')) return 'Organic Search';
+    if (ref.includes('facebook') || ref.includes('instagram') || ref.includes('linkedin') || ref.includes('twitter') || ref.includes('t.co')) return 'Social Media';
+    if (ref.includes(window.location.hostname)) return 'Internal Navigation';
+    return 'Referrals';
+  } catch {
+    return 'Direct Access';
+  }
 }
 
 /**
