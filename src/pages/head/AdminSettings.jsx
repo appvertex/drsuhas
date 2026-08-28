@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from './AdminLayout';
 import { getSiteSettings, getSiteSettingsAsync, saveSiteSettings, DEFAULT_SITE_SETTINGS } from '../../utils/adminStorage';
-import { Settings, Save, RefreshCw, Award, Calendar, Phone, Mail, MessageSquare } from 'lucide-react';
+import { Settings, Save, RefreshCw, Award, Calendar, Phone, Mail, MessageSquare, Lock } from 'lucide-react';
 
 export default function AdminSettings() {
   const [form, setForm] = useState(DEFAULT_SITE_SETTINGS);
@@ -315,6 +315,30 @@ export default function AdminSettings() {
                 style={styles.input}
               />
               <span style={styles.helpText}>Appears as: &copy; {form.copyrightYear || '2026'} Dr. Suhas S Kumar. All rights reserved.</span>
+            </div>
+
+            <div style={styles.divider} />
+
+            {/* Section 4: Admin Portal Password */}
+            <div style={styles.sectionHeader}>
+              <Lock size={20} style={{ color: '#c9a96e' }} />
+              <h2 style={styles.sectionTitle}>Admin Portal Security</h2>
+            </div>
+            <p style={styles.sectionDesc}>
+              Change your Admin Portal login password directly from this panel without opening Cloudflare.
+            </p>
+
+            <div style={styles.fieldGroupSingle}>
+              <label style={styles.label}>Admin Portal Password</label>
+              <input
+                type="text"
+                name="adminPassword"
+                value={form.adminPassword || ''}
+                onChange={handleChange}
+                placeholder="admin123"
+                style={styles.input}
+              />
+              <span style={styles.helpText}>Used to log into /admin/login</span>
             </div>
 
             {/* Form Actions */}

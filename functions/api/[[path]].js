@@ -58,7 +58,15 @@ export async function onRequest(context) {
     // -------------------------------------------------------------
     if (path[0] === 'auth' && path[1] === 'login' && method === 'POST') {
       const body = await request.json();
-      const expectedPassword = env.ADMIN_PASSWORD || 'admin123';
+      let expectedPassword = env.ADMIN_PASSWORD || 'admin123';
+
+      if (env.DB) {
+        try {
+          const row = await env.DB.prepare('SELECT value FROM settings WHERE key = ?').bind('adminPassword').first();
+          if (row && row.value) expectedPassword = row.value;
+        } catch {/* ignore */}
+      }
+
       if (body.password === expectedPassword) {
         return jsonResponse({ success: true, token: 'authenticated' });
       }

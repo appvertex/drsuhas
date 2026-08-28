@@ -197,6 +197,7 @@ export const DEFAULT_SITE_SETTINGS = {
   email: 'suhassk2@gmail.com',
   appointmentWhatsApp: '919538765487',
   floatingWhatsApp: '919538765487',
+  adminPassword: 'admin123',
 };
 
 export function formatWaNumber(num) {
