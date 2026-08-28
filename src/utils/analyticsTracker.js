@@ -13,12 +13,16 @@ const TRACKING_KEY = 'drsuhas_real_analytics_events_v3';
 const SESSION_KEY  = 'drsuhas_session_id';
 
 function getSessionId() {
-  let id = sessionStorage.getItem(SESSION_KEY);
-  if (!id) {
-    id = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    sessionStorage.setItem(SESSION_KEY, id);
+  try {
+    let id = sessionStorage.getItem(SESSION_KEY);
+    if (!id) {
+      id = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      sessionStorage.setItem(SESSION_KEY, id);
+    }
+    return id;
+  } catch {
+    return `sess_${Date.now()}_temp`;
   }
-  return id;
 }
 
 function getDeviceType() {

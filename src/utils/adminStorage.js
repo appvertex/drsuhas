@@ -1,9 +1,10 @@
 /**
  * adminStorage.js
  * ─────────────────────────────────────────────────────────────────
- * Storage engine for Blogs & Gallery:
+ * Storage engine for Blogs & Gallery with 100% safe storage fallbacks
+ * for private browsing/incognito mode DOMExceptions:
  * 1. Fetches live data from Cloudflare Workers / D1 Database & R2 Storage.
- * 2. Caches items in localStorage for instant offline/re-render access.
+ * 2. Caches items in localStorage/memory for instant offline/re-render access.
  * 3. Contains ZERO hardcoded default posts or gallery items.
  */
 
@@ -18,20 +19,27 @@ import {
   deleteGalleryApi,
 } from './apiClient';
 
-/* ─── KEYS ───────────────────────────────────────────────────── */
+/* ─── KEYS & MEMORY FALLBACKS ───────────────────────────────── */
 const BLOGS_KEY   = 'admin_blogs';
 const GALLERY_KEY = 'admin_gallery';
+let memoryBlogs   = null;
+let memoryGallery = null;
+let memoryAuth    = false;
 
-/* ─── HELPERS ────────────────────────────────────────────────── */
 function generateId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
 /* ─── BLOG CRUD ──────────────────────────────────────────────── */
 export function getBlogs() {
+  if (memoryBlogs && Array.isArray(memoryBlogs)) return memoryBlogs;
+
   try {
     const stored = localStorage.getItem(BLOGS_KEY);
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      memoryBlogs = JSON.parse(stored);
+      return memoryBlogs;
+    }
   } catch {/* ignore */}
 
   // Trigger background sync with Cloudflare D1
@@ -52,19 +60,28 @@ export async function getBlogsAsync() {
   }
   try {
     const stored = localStorage.getItem(BLOGS_KEY);
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      memoryBlogs = JSON.parse(stored);
+      return memoryBlogs;
+    }
   } catch {/* ignore */}
-  return [];
+  return memoryBlogs || [];
 }
 
 export function saveBlogs(blogs) {
-  localStorage.setItem(BLOGS_KEY, JSON.stringify(blogs));
+  memoryBlogs = blogs;
+  try {
+    localStorage.setItem(BLOGS_KEY, JSON.stringify(blogs));
+  } catch {/* ignore */}
 }
 
-export async function addBlog(post) {
-  const blogs = getBlogs();
-  const newPost = { ...post, id: generateId(), slug: post.slug || generateId() };
-  blogs.unshift(newPost);
+export async function addBlog(blog) {
+  const newPost = {
+    id: generateId(),
+    ...blog,
+    created_at: new Date().toISOString(),
+  };
+  const blogs = [newPost, ...getBlogs()];
   saveBlogs(blogs);
 
   // Sync to Cloudflare D1
@@ -72,16 +89,12 @@ export async function addBlog(post) {
   return newPost;
 }
 
-export async function updateBlog(id, updatedPost) {
-  const blogs = getBlogs();
-  const index = blogs.findIndex(b => b.id === id);
-  if (index !== -1) {
-    blogs[index] = { ...blogs[index], ...updatedPost };
-    saveBlogs(blogs);
+export async function updateBlog(id, blog) {
+  const blogs = getBlogs().map(b => (b.id === id ? { ...b, ...blog } : b));
+  saveBlogs(blogs);
 
-    // Sync to Cloudflare D1
-    await updateBlogApi(id, blogs[index]);
-  }
+  // Sync to Cloudflare D1
+  await updateBlogApi(id, blog);
 }
 
 export async function deleteBlog(id) {
@@ -94,9 +107,14 @@ export async function deleteBlog(id) {
 
 /* ─── GALLERY CRUD ───────────────────────────────────────────── */
 export function getGalleryImages() {
+  if (memoryGallery && Array.isArray(memoryGallery)) return memoryGallery;
+
   try {
     const stored = localStorage.getItem(GALLERY_KEY);
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      memoryGallery = JSON.parse(stored);
+      return memoryGallery;
+    }
   } catch {/* ignore */}
 
   // Trigger background sync with Cloudflare D1
@@ -117,19 +135,28 @@ export async function getGalleryImagesAsync() {
   }
   try {
     const stored = localStorage.getItem(GALLERY_KEY);
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      memoryGallery = JSON.parse(stored);
+      return memoryGallery;
+    }
   } catch {/* ignore */}
-  return [];
+  return memoryGallery || [];
 }
 
 export function saveGalleryImages(images) {
-  localStorage.setItem(GALLERY_KEY, JSON.stringify(images));
+  memoryGallery = images;
+  try {
+    localStorage.setItem(GALLERY_KEY, JSON.stringify(images));
+  } catch {/* ignore */}
 }
 
 export async function addGalleryImage(img) {
-  const images = getGalleryImages();
-  const newImg = { ...img, id: generateId() };
-  images.unshift(newImg);
+  const newImg = {
+    id: generateId(),
+    ...img,
+    created_at: new Date().toISOString(),
+  };
+  const images = [newImg, ...getGalleryImages()];
   saveGalleryImages(images);
 
   // Sync to Cloudflare D1
@@ -137,16 +164,12 @@ export async function addGalleryImage(img) {
   return newImg;
 }
 
-export async function updateGalleryImage(id, updatedImg) {
-  const images = getGalleryImages();
-  const index = images.findIndex(g => g.id === id);
-  if (index !== -1) {
-    images[index] = { ...images[index], ...updatedImg };
-    saveGalleryImages(images);
+export async function updateGalleryImage(id, img) {
+  const images = getGalleryImages().map(g => (g.id === id ? { ...g, ...img } : g));
+  saveGalleryImages(images);
 
-    // Sync to Cloudflare D1
-    await updateGalleryApi(id, images[index]);
-  }
+  // Sync to Cloudflare D1
+  await updateGalleryApi(id, img);
 }
 
 export async function deleteGalleryImage(id) {
@@ -159,10 +182,18 @@ export async function deleteGalleryImage(id) {
 
 /* ─── AUTH ───────────────────────────────────────────────────── */
 export function setAdminAuth(val) {
-  if (val) sessionStorage.setItem('adminAuth', '1');
-  else sessionStorage.removeItem('adminAuth');
+  memoryAuth = Boolean(val);
+  try {
+    if (val) sessionStorage.setItem('adminAuth', '1');
+    else sessionStorage.removeItem('adminAuth');
+  } catch {/* ignore */}
 }
 
 export function isAdminAuthed() {
-  return sessionStorage.getItem('adminAuth') === '1';
+  if (memoryAuth) return true;
+  try {
+    return sessionStorage.getItem('adminAuth') === '1';
+  } catch {
+    return memoryAuth;
+  }
 }
