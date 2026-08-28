@@ -52,10 +52,6 @@ export default function App() {
         <Route path="/head/admin/gallery" element={<AdminGallery />} />
         <Route path="/head/admin/settings" element={<AdminSettings />} />
 
-        {/* Legacy /admin redirects for safety */}
-        <Route path="/admin/login" element={<Navigate to="/head/admin/login" replace />} />
-        <Route path="/admin/*" element={<Navigate to="/head/admin/blog" replace />} />
-
         {/* Public Website Routes */}
         <Route path="/" element={<Layout><HomePage /></Layout>} />
         <Route path="/about" element={<Layout><AboutPage /></Layout>} />
