@@ -147,7 +147,7 @@ const styles = {
     background: 'rgba(255,255,255,0.03)',
     border: '1px solid rgba(255,255,255,0.08)',
     borderRadius: '28px',
-    padding: '3rem 2.5rem',
+    padding: 'clamp(1.5rem, 6vw, 3rem) clamp(1.25rem, 5vw, 2.5rem)',
     width: '100%',
     maxWidth: '440px',
     backdropFilter: 'blur(24px)',

@@ -54,7 +54,7 @@ export default function AdminSettings() {
 
   return (
     <AdminLayout currentTab="admin-settings">
-      <div style={styles.container}>
+      <div style={styles.container} data-admin-page>
         {/* Toast Notification */}
         {toast && (
           <div style={styles.toast}>
@@ -63,7 +63,7 @@ export default function AdminSettings() {
         )}
 
         {/* Header */}
-        <div style={styles.header}>
+        <div style={styles.header} data-admin-header>
           <div>
             <h1 style={styles.title}>
               <Settings size={28} style={{ color: '#c9a96e', marginRight: '0.75rem', verticalAlign: 'bottom' }} />
@@ -419,7 +419,7 @@ export default function AdminSettings() {
 
 const styles = {
   container: {
-    padding: '2rem',
+    padding: 'clamp(1rem, 4vw, 2rem)',
     maxWidth: '1200px',
     margin: '0 auto',
     color: '#fff',
@@ -447,7 +447,7 @@ const styles = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
     gap: '2rem',
     alignItems: 'start',
   },

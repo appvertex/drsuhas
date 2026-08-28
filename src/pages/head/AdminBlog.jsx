@@ -77,7 +77,7 @@ export default function AdminBlog() {
 
   return (
     <AdminLayout>
-      <div style={styles.page}>
+      <div style={styles.page} data-admin-page>
         {/* Toast */}
         {toast && <div style={styles.toast}>{toast}</div>}
 
@@ -104,7 +104,7 @@ export default function AdminBlog() {
         {/* ── LIST VIEW ─────────────────────────────── */}
         {mode === 'list' && (
           <>
-            <div style={styles.header}>
+            <div style={styles.header} data-admin-header>
               <div>
                 <h1 style={styles.heading}>Blog Posts</h1>
                 <p style={styles.sub}>{posts.length} posts published</p>
@@ -286,7 +286,7 @@ const fieldStyles = {
 };
 
 const styles = {
-  page: { padding: '2.5rem', maxWidth: '1100px', margin: '0 auto', position: 'relative' },
+  page: { padding: 'clamp(1rem, 4vw, 2.5rem)', maxWidth: '1100px', margin: '0 auto', position: 'relative' },
   toast: {
     position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9999,
     background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.3)',

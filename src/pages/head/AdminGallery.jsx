@@ -81,7 +81,7 @@ export default function AdminGallery() {
 
   return (
     <AdminLayout>
-      <div style={s.page}>
+      <div style={s.page} data-admin-page>
 
         {/* ── Toast ─────────────────────────────── */}
         {toast && (
@@ -113,7 +113,7 @@ export default function AdminGallery() {
         )}
 
         {/* ── Page Header ──────────────────────── */}
-        <div style={s.header}>
+        <div style={s.header} data-admin-header>
           <div>
             <h1 style={s.pageTitle}>Gallery</h1>
             <p style={s.pageSub}>
@@ -345,7 +345,7 @@ export default function AdminGallery() {
 
 /* ── Styles ─────────────────────────────────────────────────── */
 const s = {
-  page: { color: '#fff', width: '100%', fontFamily: 'inherit' },
+  page: { color: '#fff', width: '100%', fontFamily: 'inherit', padding: 'clamp(1rem, 4vw, 2.5rem)', boxSizing: 'border-box' },
 
   /* Toast */
   toast: {
@@ -488,7 +488,7 @@ const s = {
 
   /* Form Layout */
   formLayout: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
     gap: '2rem', alignItems: 'start',
   },
   formLeft:  { display: 'flex', flexDirection: 'column', gap: '1.75rem' },
