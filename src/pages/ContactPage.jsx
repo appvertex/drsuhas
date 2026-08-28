@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Phone, Mail, MapPin, Calendar, Clock, User, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Calendar, Clock, User, Send, CheckCircle2, AlertCircle, MessageSquare } from 'lucide-react';
 import SEO from '../components/SEO';
 import { PageWrapper } from '../components/common';
-import { organizationSchema, breadcrumbSchema } from '../data/content';
 import { siteSettings } from '../config/siteSettings';
+import { organizationSchema, breadcrumbSchema } from '../data/content';
 import { trackEvent } from '../utils/analyticsTracker';
 
-export default function ContactPage() {
-  const whatsappMessage = 'Hello Dr. Suhas, I would like to book a consultation.';
-  const whatsappLink = `https://wa.me/${siteSettings.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+const inputStyle = {
+  width: '100%',
+  padding: '0.85rem 1rem 0.85rem 2.75rem',
+  background: 'var(--bg-card, rgba(255,255,255,0.04))',
+  border: '1px solid var(--border-subtle, rgba(255,255,255,0.12))',
+  borderRadius: '12px',
+  color: 'var(--text-primary, #ffffff)',
+  fontSize: '0.95rem',
+  outline: 'none',
+  boxSizing: 'border-box',
+  fontFamily: 'inherit',
+  transition: 'border-color 0.2s',
+};
 
-  // Form State
+export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -20,7 +30,7 @@ export default function ContactPage() {
     time: 'Morning (10:00 AM - 1:00 PM)',
     message: '',
     consent: false,
-    botCheck: '', // Honeypot
+    botCheck: '',
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -29,24 +39,22 @@ export default function ContactPage() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
-    if (errorMsg) setErrorMsg('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.botCheck) return; // Silent rejection for bots
 
     // Validation
     if (!formData.name.trim()) {
       setErrorMsg('Please enter your full name.');
       return;
     }
-    if (!formData.phone.trim() || formData.phone.trim().length < 8) {
-      setErrorMsg('Please enter a valid phone number.');
+    if (!formData.phone.trim()) {
+      setErrorMsg('Please enter a valid contact phone number.');
       return;
     }
     if (!formData.date) {
@@ -60,6 +68,21 @@ export default function ContactPage() {
 
     setSubmitting(true);
     setErrorMsg('');
+
+    // Format WhatsApp Message to send directly to 9538765487
+    const targetPhone = '919538765487';
+    const waMessage = 
+`🏥 *NEW APPOINTMENT BOOKING REQUEST*
+
+👤 *Full Name:* ${formData.name}
+📞 *Phone Number:* ${formData.phone}
+${formData.email ? `✉️ *Email Address:* ${formData.email}\n` : ''}📅 *Preferred Date:* ${formData.date}
+⏰ *Preferred Time Slot:* ${formData.time}
+${formData.message ? `💬 *Medical Concern/Notes:* ${formData.message}\n` : ''}
+----------------------------------------
+_Submitted via Dr. Suhas S Kumar Website_`;
+
+    const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(waMessage)}`;
 
     try {
       // Record real analytics event & save appointment locally for admin view
@@ -83,25 +106,35 @@ export default function ContactPage() {
         localStorage.setItem('admin_appointments', JSON.stringify(existingApts));
       } catch {/* ignore */}
 
-      const res = await fetch('/api/appointments', {
+      fetch('/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
-      });
+      }).catch(() => {});
 
-      const result = await res.json();
+      // Open WhatsApp directly to send to 9538765487
+      window.open(waUrl, '_blank');
 
-      if (res.ok && result.success) {
-        setSubmitted(true);
-      } else {
-        setSubmitted(true);
-      }
+      setSubmitted(true);
     } catch {
+      window.open(waUrl, '_blank');
       setSubmitted(true);
     } finally {
       setSubmitting(false);
     }
   };
+
+  const currentWaUrl = `https://wa.me/919538765487?text=${encodeURIComponent(
+`🏥 *NEW APPOINTMENT BOOKING REQUEST*
+
+👤 *Full Name:* ${formData.name}
+📞 *Phone Number:* ${formData.phone}
+${formData.email ? `✉️ *Email Address:* ${formData.email}\n` : ''}📅 *Preferred Date:* ${formData.date}
+⏰ *Preferred Time Slot:* ${formData.time}
+${formData.message ? `💬 *Medical Concern/Notes:* ${formData.message}\n` : ''}
+----------------------------------------
+_Submitted via Dr. Suhas S Kumar Website_`
+  )}`;
 
   return (
     <PageWrapper>
@@ -122,33 +155,31 @@ export default function ContactPage() {
       <section className="section" style={{ paddingTop: '160px', paddingBottom: '100px', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
         <div className="container">
           
-          {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <div className="text-eyebrow" style={{ marginBottom: '1rem' }}>Make an Appointment</div>
-            <h1 className="h-1" style={{ marginBottom: '1.5rem' }}>
-              Book a Consultation with <span className="text-gradient">Confidence</span>
+            <div className="text-eyebrow" style={{ marginBottom: '0.75rem' }}>Appointment Booking</div>
+            <h1 className="h-display" style={{ marginBottom: '1rem' }}>
+              Schedule Your <span className="text-gradient-gold">Consultation</span>
             </h1>
-            <p className="text-lead" style={{ maxWidth: '640px', margin: '0 auto', color: 'var(--text-secondary)' }}>
-              Appointments are available for surgical consultations, follow-up visits, and second opinions at Deepak Hospital, Bengaluru.
+            <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', fontSize: '1.05rem', lineHeight: 1.65 }}>
+              Choose your preferred date and time slot. Your booking request will be sent directly to Dr. Suhas's clinic desk via WhatsApp (9538765487).
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3.5rem', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem', alignItems: 'start' }}>
             
-            {/* ── APPOINTMENT BOOKING FORM ──────────────────────────────── */}
+            {/* Left Column: Booking Form */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
+              transition={{ duration: 0.6 }}
               style={{
                 background: 'var(--bg-card, rgba(255,255,255,0.03))',
                 border: '1px solid var(--border-subtle, rgba(255,255,255,0.08))',
-                borderRadius: '28px',
-                padding: 'clamp(1.75rem, 4vw, 2.75rem)',
-                boxShadow: 'var(--shadow-md, 0 10px 30px rgba(0,0,0,0.3))',
+                borderRadius: '24px', padding: '2.5rem',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
               }}
             >
-              <h2 className="h-3" style={{ marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                 Request an Appointment
               </h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '2rem' }}>
@@ -169,24 +200,49 @@ export default function ContactPage() {
                 >
                   <CheckCircle2 size={56} style={{ color: '#4ade80', marginBottom: '1.25rem' }} />
                   <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
-                    Appointment Request Received!
+                    Appointment Sent via WhatsApp!
                   </h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-                    Thank you, <strong>{formData.name}</strong>. We have received your request for <strong>{formData.date}</strong> ({formData.time}). Our staff will contact you at <strong>{formData.phone}</strong> shortly.
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.75rem' }}>
+                    Thank you, <strong>{formData.name}</strong>. Your booking details for <strong>{formData.date}</strong> ({formData.time}) have been formatted and sent directly to <strong>9538765487</strong>.
                   </p>
-                  <button
-                    onClick={() => {
-                      setSubmitted(false);
-                      setFormData({
-                        name: '', phone: '', email: '', date: '',
-                        time: 'Morning (10:00 AM - 1:00 PM)', message: '', consent: false, botCheck: '',
-                      });
-                    }}
-                    className="btn btn-premium"
-                    style={{ fontSize: '0.85rem', padding: '0.65rem 1.25rem' }}
-                  >
-                    Submit Another Request
-                  </button>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+                    <a
+                      href={currentWaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn"
+                      style={{
+                        background: '#25D366',
+                        color: '#ffffff',
+                        fontWeight: 700,
+                        fontSize: '0.95rem',
+                        padding: '0.85rem 1.6rem',
+                        borderRadius: '12px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.6rem',
+                        textDecoration: 'none',
+                        boxShadow: '0 8px 20px rgba(37, 211, 102, 0.3)',
+                      }}
+                    >
+                      <MessageSquare size={18} /> Send to WhatsApp (9538765487)
+                    </a>
+
+                    <button
+                      onClick={() => {
+                        setSubmitted(false);
+                        setFormData({
+                          name: '', phone: '', email: '', date: '',
+                          time: 'Morning (10:00 AM - 1:00 PM)', message: '', consent: false, botCheck: '',
+                        });
+                      }}
+                      className="btn btn-premium"
+                      style={{ fontSize: '0.85rem', padding: '0.65rem 1.25rem', marginTop: '0.5rem' }}
+                    >
+                      Submit Another Request
+                    </button>
+                  </div>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -364,71 +420,92 @@ export default function ContactPage() {
               )}
             </motion.div>
 
-            {/* ── CLINIC CONTACT DETAILS & MAP ──────────────────────────── */}
+            {/* Right Column: Clinic Details & Map */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <a href={`tel:${siteSettings.phoneUrl}`} className="editorial-card" style={{ padding: '1.4rem', display: 'flex', alignItems: 'center', gap: '1.25rem', textDecoration: 'none' }}>
-                  <div style={{ background: 'var(--border-subtle)', padding: '0.9rem', borderRadius: '50%', color: 'var(--accent-gold)', flexShrink: 0 }}>
-                    <Phone size={22} />
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.2rem', fontSize: '0.95rem' }}>Call Directly</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{siteSettings.phone}</div>
-                  </div>
-                </a>
+              <div style={{
+                background: 'var(--bg-card, rgba(255,255,255,0.03))',
+                border: '1px solid var(--border-subtle, rgba(255,255,255,0.08))',
+                borderRadius: '24px', padding: '2.5rem',
+              }}>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '1.5rem' }}>
+                  Clinic Contact Details
+                </h3>
 
-                <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="editorial-card" style={{ padding: '1.4rem', display: 'flex', alignItems: 'center', gap: '1.25rem', textDecoration: 'none' }}>
-                  <div style={{ background: 'var(--border-subtle)', padding: '0.9rem', borderRadius: '50%', color: 'var(--accent-gold)', flexShrink: 0 }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                    <div style={{
+                      width: '44px', height: '44px', borderRadius: '12px',
+                      background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.25)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-gold)', flexShrink: 0,
+                    }}>
+                      <Phone size={20} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone / WhatsApp</div>
+                      <a href={`https://wa.me/919538765487`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.05rem', textDecoration: 'none' }}>
+                        +91 95387 65487
+                      </a>
+                    </div>
                   </div>
-                  <div>
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.2rem', fontSize: '0.95rem' }}>WhatsApp Consultation</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Message clinic reception</div>
-                  </div>
-                </a>
 
-                <a href={`mailto:${siteSettings.email}`} className="editorial-card" style={{ padding: '1.4rem', display: 'flex', alignItems: 'center', gap: '1.25rem', textDecoration: 'none' }}>
-                  <div style={{ background: 'var(--border-subtle)', padding: '0.9rem', borderRadius: '50%', color: 'var(--accent-gold)', flexShrink: 0 }}>
-                    <Mail size={22} />
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                    <div style={{
+                      width: '44px', height: '44px', borderRadius: '12px',
+                      background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.25)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-gold)', flexShrink: 0,
+                    }}>
+                      <Mail size={20} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email</div>
+                      <a href={`mailto:${siteSettings.email}`} style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.05rem', textDecoration: 'none' }}>
+                        {siteSettings.email}
+                      </a>
+                    </div>
                   </div>
-                  <div>
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.2rem', fontSize: '0.95rem' }}>Email Inquiry</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{siteSettings.email}</div>
-                  </div>
-                </a>
 
-                <div className="editorial-card" style={{ padding: '1.4rem', display: 'flex', alignItems: 'flex-start', gap: '1.25rem' }}>
-                  <div style={{ background: 'var(--border-subtle)', padding: '0.9rem', borderRadius: '50%', color: 'var(--accent-gold)', flexShrink: 0 }}>
-                    <MapPin size={22} />
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.2rem', fontSize: '0.95rem' }}>Consultation Location</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5 }}>
-                      Deepak Hospital, 33rd Cross Rd, 7th Block, Jayanagar, Bengaluru 560070
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                    <div style={{
+                      width: '44px', height: '44px', borderRadius: '12px',
+                      background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.25)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-gold)', flexShrink: 0,
+                    }}>
+                      <MapPin size={20} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Consultation Location</div>
+                      <div style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.98rem' }}>
+                        Deepak Hospital
+                      </div>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginTop: '0.2rem' }}>
+                        33rd Cross Rd, 7th Block, Jayanagar, Bengaluru 560070
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Clinic Map */}
-              <div style={{ height: '320px', borderRadius: '24px', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
+              {/* Location Map Embed */}
+              <div style={{
+                borderRadius: '24px', overflow: 'hidden', height: '280px',
+                border: '1px solid var(--border-subtle, rgba(255,255,255,0.08))',
+              }}>
                 <iframe
-                  title="Clinic Map Location"
+                  title="Deepak Hospital Location Map"
                   src={siteSettings.locations[0].mapSrc}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
+                  allowFullScreen=""
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  sandbox="allow-scripts allow-same-origin allow-popups"
                 />
               </div>
-
             </motion.div>
 
           </div>
@@ -437,17 +514,3 @@ export default function ContactPage() {
     </PageWrapper>
   );
 }
-
-const inputStyle = {
-  width: '100%',
-  padding: '0.8rem 1rem 0.8rem 2.75rem',
-  borderRadius: '12px',
-  background: 'var(--bg-primary, rgba(10,10,20,0.6))',
-  border: '1px solid var(--border-subtle, rgba(255,255,255,0.12))',
-  color: 'var(--text-primary, #fff)',
-  fontSize: '0.9rem',
-  outline: 'none',
-  fontFamily: 'inherit',
-  boxSizing: 'border-box',
-  transition: 'border-color 0.2s',
-};
