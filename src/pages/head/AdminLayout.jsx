@@ -14,6 +14,7 @@ export const ADMIN_NAV_ITEMS = [
     items: [
       { to: '/admin/blog', id: 'admin-blog', label: 'Manage Blog Posts', icon: BookOpen },
       { to: '/admin/gallery', id: 'admin-gallery', label: 'Manage Gallery Images', icon: ImageIcon },
+      { to: '/admin/settings', id: 'admin-settings', label: 'Site Settings', icon: Settings },
     ]
   }
 ];

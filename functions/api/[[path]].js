@@ -114,6 +114,53 @@ export async function onRequest(context) {
     }
 
     // -------------------------------------------------------------
+    // SITE SETTINGS: GET /api/settings & PUT /api/settings
+    // -------------------------------------------------------------
+    if (path[0] === 'settings') {
+      if (method === 'GET') {
+        if (!env.DB) return jsonResponse({});
+        try {
+          await env.DB.prepare(`
+            CREATE TABLE IF NOT EXISTS settings (
+              key TEXT PRIMARY KEY,
+              value TEXT
+            )
+          `).run();
+          const { results } = await env.DB.prepare('SELECT key, value FROM settings').all();
+          const settingsObj = {};
+          (results || []).forEach(row => { settingsObj[row.key] = row.value; });
+          return jsonResponse(settingsObj);
+        } catch (e) {
+          return jsonResponse({});
+        }
+      }
+
+      if (method === 'PUT') {
+        const body = await request.json();
+        if (env.DB) {
+          try {
+            await env.DB.prepare(`
+              CREATE TABLE IF NOT EXISTS settings (
+                key TEXT PRIMARY KEY,
+                value TEXT
+              )
+            `).run();
+            for (const [k, v] of Object.entries(body)) {
+              await env.DB.prepare(`
+                INSERT INTO settings (key, value) VALUES (?, ?)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value
+              `).bind(k, String(v)).run();
+            }
+          } catch (e) {
+            console.error('Settings update error:', e);
+          }
+        }
+        return jsonResponse({ success: true, settings: body });
+      }
+    }
+
+
+    // -------------------------------------------------------------
     // R2 IMAGE UPLOAD: POST /api/upload
     // -------------------------------------------------------------
     if (path[0] === 'upload' && method === 'POST') {

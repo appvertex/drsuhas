@@ -17,6 +17,8 @@ import {
   createGalleryApi,
   updateGalleryApi,
   deleteGalleryApi,
+  fetchSettingsFromApi,
+  updateSettingsApi,
 } from './apiClient';
 
 /* ─── KEYS & MEMORY FALLBACKS ───────────────────────────────── */
@@ -180,6 +182,60 @@ export async function deleteGalleryImage(id) {
   await deleteGalleryApi(id);
 }
 
+/* ─── SITE SETTINGS ──────────────────────────────────────────── */
+export const DEFAULT_SITE_SETTINGS = {
+  yearsOfExperience: '11',
+  yearsSuffix: '+',
+  surgeriesPerformed: '1000',
+  surgeriesSuffix: '+',
+  patientsTreated: '2500',
+  patientsSuffix: '+',
+  publicationsAuthored: '10',
+  publicationsSuffix: '+',
+  copyrightYear: '2026',
+};
+
+const SETTINGS_KEY = 'admin_site_settings';
+let memorySettings = null;
+
+export function getSiteSettings() {
+  if (memorySettings) return memorySettings;
+  try {
+    const stored = localStorage.getItem(SETTINGS_KEY);
+    if (stored) {
+      memorySettings = { ...DEFAULT_SITE_SETTINGS, ...JSON.parse(stored) };
+      return memorySettings;
+    }
+  } catch {/* ignore */}
+  return DEFAULT_SITE_SETTINGS;
+}
+
+export async function getSiteSettingsAsync() {
+  const apiSettings = await fetchSettingsFromApi();
+  if (apiSettings && typeof apiSettings === 'object' && Object.keys(apiSettings).length > 0) {
+    const merged = { ...DEFAULT_SITE_SETTINGS, ...apiSettings };
+    saveSiteSettings(merged, false);
+    return merged;
+  }
+  return getSiteSettings();
+}
+
+export async function saveSiteSettings(settings, syncApi = true) {
+  memorySettings = { ...DEFAULT_SITE_SETTINGS, ...settings };
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(memorySettings));
+  } catch {/* ignore */}
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('settings-changed'));
+  }
+
+  if (syncApi) {
+    await updateSettingsApi(memorySettings);
+  }
+  return memorySettings;
+}
+
 /* ─── AUTH ───────────────────────────────────────────────────── */
 export function setAdminAuth(val) {
   memoryAuth = Boolean(val);
@@ -197,3 +253,4 @@ export function isAdminAuthed() {
     return memoryAuth;
   }
 }
+

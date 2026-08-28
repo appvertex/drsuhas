@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, useInView } from "framer-motion";
-
-const STATS = [
-  { value: 11, suffix: "+", label: "Years of Experience" },
-  { value: 1000, suffix: "+", label: "Surgeries Performed" },
-  { value: 2500, suffix: "+", label: "Patients Treated" },
-  { value: 10, suffix: "+", label: "Publications Authored" },
-];
+import { getSiteSettings, getSiteSettingsAsync } from '../utils/adminStorage';
 
 const DURATION = 2000;
 
@@ -70,11 +64,38 @@ function StatItem({ value, suffix, label, index, inView }) {
 export default function StatsCounter() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [settings, setSettings] = useState(getSiteSettings);
+
+  useEffect(() => {
+    let mounted = true;
+    const sync = () => {
+      if (mounted) setSettings(getSiteSettings());
+    };
+
+    window.addEventListener('settings-changed', sync);
+    window.addEventListener('storage', sync);
+
+    getSiteSettingsAsync().then(latest => {
+      if (mounted && latest) setSettings(latest);
+    });
+
+    return () => {
+      mounted = false;
+      window.removeEventListener('settings-changed', sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
+
+  const statsList = [
+    { value: Number(settings.yearsOfExperience || 11), suffix: settings.yearsSuffix || '+', label: "Years of Experience" },
+    { value: Number(settings.surgeriesPerformed || 1000), suffix: settings.surgeriesSuffix || '+', label: "Surgeries Performed" },
+    { value: Number(settings.patientsTreated || 2500), suffix: settings.patientsSuffix || '+', label: "Patients Treated" },
+    { value: Number(settings.publicationsAuthored || 10), suffix: settings.publicationsSuffix || '+', label: "Publications Authored" },
+  ];
 
   // Filter valid stats with real positive numbers > 0
-  const validStats = STATS.filter(s => typeof s.value === 'number' && s.value > 0);
+  const validStats = statsList.filter(s => typeof s.value === 'number' && s.value > 0);
 
-  // If no stats exist or values are 0, hide the component completely (never display fake 0+)
   if (validStats.length === 0) {
     return null;
   }

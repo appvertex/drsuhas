@@ -176,3 +176,34 @@ export async function deleteGalleryApi(id) {
   }
   return false;
 }
+
+/**
+ * Fetch site settings from Cloudflare D1
+ */
+export async function fetchSettingsFromApi() {
+  try {
+    const res = await fetch(`${API_BASE}/settings`);
+    if (res.ok) return await res.json();
+  } catch (e) {
+    console.warn('[API Client] Could not fetch settings from D1 API:', e);
+  }
+  return null;
+}
+
+/**
+ * Update site settings in Cloudflare D1
+ */
+export async function updateSettingsApi(settings) {
+  try {
+    const res = await fetch(`${API_BASE}/settings`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+    });
+    if (res.ok) return await res.json();
+  } catch (e) {
+    console.warn('[API Client] Could not update settings in D1 API:', e);
+  }
+  return null;
+}
+

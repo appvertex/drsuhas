@@ -10,6 +10,7 @@ import FloatingWhatsApp from './FloatingWhatsApp';
 import ScrollToTopButton from './ScrollToTop';
 import { siteSettings } from '../config/siteSettings';
 import { useScrollPosition, useTheme } from '../hooks';
+import { getSiteSettings, getSiteSettingsAsync } from '../utils/adminStorage';
 
 /* ─── Static navigation config (defined outside component to prevent re-creation) ─── */
 const NAV_ITEMS = [
@@ -132,9 +133,27 @@ export default function Layout({ children }) {
   const scrollY = useScrollPosition();
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [appSettings, setAppSettings] = useState(getSiteSettings);
   const location = useLocation();
 
   const isScrolled = scrollY > 50;
+
+  useEffect(() => {
+    let mounted = true;
+    const sync = () => {
+      if (mounted) setAppSettings(getSiteSettings());
+    };
+    window.addEventListener('settings-changed', sync);
+    window.addEventListener('storage', sync);
+    getSiteSettingsAsync().then(latest => {
+      if (mounted && latest) setAppSettings(latest);
+    });
+    return () => {
+      mounted = false;
+      window.removeEventListener('settings-changed', sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -381,7 +400,7 @@ export default function Layout({ children }) {
           <div className="container footer-bottom">
             <div style={{ flex: '1 1 0%', display: 'flex', justifyContent: 'flex-start' }}>
               <span className="footer-copyright">
-                &copy; {new Date().getFullYear()} Dr. Suhas S Kumar. All rights reserved.
+                &copy; {appSettings.copyrightYear || '2026'} Dr. Suhas S Kumar. All rights reserved.
               </span>
             </div>
             <div style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center' }}>

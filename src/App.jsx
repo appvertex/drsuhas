@@ -25,6 +25,7 @@ const AdminLogin = lazy(() => import('./pages/head/AdminLogin'));
 const AdminDashboard = lazy(() => import('./pages/head/AdminDashboard'));
 const AdminBlog = lazy(() => import('./pages/head/AdminBlog'));
 const AdminGallery = lazy(() => import('./pages/head/AdminGallery'));
+const AdminSettings = lazy(() => import('./pages/head/AdminSettings'));
 
 function NotFoundPage() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="/admin" element={<Navigate to="/admin/blog" replace />} />
         <Route path="/admin/blog" element={<AdminBlog />} />
         <Route path="/admin/gallery" element={<AdminGallery />} />
+        <Route path="/admin/settings" element={<AdminSettings />} />
 
         {/* Public Website Routes */}
         <Route path="/" element={<Layout><HomePage /></Layout>} />
