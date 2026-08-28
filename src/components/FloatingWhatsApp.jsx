@@ -1,12 +1,34 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { siteSettings } from '../config/siteSettings';
+import { getSiteSettings, getSiteSettingsAsync } from '../utils/adminStorage';
 
 export default function FloatingWhatsApp() {
+  const [settings, setSettings] = useState(getSiteSettings);
   const message = 'Hello, I would like to book a consultation.';
+
+  useEffect(() => {
+    let mounted = true;
+    const sync = () => {
+      if (mounted) setSettings(getSiteSettings());
+    };
+    window.addEventListener('settings-changed', sync);
+    window.addEventListener('storage', sync);
+    getSiteSettingsAsync().then(latest => {
+      if (mounted && latest) setSettings(latest);
+    });
+    return () => {
+      mounted = false;
+      window.removeEventListener('settings-changed', sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
+
+  const waNum = settings.floatingWhatsApp || siteSettings.whatsappNumber;
 
   return (
     <motion.a
-      href={`https://wa.me/${siteSettings.whatsappNumber}?text=${encodeURIComponent(message)}`}
+      href={`https://wa.me/${waNum}?text=${encodeURIComponent(message)}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"

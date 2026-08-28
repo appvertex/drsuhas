@@ -5,7 +5,7 @@ import SEO from '../components/SEO';
 import { PageWrapper } from '../components/common';
 import { siteSettings } from '../config/siteSettings';
 import { organizationSchema, breadcrumbSchema } from '../data/content';
-import { trackEvent } from '../utils/analyticsTracker';
+import { getSiteSettings, getSiteSettingsAsync } from '../utils/adminStorage';
 
 const inputStyle = {
   width: '100%',
@@ -22,6 +22,7 @@ const inputStyle = {
 };
 
 export default function ContactPage() {
+  const [appSettings, setAppSettings] = useState(getSiteSettings);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -36,6 +37,23 @@ export default function ContactPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  useEffect(() => {
+    let mounted = true;
+    const sync = () => {
+      if (mounted) setAppSettings(getSiteSettings());
+    };
+    window.addEventListener('settings-changed', sync);
+    window.addEventListener('storage', sync);
+    getSiteSettingsAsync().then(latest => {
+      if (mounted && latest) setAppSettings(latest);
+    });
+    return () => {
+      mounted = false;
+      window.removeEventListener('settings-changed', sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -69,8 +87,8 @@ export default function ContactPage() {
     setSubmitting(true);
     setErrorMsg('');
 
-    // Format WhatsApp Message to send directly to 9538765487
-    const targetPhone = '919538765487';
+    // Format WhatsApp Message to send directly to configured WhatsApp number
+    const targetPhone = (appSettings.appointmentWhatsApp || '919538765487').replace(/\D/g, '');
     const waMessage = 
 `🏥 *NEW APPOINTMENT BOOKING REQUEST*
 
@@ -112,7 +130,7 @@ _Submitted via Dr. Suhas S Kumar Website_`;
         body: JSON.stringify(formData),
       }).catch(() => {});
 
-      // Open WhatsApp directly to send to 9538765487
+      // Open WhatsApp directly to target number
       window.open(waUrl, '_blank');
 
       setSubmitted(true);
@@ -124,7 +142,8 @@ _Submitted via Dr. Suhas S Kumar Website_`;
     }
   };
 
-  const currentWaUrl = `https://wa.me/919538765487?text=${encodeURIComponent(
+  const targetWaNum = (appSettings.appointmentWhatsApp || '919538765487').replace(/\D/g, '');
+  const currentWaUrl = `https://wa.me/${targetWaNum}?text=${encodeURIComponent(
 `🏥 *NEW APPOINTMENT BOOKING REQUEST*
 
 👤 *Full Name:* ${formData.name}
@@ -447,8 +466,8 @@ _Submitted via Dr. Suhas S Kumar Website_`
                     </div>
                     <div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone / WhatsApp</div>
-                      <a href={`https://wa.me/919538765487`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.05rem', textDecoration: 'none' }}>
-                        +91 95387 65487
+                      <a href={`https://wa.me/${(appSettings.floatingWhatsApp || '919538765487').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.05rem', textDecoration: 'none' }}>
+                        {appSettings.phone || '+91 95387 65487'}
                       </a>
                     </div>
                   </div>
@@ -463,8 +482,8 @@ _Submitted via Dr. Suhas S Kumar Website_`
                     </div>
                     <div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email</div>
-                      <a href={`mailto:${siteSettings.email}`} style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.05rem', textDecoration: 'none' }}>
-                        {siteSettings.email}
+                      <a href={`mailto:${appSettings.email || siteSettings.email}`} style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.05rem', textDecoration: 'none' }}>
+                        {appSettings.email || siteSettings.email}
                       </a>
                     </div>
                   </div>

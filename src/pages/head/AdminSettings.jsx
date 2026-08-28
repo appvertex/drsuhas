@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from './AdminLayout';
 import { getSiteSettings, getSiteSettingsAsync, saveSiteSettings, DEFAULT_SITE_SETTINGS } from '../../utils/adminStorage';
-import { Settings, Save, RefreshCw, Award, Users, Stethoscope, BookOpen, Calendar, Check, AlertCircle } from 'lucide-react';
+import { Settings, Save, RefreshCw, Award, Calendar, Phone, Mail, MessageSquare } from 'lucide-react';
 
 export default function AdminSettings() {
   const [form, setForm] = useState(DEFAULT_SITE_SETTINGS);
@@ -11,11 +11,9 @@ export default function AdminSettings() {
 
   useEffect(() => {
     let mounted = true;
-    // Initial local read
     setForm(getSiteSettings());
     setLoading(false);
 
-    // Sync from Cloudflare D1 backend
     getSiteSettingsAsync().then((settings) => {
       if (mounted && settings) {
         setForm(settings);
@@ -72,7 +70,7 @@ export default function AdminSettings() {
               Site Settings
             </h1>
             <p style={styles.subtitle}>
-              Customize practice statistics counters and footer copyright configuration across your website.
+              Manage clinic contact details, WhatsApp integration numbers, statistics counters, and footer configuration.
             </p>
           </div>
           <button
@@ -91,7 +89,90 @@ export default function AdminSettings() {
           {/* Settings Form */}
           <form onSubmit={handleSave} style={styles.formCard}>
             
-            {/* Section 1: Counter Statistics */}
+            {/* Section 1: Contact Information & WhatsApp */}
+            <div style={styles.sectionHeader}>
+              <Phone size={20} style={{ color: '#c9a96e' }} />
+              <h2 style={styles.sectionTitle}>Contact & WhatsApp Configuration</h2>
+            </div>
+            <p style={styles.sectionDesc}>
+              Update clinic phone numbers, email address, and WhatsApp targets for appointment requests.
+            </p>
+
+            <div style={styles.fieldsGrid}>
+              
+              {/* Phone Number */}
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>
+                  <Phone size={14} style={{ marginRight: '0.35rem', verticalAlign: 'middle' }} />
+                  Display Phone Number
+                </label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="+91 95387 65487"
+                  style={styles.input}
+                />
+                <span style={styles.helpText}>Appears in header, footer & contact cards</span>
+              </div>
+
+              {/* Email Address */}
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>
+                  <Mail size={14} style={{ marginRight: '0.35rem', verticalAlign: 'middle' }} />
+                  Clinic Email Address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="suhassk2@gmail.com"
+                  style={styles.input}
+                />
+                <span style={styles.helpText}>Appears in website contact cards & footer</span>
+              </div>
+
+              {/* Appointment WhatsApp Target Number */}
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>
+                  <MessageSquare size={14} style={{ marginRight: '0.35rem', verticalAlign: 'middle' }} />
+                  Book Appointment Send WhatsApp No.
+                </label>
+                <input
+                  type="text"
+                  name="appointmentWhatsApp"
+                  value={form.appointmentWhatsApp}
+                  onChange={handleChange}
+                  placeholder="919538765487"
+                  style={styles.input}
+                />
+                <span style={styles.helpText}>Country code + number (e.g. 919538765487)</span>
+              </div>
+
+              {/* Floating WhatsApp Chat Number */}
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>
+                  <MessageSquare size={14} style={{ marginRight: '0.35rem', verticalAlign: 'middle' }} />
+                  Floating WhatsApp Widget Number
+                </label>
+                <input
+                  type="text"
+                  name="floatingWhatsApp"
+                  value={form.floatingWhatsApp}
+                  onChange={handleChange}
+                  placeholder="919538765487"
+                  style={styles.input}
+                />
+                <span style={styles.helpText}>Used by bottom-right floating WhatsApp button</span>
+              </div>
+
+            </div>
+
+            <div style={styles.divider} />
+
+            {/* Section 2: Counter Statistics */}
             <div style={styles.sectionHeader}>
               <Award size={20} style={{ color: '#c9a96e' }} />
               <h2 style={styles.sectionTitle}>Practice Statistics Counters</h2>
@@ -214,7 +295,7 @@ export default function AdminSettings() {
 
             <div style={styles.divider} />
 
-            {/* Section 2: Footer Settings */}
+            {/* Section 3: Footer Settings */}
             <div style={styles.sectionHeader}>
               <Calendar size={20} style={{ color: '#c9a96e' }} />
               <h2 style={styles.sectionTitle}>Footer Configuration</h2>
@@ -236,7 +317,7 @@ export default function AdminSettings() {
               <span style={styles.helpText}>Appears as: &copy; {form.copyrightYear || '2026'} Dr. Suhas S Kumar. All rights reserved.</span>
             </div>
 
-            {/* Form Footer Actions */}
+            {/* Form Actions */}
             <div style={styles.formActions}>
               <button type="button" onClick={handleReset} style={styles.resetBtn}>
                 Reset Defaults
@@ -250,8 +331,22 @@ export default function AdminSettings() {
 
           {/* Live Preview Panel */}
           <div style={styles.previewCard}>
-            <h3 style={styles.previewHeader}>Live Component Preview</h3>
-            <p style={styles.previewSub}>How your changes will look on the live site:</p>
+            <h3 style={styles.previewHeader}>Live Settings Preview</h3>
+            <p style={styles.previewSub}>Real-time view of updated contact & counter configuration:</p>
+
+            {/* Contact Details Preview */}
+            <div style={{ ...styles.previewSection, marginBottom: '1.5rem' }}>
+              <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#c9a96e', fontWeight: 700, marginBottom: '0.75rem' }}>Contact Info</div>
+              <div style={{ fontSize: '0.88rem', color: '#fff', marginBottom: '0.4rem' }}>
+                📞 <strong>Phone:</strong> {form.phone || '+91 95387 65487'}
+              </div>
+              <div style={{ fontSize: '0.88rem', color: '#fff', marginBottom: '0.4rem' }}>
+                ✉️ <strong>Email:</strong> {form.email || 'suhassk2@gmail.com'}
+              </div>
+              <div style={{ fontSize: '0.88rem', color: '#25D366' }}>
+                💬 <strong>Appointment WhatsApp:</strong> {form.appointmentWhatsApp || '919538765487'}
+              </div>
+            </div>
 
             {/* Stats Counter Preview */}
             <div style={styles.previewStatsContainer}>
@@ -457,6 +552,12 @@ const styles = {
     fontSize: '0.8rem',
     color: 'rgba(255,255,255,0.5)',
     marginBottom: '1.5rem',
+  },
+  previewSection: {
+    background: 'rgba(255,255,255,0.04)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    borderRadius: '14px',
+    padding: '1.25rem',
   },
   previewStatsContainer: {
     display: 'grid',

@@ -193,6 +193,10 @@ export const DEFAULT_SITE_SETTINGS = {
   publicationsAuthored: '10',
   publicationsSuffix: '+',
   copyrightYear: '2026',
+  phone: '+91 95387 65487',
+  email: 'suhassk2@gmail.com',
+  appointmentWhatsApp: '919538765487',
+  floatingWhatsApp: '919538765487',
 };
 
 const SETTINGS_KEY = 'admin_site_settings';

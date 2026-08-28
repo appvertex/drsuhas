@@ -344,13 +344,13 @@ export default function Layout({ children }) {
             <address style={{ fontStyle: 'normal' }}>
               <div className="footer-section-label">Contact</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                <a href={`tel:${siteSettings.phoneUrl}`} className="footer-contact-link">
+                <a href={`https://wa.me/${(appSettings.floatingWhatsApp || '919538765487').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="footer-contact-link">
                   <span className="footer-icon-wrap" aria-hidden="true"><Phone size={15} /></span>
-                  <span className="footer-link-text">{siteSettings.phone}</span>
+                  <span className="footer-link-text">{appSettings.phone || siteSettings.phone}</span>
                 </a>
-                <a href={`mailto:${siteSettings.email}`} className="footer-contact-link">
+                <a href={`mailto:${appSettings.email || siteSettings.email}`} className="footer-contact-link">
                   <span className="footer-icon-wrap" aria-hidden="true"><Mail size={15} /></span>
-                  <span className="footer-link-text">{siteSettings.email}</span>
+                  <span className="footer-link-text">{appSettings.email || siteSettings.email}</span>
                 </a>
               </div>
             </address>
