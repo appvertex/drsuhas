@@ -12,9 +12,9 @@ export const ADMIN_NAV_ITEMS = [
   {
     group: 'CONTENT MANAGEMENT',
     items: [
-      { to: '/admin/blog', id: 'admin-blog', label: 'Manage Blog Posts', icon: BookOpen },
-      { to: '/admin/gallery', id: 'admin-gallery', label: 'Manage Gallery Images', icon: ImageIcon },
-      { to: '/admin/settings', id: 'admin-settings', label: 'Site Settings', icon: Settings },
+      { to: '/head/admin/blog', id: 'admin-blog', label: 'Manage Blog Posts', icon: BookOpen },
+      { to: '/head/admin/gallery', id: 'admin-gallery', label: 'Manage Gallery Images', icon: ImageIcon },
+      { to: '/head/admin/settings', id: 'admin-settings', label: 'Site Settings', icon: Settings },
     ]
   }
 ];
@@ -24,12 +24,12 @@ export default function AdminLayout({ children, currentTab, onTabSelect }) {
   const [collapsed, setCollapsed] = useState(false);
 
   if (!isAdminAuthed()) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/head/admin/login" replace />;
   }
 
   function handleLogout() {
     setAdminAuth(false);
-    navigate('/admin/login');
+    navigate('/head/admin/login');
   }
 
   return (

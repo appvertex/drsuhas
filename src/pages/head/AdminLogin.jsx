@@ -22,7 +22,7 @@ export default function AdminLogin() {
 
       if (res.ok) {
         setAdminAuth(true);
-        navigate('/admin');
+        navigate('/head/admin');
         return;
       } else {
         const data = await res.json().catch(() => ({}));
@@ -32,7 +32,7 @@ export default function AdminLogin() {
       // Local dev fallback if worker API is not active
       if (password) {
         setAdminAuth(true);
-        navigate('/admin');
+        navigate('/head/admin');
         return;
       }
       setError('Connection error. Please try again.');

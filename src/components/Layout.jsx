@@ -411,37 +411,6 @@ export default function Layout({ children }) {
               </div>
             </div>
             <div style={{ flex: '1 1 0%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.75rem' }}>
-              <Link
-                to="/admin/login"
-                aria-label="Admin Portal"
-                title="Admin Portal"
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  color: 'var(--text-muted, rgba(255, 255, 255, 0.4))',
-                  transition: 'all 0.2s ease',
-                  cursor: 'pointer',
-                  textDecoration: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = 'var(--accent-gold, #c9a96e)';
-                  e.currentTarget.style.borderColor = 'var(--accent-gold, #c9a96e)';
-                  e.currentTarget.style.background = 'rgba(201, 169, 110, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'var(--text-muted, rgba(255, 255, 255, 0.4))';
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                }}
-              >
-                <Lock size={14} aria-hidden="true" />
-              </Link>
               <button
                 onClick={toggleTheme}
                 className="theme-switch"

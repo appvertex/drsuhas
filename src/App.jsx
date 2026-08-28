@@ -45,12 +45,16 @@ export default function App() {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<Navigate to="/admin/blog" replace />} />
-        <Route path="/admin/blog" element={<AdminBlog />} />
-        <Route path="/admin/gallery" element={<AdminGallery />} />
-        <Route path="/admin/settings" element={<AdminSettings />} />
+        {/* Hidden Admin Routes */}
+        <Route path="/head/admin/login" element={<AdminLogin />} />
+        <Route path="/head/admin" element={<Navigate to="/head/admin/blog" replace />} />
+        <Route path="/head/admin/blog" element={<AdminBlog />} />
+        <Route path="/head/admin/gallery" element={<AdminGallery />} />
+        <Route path="/head/admin/settings" element={<AdminSettings />} />
+
+        {/* Legacy /admin redirects for safety */}
+        <Route path="/admin/login" element={<Navigate to="/head/admin/login" replace />} />
+        <Route path="/admin/*" element={<Navigate to="/head/admin/blog" replace />} />
 
         {/* Public Website Routes */}
         <Route path="/" element={<Layout><HomePage /></Layout>} />
