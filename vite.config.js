@@ -4,8 +4,8 @@ import path from 'path';
 import fs from 'fs';
 
 export default defineConfig(({ command }) => ({
-  // Relative base path for universal deployment compatibility
-  base: './',
+  // Absolute base path — required for Cloudflare Pages SPA routing (lazy chunks must resolve from site root)
+  base: '/',
   plugins: [
     react(),
     {
