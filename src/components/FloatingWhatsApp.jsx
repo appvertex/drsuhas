@@ -5,7 +5,7 @@ import { getSiteSettings, getSiteSettingsAsync } from '../utils/adminStorage';
 
 export default function FloatingWhatsApp() {
   const [settings, setSettings] = useState(getSiteSettings);
-  const message = 'Hello, I would like to book a consultation.';
+  const message = 'Hello, I would like to book a consultation. via website';
 
   useEffect(() => {
     let mounted = true;
