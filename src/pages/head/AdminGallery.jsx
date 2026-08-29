@@ -4,6 +4,7 @@ import {
   getGalleryImages, addGalleryImage, updateGalleryImage, deleteGalleryImage,
 } from '../../utils/adminStorage';
 import { uploadImageToR2 } from '../../utils/apiClient';
+import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
 import { Image as ImageIcon, Plus, ArrowLeft, Pencil, Trash2, Save } from 'lucide-react';
 
 const EMPTY = { src: '', title: '', label: '', span: 'normal' };
@@ -165,7 +166,11 @@ export default function AdminGallery() {
                     {/* Image */}
                     <div style={s.imgWrap}>
                       <img
-                        src={img.src} alt={img.title} style={s.img}
+                        src={getOptimizedImageUrl(img.src, 450, 75)}
+                        alt={img.title}
+                        loading="lazy"
+                        decoding="async"
+                        style={s.img}
                         onError={e => { e.target.src = 'https://placehold.co/400x260/1a1a2e/555?text=No+Image'; }}
                       />
                       {/* Span badge */}

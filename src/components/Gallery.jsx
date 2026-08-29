@@ -1,7 +1,46 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getGalleryImages, getGalleryImagesAsync } from '../utils/adminStorage';
+import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 
+/* ─────────────────────────────────────────────────────────────── */
+/*  PROGRESSIVE OPTIMIZED IMAGE                                     */
+/* ─────────────────────────────────────────────────────────────── */
+function ProgressiveImage({ src, alt, width = 600, quality = 75, style, ...props }) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError]   = useState(false);
 
+  const optimizedSrc = getOptimizedImageUrl(src, width, quality);
+
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+      {/* Skeleton shimmer layer while downloading */}
+      {!loaded && !error && (
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 1,
+          background: 'linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(201,169,110,0.08) 50%, rgba(255,255,255,0.03) 100%)',
+          backgroundSize: '200% 100%',
+          animation: 'pulseShimmer 1.5s infinite ease-in-out',
+        }} />
+      )}
+      <img
+        src={error ? 'https://placehold.co/600x400/1a1a2e/555?text=Image+Unavailable' : optimizedSrc}
+        alt={alt || ''}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        style={{
+          width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 0.35s ease',
+          ...style,
+        }}
+        {...props}
+      />
+    </div>
+  );
+}
 
 /* ─────────────────────────────────────────────────────────────── */
 /*  LIGHTBOX                                                        */
@@ -63,19 +102,20 @@ function Lightbox({ img, images = [], onClose, onNext, onPrev }) {
               position: 'relative', maxWidth: '900px', width: '100%',
               borderRadius: '24px', overflow: 'hidden',
               boxShadow: '0 60px 120px rgba(0,0,0,0.8)',
+              maxHeight: '82vh',
             }}
           >
-            <img
+            <ProgressiveImage
               src={img.src}
               alt={img.title || 'Clinic gallery detail image'}
-              onError={(e) => {
-                e.target.src = 'https://placehold.co/800x500/1a1a2e/555?text=Image+Unavailable';
-              }}
-              style={{ width: '100%', display: 'block', maxHeight: '80vh', objectFit: 'cover' }}
+              width={1200}
+              quality={85}
+              style={{ maxHeight: '82vh' }}
             />
             <div style={{
               position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem',
               background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%)',
+              pointerEvents: 'none',
             }}>
               {img.label && (
                 <div style={{ color: 'var(--accent-gold,#c9a96e)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>
@@ -143,11 +183,8 @@ function Lightbox({ img, images = [], onClose, onNext, onPrev }) {
 }
 
 /* ─────────────────────────────────────────────────────────────── */
-/*  DESKTOP – MAGNETIC PULL GRID                                   */
+/*  MAGNETIC CARD (DESKTOP)                                        */
 /* ─────────────────────────────────────────────────────────────── */
-const STRENGTH = 18;
-const LIFT     = 28;
-
 function MagneticCard({ img, index, onClick }) {
   const cardRef = useRef(null);
   const glowRef = useRef(null);
@@ -196,7 +233,7 @@ function MagneticCard({ img, index, onClick }) {
       initial={{ opacity: 0, y: 30, scale: 0.96 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.5, delay: Math.min(index * 0.06, 0.3), ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3), ease: [0.22, 1, 0.36, 1] }}
       style={{ gridColumn: `span ${gridColSpan}`, gridRow: `span ${gridRowSpan}`, minHeight: img.span === 'tall' ? '460px' : '250px' }}
     >
       <div
@@ -220,10 +257,14 @@ function MagneticCard({ img, index, onClick }) {
           position: 'relative', transformStyle: 'preserve-3d',
           boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
         }}>
-          <img src={img.src} alt={img.title} draggable={false} loading="lazy" style={{
-            width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-            userSelect: 'none', pointerEvents: 'none',
-          }} />
+          <ProgressiveImage
+            src={img.src}
+            alt={img.title}
+            width={600}
+            quality={75}
+            draggable={false}
+            style={{ userSelect: 'none', pointerEvents: 'none' }}
+          />
           <div ref={glowRef} style={{
             position: 'absolute', inset: 0, pointerEvents: 'none', mixBlendMode: 'screen',
             opacity: 0, transition: 'opacity 0.3s ease',
@@ -264,8 +305,8 @@ function MobileScrollRiver({ images, onCardClick }) {
         overflowX: 'auto',
         scrollSnapType: 'x mandatory',
         paddingBottom: '2rem',
-        scrollbarWidth: 'none', /* Firefox */
-        msOverflowStyle: 'none',  /* IE and Edge */
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
       }} className="hide-scrollbar">
         {images.map((img, i) => (
           <div
@@ -293,9 +334,12 @@ function MobileScrollRiver({ images, onCardClick }) {
               cursor: 'pointer'
             }}
           >
-            <img src={img.src} alt={img.title} loading="lazy" style={{
-              width: '100%', height: '100%', objectFit: 'cover',
-            }} />
+            <ProgressiveImage
+              src={img.src}
+              alt={img.title}
+              width={500}
+              quality={75}
+            />
             <div style={{
               position: 'absolute', bottom: 0, left: 0, right: 0,
               background: 'linear-gradient(to top, rgba(3,3,10,0.92) 0%, transparent 100%)',
@@ -338,7 +382,7 @@ function GallerySkeletonGrid() {
               overflow: 'hidden',
               background: 'linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(201,169,110,0.08) 50%, rgba(255,255,255,0.03) 100%)',
               backgroundSize: '200% 100%',
-              animation: 'pulseShimmer 1.8s infinite ease-in-out',
+              animation: 'pulseShimmer 1.5s infinite ease-in-out',
               border: '1px solid var(--border-subtle, rgba(255,255,255,0.08))',
             }}
           />
@@ -359,14 +403,22 @@ export default function Gallery() {
 
   useEffect(() => {
     let mounted = true;
-    import('../utils/adminStorage').then(({ getGalleryImagesAsync }) => {
-      getGalleryImagesAsync().then((gallery) => {
-        if (mounted) {
-          setImages(gallery || []);
-          setLoading(false);
-        }
-      });
+
+    // 1. Instantly display cached images from localStorage/memory
+    const localGallery = getGalleryImages();
+    if (localGallery && Array.isArray(localGallery) && localGallery.length > 0) {
+      setImages(localGallery);
+      setLoading(false);
+    }
+
+    // 2. Sync with Cloudflare Workers / D1 API in background
+    getGalleryImagesAsync().then((gallery) => {
+      if (mounted && gallery && Array.isArray(gallery) && gallery.length > 0) {
+        setImages(gallery);
+        setLoading(false);
+      }
     });
+
     return () => { mounted = false; };
   }, []);
 
@@ -437,7 +489,7 @@ export default function Gallery() {
               No Gallery Photos Uploaded Yet
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: 0 }}>
-              Images uploaded through the Admin Panel will automatically appear here. Log in via the footer lock icon to upload your first image!
+              Images uploaded through the Admin Panel will automatically appear here. Log into the secret admin portal to upload your first image!
             </p>
           </motion.div>
         ) : isMobile ? (
