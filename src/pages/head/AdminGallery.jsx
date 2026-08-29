@@ -4,6 +4,7 @@ import {
   getGalleryImages, addGalleryImage, updateGalleryImage, deleteGalleryImage,
 } from '../../utils/adminStorage';
 import { uploadImageToR2 } from '../../utils/apiClient';
+import { Image as ImageIcon, Plus, ArrowLeft, Pencil, Trash2, Save } from 'lucide-react';
 
 const EMPTY = { src: '', title: '', label: '', span: 'normal' };
 const SPANS = [
@@ -114,28 +115,27 @@ export default function AdminGallery() {
 
         {/* ── Page Header ──────────────────────── */}
         <div style={s.header} data-admin-header>
-          <div>
-            <h1 style={s.pageTitle}>Gallery</h1>
-            <p style={s.pageSub}>
-              {mode === 'list'
-                ? `${images.length} image${images.length !== 1 ? 's' : ''} in the clinic gallery`
-                : mode === 'add' ? 'Upload a new image' : 'Edit image details'}
-            </p>
+          <div style={s.pageTitleGroup}>
+            <div style={s.pageTitleIcon}>
+              <ImageIcon size={22} color="#c9a96e" />
+            </div>
+            <div>
+              <h1 style={s.pageTitle}>Gallery</h1>
+              <p style={s.pageSub}>
+                {mode === 'list'
+                  ? `${images.length} image${images.length !== 1 ? 's' : ''} in the clinic gallery`
+                  : mode === 'add' ? 'Upload a new image' : 'Edit image details'}
+              </p>
+            </div>
           </div>
           <div style={s.headerActions}>
             {mode === 'list' ? (
               <button onClick={openAdd} style={s.btnPrimary}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-                Add Image
+                <Plus size={16} /> Add Image
               </button>
             ) : (
               <button onClick={closeForm} style={s.btnGhost}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-                </svg>
-                Back to gallery
+                <ArrowLeft size={16} /> Back to gallery
               </button>
             )}
           </div>
@@ -182,18 +182,10 @@ export default function AdminGallery() {
                       </div>
                       <div style={s.nameBarActions}>
                         <button onClick={() => openEdit(img)} style={s.cardBtnEdit} title="Edit">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                          </svg>
-                          Edit
+                          <Pencil size={13} /> Edit
                         </button>
                         <button onClick={() => setConfirm(img.id)} style={s.cardBtnDelete} title="Delete">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                            <polyline points="3 6 5 6 21 6"/>
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                          </svg>
-                          Delete
+                          <Trash2 size={13} /> Delete
                         </button>
                       </div>
                     </div>
@@ -345,7 +337,15 @@ export default function AdminGallery() {
 
 /* ── Styles ─────────────────────────────────────────────────── */
 const s = {
-  page: { color: '#fff', width: '100%', fontFamily: 'inherit', padding: 'clamp(1rem, 4vw, 2.5rem)', boxSizing: 'border-box' },
+  page: { color: '#fff', width: '100%', fontFamily: "'Inter', system-ui, sans-serif", padding: 'clamp(1.5rem, 4vw, 2.5rem)', boxSizing: 'border-box' },
+
+  /* Title group */
+  pageTitleGroup: { display: 'flex', alignItems: 'center', gap: '1rem' },
+  pageTitleIcon: {
+    width: '48px', height: '48px', borderRadius: '14px',
+    background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.2)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
 
   /* Toast */
   toast: {
@@ -382,28 +382,28 @@ const s = {
 
   /* Header */
   header: {
-    display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-    marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem',
   },
-  pageTitle: { fontSize: '2rem', fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '-0.03em' },
-  pageSub:   { color: 'rgba(255,255,255,0.4)', fontSize: '0.875rem', margin: '0.3rem 0 0' },
+  pageTitle: { fontSize: '1.7rem', fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '-0.02em' },
+  pageSub:   { color: 'rgba(255,255,255,0.4)', fontSize: '0.87rem', margin: '0.2rem 0 0' },
   headerActions: { display: 'flex', gap: '0.75rem' },
 
   /* Buttons */
   btnPrimary: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-    padding: '0.75rem 1.4rem',
+    padding: '0.75rem 1.5rem',
     background: 'linear-gradient(135deg,#c9a96e,#e0c080)',
     border: 'none', borderRadius: '12px',
     color: '#0a0a0f', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
     transition: 'opacity 0.15s',
   },
   btnGhost: {
-    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-    padding: '0.7rem 1.2rem',
+    display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+    padding: '0.75rem 1.25rem',
     background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '12px', color: 'rgba(255,255,255,0.65)',
-    cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
+    borderRadius: '12px', color: 'rgba(255,255,255,0.7)',
+    cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500,
   },
   btnDanger: {
     padding: '0.7rem 1.5rem', borderRadius: '10px',
@@ -431,7 +431,7 @@ const s = {
   /* Grid */
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
     gap: '1.25rem',
   },
 
@@ -440,10 +440,10 @@ const s = {
     display: 'flex', flexDirection: 'column',
     background: 'rgba(255,255,255,0.03)',
     border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '16px', overflow: 'hidden',
+    borderRadius: '18px', overflow: 'hidden',
     transition: 'border-color 0.2s, transform 0.2s',
   },
-  imgWrap: { position: 'relative', height: '175px', overflow: 'hidden', flexShrink: 0 },
+  imgWrap: { position: 'relative', height: '185px', overflow: 'hidden', flexShrink: 0 },
   img: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
   spanBadge: {
     position: 'absolute', top: '0.6rem', left: '0.6rem',
@@ -472,16 +472,16 @@ const s = {
   },
   nameBarActions: { display: 'flex', gap: '0.4rem', flexShrink: 0 },
   cardBtnEdit: {
-    display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-    padding: '0.4rem 0.75rem', borderRadius: '8px',
-    background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.3)',
+    display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+    padding: '0.45rem 0.8rem', borderRadius: '8px',
+    background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.25)',
     color: '#c9a96e', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
     whiteSpace: 'nowrap',
   },
   cardBtnDelete: {
-    display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-    padding: '0.4rem 0.75rem', borderRadius: '8px',
-    background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)',
+    display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+    padding: '0.45rem 0.8rem', borderRadius: '8px',
+    background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)',
     color: '#f87171', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
     whiteSpace: 'nowrap',
   },
