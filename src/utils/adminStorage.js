@@ -20,6 +20,7 @@ import {
   fetchSettingsFromApi,
   updateSettingsApi,
 } from './apiClient';
+import { galleryImages } from '../data/content';
 
 /* ─── KEYS & MEMORY FALLBACKS ───────────────────────────────── */
 const BLOGS_KEY   = 'admin_blogs';
@@ -51,7 +52,7 @@ export function getBlogs() {
     }
   });
 
-  return [];
+  return memoryBlogs || [];
 }
 
 export async function getBlogsAsync() {
@@ -109,40 +110,47 @@ export async function deleteBlog(id) {
 
 /* ─── GALLERY CRUD ───────────────────────────────────────────── */
 export function getGalleryImages() {
-  if (memoryGallery && Array.isArray(memoryGallery)) return memoryGallery;
+  if (memoryGallery && Array.isArray(memoryGallery) && memoryGallery.length > 0) return memoryGallery;
 
   try {
     const stored = localStorage.getItem(GALLERY_KEY);
     if (stored) {
-      memoryGallery = JSON.parse(stored);
-      return memoryGallery;
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        memoryGallery = parsed;
+        return memoryGallery;
+      }
     }
   } catch {/* ignore */}
 
   // Trigger background sync with Cloudflare D1
   fetchGalleryFromApi().then(apiGallery => {
-    if (apiGallery && Array.isArray(apiGallery)) {
+    if (apiGallery && Array.isArray(apiGallery) && apiGallery.length > 0) {
       saveGalleryImages(apiGallery);
     }
   });
 
-  return [];
+  memoryGallery = galleryImages;
+  return galleryImages;
 }
 
 export async function getGalleryImagesAsync() {
   const apiGallery = await fetchGalleryFromApi();
-  if (apiGallery && Array.isArray(apiGallery)) {
+  if (apiGallery && Array.isArray(apiGallery) && apiGallery.length > 0) {
     saveGalleryImages(apiGallery);
     return apiGallery;
   }
   try {
     const stored = localStorage.getItem(GALLERY_KEY);
     if (stored) {
-      memoryGallery = JSON.parse(stored);
-      return memoryGallery;
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        memoryGallery = parsed;
+        return memoryGallery;
+      }
     }
   } catch {/* ignore */}
-  return memoryGallery || [];
+  return (memoryGallery && memoryGallery.length > 0) ? memoryGallery : galleryImages;
 }
 
 export function saveGalleryImages(images) {
