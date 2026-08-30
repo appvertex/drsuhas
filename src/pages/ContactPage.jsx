@@ -171,7 +171,7 @@ _Submitted via Dr. Suhas S Kumar Website_`
         ]}
       />
 
-      <section className="section" style={{ paddingTop: '160px', paddingBottom: '100px', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
+      <section className="section" style={{ paddingTop: 'clamp(6.5rem, 8vw, 7.5rem)', paddingBottom: '100px', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
         <div className="container">
           
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>

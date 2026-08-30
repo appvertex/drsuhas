@@ -102,7 +102,7 @@ export default function BlogPage() {
           100% { background-position: -200% 0; }
         }
       `}</style>
-      <section className="section" style={{ paddingTop: '160px', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
+      <section className="section" style={{ paddingTop: 'clamp(6.5rem, 8vw, 7.5rem)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
         <div className="container">
           
           {/* Page Header */}

@@ -15,9 +15,7 @@ export default function GalleryPage() {
         image="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=1200&q=80"
         schema={[organizationSchema, breadcrumbSchema([{ name: 'Home', item: `${siteSettings.siteUrl}/` }, { name: 'Gallery', item: `${siteSettings.siteUrl}/gallery` }])]}
       />
-      <div style={{ paddingTop: '120px' }}>
-        <GalleryComponent />
-      </div>
+      <GalleryComponent />
     </PageWrapper>
   );
 }

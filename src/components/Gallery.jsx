@@ -432,7 +432,7 @@ export default function Gallery() {
 
   return (
     <section id="gallery" style={{
-      padding: 'clamp(5rem, 10vw, 9rem) 0',
+      padding: 'clamp(6.5rem, 8vw, 7.5rem) 0 clamp(4rem, 6vw, 6rem)',
       background: 'var(--bg-primary)',
       position: 'relative',
       overflow: 'hidden',
