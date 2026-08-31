@@ -11,7 +11,7 @@ export default function FAQ() {
   };
 
   return (
-    <section className="section" aria-label="Frequently Asked Questions" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <section className="section" aria-label="Frequently Asked Questions" style={{ backgroundColor: 'var(--bg-primary)', paddingBottom: '3rem' }}>
       <div className="container">
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '4rem', alignItems: 'start' }}>
