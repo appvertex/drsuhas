@@ -15,7 +15,7 @@ export default function ServicesPage() {
         image="https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&fit=crop&w=1200&q=80"
         schema={[organizationSchema, breadcrumbSchema([{ name: 'Home', item: `${siteSettings.siteUrl}/` }, { name: 'Services', item: `${siteSettings.siteUrl}/services` }])]}
       />
-      <div>
+      <div style={{ paddingTop: '20px' }}>
         <ServicesCategorized />
       </div>
     </PageWrapper>
