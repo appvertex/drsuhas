@@ -403,12 +403,12 @@ export default function Layout({ children }) {
                 &copy; {appSettings.copyrightYear || '2026'} Dr. Suhas S Kumar. All rights reserved.
               </span>
             </div>
-            <div style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center' }}>
-              <div className="footer-credits credit-line">
+            <div className="footer-credits-wrapper" style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center' }}>
+              <a href="https://appvertex.in" target="_blank" rel="noopener noreferrer" className="footer-credits credit-line" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <span>Powered by</span>
                 <span className="appvertex-badge" aria-label="Appvertex">A</span>
                 <span style={{ fontWeight: 600 }}>Appvertex</span>
-              </div>
+              </a>
             </div>
             <div style={{ flex: '1 1 0%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.75rem' }}>
               <button

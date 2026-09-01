@@ -425,6 +425,10 @@
     justify-content: flex-start !important;
     width: 100%;
   }
+
+  .footer-bottom .footer-credits-wrapper {
+    justify-content: center !important;
+  }
 }
 
 /* Utilities */
