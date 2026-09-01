@@ -229,7 +229,7 @@ export default function ServicesCategorized() {
   const activeCategory = categories.find(c => c.id === activeTab) || categories[0];
 
   return (
-    <section className="section" style={{ backgroundColor: 'var(--bg-primary)', position: 'relative', zIndex: 1, paddingTop: '5rem', paddingBottom: '6rem' }}>
+    <section className="section services-directory-section" style={{ backgroundColor: 'var(--bg-primary)', position: 'relative', zIndex: 1, paddingTop: '5rem', paddingBottom: '6rem' }}>
       <div className="container">
         
         {/* Section Header */}
