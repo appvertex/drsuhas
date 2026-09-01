@@ -572,6 +572,6 @@ img {
 /* Services page – reduce navbar-to-content gap on desktop */
 @media (min-width: 1024px) {
   .services-directory-section {
-    padding-top: 2rem !important;
+    padding-top: 3.5rem !important;
   }
 }
