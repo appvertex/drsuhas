@@ -1048,45 +1048,102 @@ export const categories = [
 export const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': ['Organization', 'LocalBusiness', 'MedicalBusiness'],
+  '@id': 'https://www.surgeonsuhas.in/#organization',
   name: siteSettings.name,
+  legalName: 'Dr. Suhas S Kumar Surgical Clinic',
   url: siteSettings.siteUrl,
+  logo: `${siteSettings.siteUrl}/images/drsuhas.webp`,
+  image: `${siteSettings.siteUrl}/images/drsuhas.webp`,
   telephone: siteSettings.phone,
   email: siteSettings.email,
-  image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80',
+  priceRange: '$$',
   address: {
     '@type': 'PostalAddress',
     ...siteSettings.address
   },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 13.3409,
+    longitude: 74.7421
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      opens: '09:00',
+      closes: '18:00'
+    }
+  ],
   areaServed: ['Udupi', 'Ambalpady', 'Manipal', 'Coastal Karnataka', 'Karnataka'],
+  hasMap: siteSettings.locations[0]?.mapSrc || 'https://maps.google.com',
+  aggregateRating: aggregateRatingSchema,
+  review: reviewSchemas
 };
 
 export const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': 'https://www.surgeonsuhas.in/#doctor',
   name: siteSettings.name,
   jobTitle: siteSettings.role,
+  description: 'Senior General & Laparoscopic Surgeon in Udupi, Karnataka specializing in keyhole surgery, hernia repair, gallbladder surgery, thyroid, breast care, diabetic foot, and emergency abdominal procedures.',
   url: siteSettings.siteUrl,
-  image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80',
+  image: `${siteSettings.siteUrl}/images/drsuhas.webp`,
+  telephone: siteSettings.phone,
+  email: siteSettings.email,
+  alumniOf: {
+    '@type': 'EducationalOrganization',
+    name: "St. John's Medical College Hospital, Bengaluru"
+  },
   worksFor: {
     '@type': 'MedicalBusiness',
     name: 'KMC Hospital Udupi',
-  },
+    address: {
+      '@type': 'PostalAddress',
+      ...siteSettings.address
+    }
+  }
 };
 
 export const physicianSchema = {
   '@context': 'https://schema.org',
   '@type': 'Physician',
+  '@id': 'https://www.surgeonsuhas.in/#physician',
   name: siteSettings.name,
   jobTitle: siteSettings.role,
+  description: 'Consultant General & Laparoscopic Surgeon in Udupi, Karnataka (MBBS, MS, FMAS, FIAGES, FALS). 11+ years clinical experience, 1000+ keyhole surgeries.',
   medicalSpecialty: ['GeneralSurgery', 'LaparoscopicSurgery'],
   url: siteSettings.siteUrl,
+  image: `${siteSettings.siteUrl}/images/drsuhas.webp`,
   telephone: siteSettings.phone,
   email: siteSettings.email,
+  priceRange: '$$',
   address: {
     '@type': 'PostalAddress',
     ...siteSettings.address
   },
-  priceRange: '$$',
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 13.3409,
+    longitude: 74.7421
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      opens: '09:00',
+      closes: '18:00'
+    }
+  ],
+  hospitalAffiliation: [
+    {
+      '@type': 'Hospital',
+      name: 'KMC Hospital Udupi',
+      address: 'Ambalpady, Udupi, Karnataka 576103'
+    }
+  ],
+  aggregateRating: aggregateRatingSchema,
+  review: reviewSchemas,
   availableService: [
     { '@type': 'MedicalProcedure', name: 'Laparoscopic Surgery Udupi' },
     { '@type': 'MedicalProcedure', name: 'Hernia Repair Udupi' },
@@ -1100,8 +1157,12 @@ export const physicianSchema = {
 export const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': 'https://www.surgeonsuhas.in/#website',
   name: siteSettings.name,
   url: siteSettings.siteUrl,
+  publisher: {
+    '@id': 'https://www.surgeonsuhas.in/#organization'
+  },
   potentialAction: {
     '@type': 'SearchAction',
     target: `${siteSettings.siteUrl}/services?q={search_term_string}`,
@@ -1116,7 +1177,7 @@ export const breadcrumbSchema = (items) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: item.name,
-    item: item.item,
+    item: item.item.startsWith('http') ? item.item : `${siteSettings.siteUrl}${item.item.startsWith('/') ? '' : '/'}${item.item}`,
   })),
 });
 
@@ -1168,6 +1229,7 @@ export const buildServiceSchema = (service) => ({
   followup: 'Post-operative clinical check-up at 7 days and 30 days.',
   provider: {
     '@type': 'Physician',
+    '@id': 'https://www.surgeonsuhas.in/#physician',
     name: siteSettings.name,
     jobTitle: siteSettings.role,
     url: siteSettings.siteUrl,
@@ -1187,3 +1249,4 @@ export const buildServiceSchema = (service) => ({
     url: `${siteSettings.siteUrl}/services/${service.slug}`
   }
 });
+
