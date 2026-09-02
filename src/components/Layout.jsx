@@ -155,11 +155,16 @@ export default function Layout({ children }) {
     };
   }, []);
 
-  // Close mobile menu on route change
+  // Close mobile menu and track pageview in Google Analytics on route change
   useEffect(() => {
     setMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [location.pathname]);
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('config', 'G-ZD30GD9423', {
+        page_path: location.pathname + location.search,
+      });
+    }
+  }, [location.pathname, location.search]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
