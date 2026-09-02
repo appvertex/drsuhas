@@ -395,7 +395,7 @@ function GallerySkeletonGrid() {
 /* ─────────────────────────────────────────────────────────────── */
 /*  ROOT EXPORT                                                    */
 /* ─────────────────────────────────────────────────────────────── */
-export default function Gallery() {
+export default function Gallery({ isStandalone = false }) {
   const [images, setImages]     = useState([]);
   const [loading, setLoading]   = useState(true);
   const [active, setActive]     = useState(null);
@@ -430,9 +430,11 @@ export default function Gallery() {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
+  const topPadding = isStandalone ? 'clamp(7rem, 10vw, 9rem)' : 'clamp(3rem, 5vw, 4.5rem)';
+
   return (
     <section id="gallery" style={{
-      padding: 'clamp(2rem, 3vw, 3rem) 0 clamp(4rem, 6vw, 6rem)',
+      padding: `${topPadding} 0 clamp(4rem, 6vw, 6rem)`,
       background: 'var(--bg-primary)',
       position: 'relative',
       overflow: 'hidden',
