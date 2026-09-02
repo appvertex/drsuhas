@@ -2,30 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://drsuhas.com/</loc>
+    <loc>https://www.surgeonsuhas.in/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://drsuhas.com/images/drsuhas.webp</image:loc>
+      <image:loc>https://www.surgeonsuhas.in/images/drsuhas.webp</image:loc>
       <image:title>Dr. Suhas S Kumar - General &amp; Laparoscopic Surgeon Udupi</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://drsuhas.com/about</loc>
+    <loc>https://www.surgeonsuhas.in/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://drsuhas.com/images/abt.webp</image:loc>
+      <image:loc>https://www.surgeonsuhas.in/images/abt.webp</image:loc>
       <image:title>Dr. Suhas S Kumar Qualification &amp; Background</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://drsuhas.com/services</loc>
+    <loc>https://www.surgeonsuhas.in/services</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/laparoscopic-surgery</loc>
+    <loc>https://www.surgeonsuhas.in/services/laparoscopic-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -34,7 +34,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/hernia-surgery</loc>
+    <loc>https://www.surgeonsuhas.in/services/hernia-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -43,7 +43,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/gallbladder-surgery</loc>
+    <loc>https://www.surgeonsuhas.in/services/gallbladder-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -52,67 +52,67 @@
     </image:image>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/gastrointestinal-surgery</loc>
+    <loc>https://www.surgeonsuhas.in/services/gastrointestinal-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/thyroid-surgery</loc>
+    <loc>https://www.surgeonsuhas.in/services/thyroid-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/varicose-vein-surgery</loc>
+    <loc>https://www.surgeonsuhas.in/services/varicose-vein-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/piles-fissure-fistula</loc>
+    <loc>https://www.surgeonsuhas.in/services/piles-fissure-fistula</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/diabetic-foot-surgery</loc>
+    <loc>https://www.surgeonsuhas.in/services/diabetic-foot-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/breast-surgery</loc>
+    <loc>https://www.surgeonsuhas.in/services/breast-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/services/trauma-emergency-surgery</loc>
+    <loc>https://www.surgeonsuhas.in/services/trauma-emergency-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/gallery</loc>
+    <loc>https://www.surgeonsuhas.in/gallery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/blog</loc>
+    <loc>https://www.surgeonsuhas.in/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/contact</loc>
+    <loc>https://www.surgeonsuhas.in/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/privacy-policy</loc>
+    <loc>https://www.surgeonsuhas.in/privacy-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/terms-and-conditions</loc>
+    <loc>https://www.surgeonsuhas.in/terms-and-conditions</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://drsuhas.com/disclaimer</loc>
+    <loc>https://www.surgeonsuhas.in/disclaimer</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

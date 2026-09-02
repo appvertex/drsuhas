@@ -5,7 +5,7 @@ export const siteSettings = {
   phoneUrl: '+919538765487',
   whatsappNumber: '919538765487',
   email: 'suhassk2@gmail.com',
-  siteUrl: import.meta.env.VITE_SITE_URL || 'https://drsuhas.com',
+  siteUrl: import.meta.env.VITE_SITE_URL || 'https://www.surgeonsuhas.in',
   address: {
     streetAddress: 'KMC Hospital Road, Ambalpady',
     addressLocality: 'Udupi',

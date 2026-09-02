@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://drsuhas.com/sitemap.xml
+Sitemap: https://www.surgeonsuhas.in/sitemap.xml
 
 # Prevent crawling of admin portal
 Disallow: /head/admin/
