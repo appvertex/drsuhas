@@ -23,6 +23,7 @@ const inputStyle = {
 
 export default function ContactPage() {
   const [appSettings, setAppSettings] = useState(getSiteSettings);
+  const [selectedHospital, setSelectedHospital] = useState(0);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -501,24 +502,71 @@ _Submitted via Dr. Suhas S Kumar Website_`
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                    <div style={{
-                      width: '44px', height: '44px', borderRadius: '12px',
-                      background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.25)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-gold)', flexShrink: 0,
-                    }}>
-                      <MapPin size={20} />
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Consultation Location</div>
-                      <div style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.98rem' }}>
-                        Deepak Hospital
-                      </div>
-                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginTop: '0.2rem' }}>
-                        33rd Cross Rd, 7th Block, Jayanagar, Bengaluru 560070
-                      </div>
-                    </div>
+              {/* Hospital Switcher */}
+              <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                {siteSettings.locations.map((loc, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedHospital(i)}
+                    style={{
+                      flex: 1,
+                      padding: '0.7rem 1rem',
+                      borderRadius: '12px',
+                      border: selectedHospital === i
+                        ? '1.5px solid var(--accent-gold)'
+                        : '1px solid rgba(255,255,255,0.1)',
+                      background: selectedHospital === i
+                        ? 'rgba(201,169,110,0.12)'
+                        : 'rgba(255,255,255,0.03)',
+                      color: selectedHospital === i ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                      fontFamily: 'inherit',
+                      fontSize: '0.82rem',
+                      fontWeight: selectedHospital === i ? 700 : 500,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {loc.name}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                <div style={{
+                  width: '44px', height: '44px', borderRadius: '12px',
+                  background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.25)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-gold)', flexShrink: 0,
+                }}>
+                  <MapPin size={20} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Consultation Location</div>
+                  <a
+                    href={siteSettings.locations[selectedHospital].mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '0.98rem', textDecoration: 'none' }}
+                  >
+                    {siteSettings.locations[selectedHospital].name}
+                  </a>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginTop: '0.2rem' }}>
+                    {siteSettings.locations[selectedHospital].address}
                   </div>
+                  <a
+                    href={siteSettings.locations[selectedHospital].mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                      marginTop: '0.6rem', fontSize: '0.8rem', color: 'var(--accent-gold)',
+                      textDecoration: 'none', fontWeight: 600,
+                    }}
+                  >
+                    <MapPin size={13} /> Open in Google Maps ↗
+                  </a>
+                </div>
+              </div>
                 </div>
               </div>
 
@@ -528,8 +576,9 @@ _Submitted via Dr. Suhas S Kumar Website_`
                 border: '1px solid var(--border-subtle, rgba(255,255,255,0.08))',
               }}>
                 <iframe
-                  title="Deepak Hospital Location Map"
-                  src={siteSettings.locations[0].mapSrc}
+                  key={selectedHospital}
+                  title={`${siteSettings.locations[selectedHospital].name} Location Map`}
+                  src={siteSettings.locations[selectedHospital].mapSrc}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
