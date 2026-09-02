@@ -64,7 +64,7 @@ export default function DoctorDetailPage() {
         <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '4rem', alignItems: 'start' }}>
           <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
             <GraduationCap size={28} style={{ color: 'var(--accent-gold)', marginBottom: '1.5rem' }} />
-            <h3 className="h-3" style={{ marginBottom: '1.5rem' }}>Academic Background</h3>
+            <h2 className="h-3" style={{ marginBottom: '1.5rem' }}>Academic Background</h2>
             <p className="text-body" style={{ marginBottom: '1.5rem' }}>
               Dr. Suhas S. Kumar completed his MS in General Surgery and went on to serve as Assistant Professor in the Department of General Surgery at St. Johns Medical College Hospital, Bangalore - one of India's most prestigious medical institutions.
             </p>
@@ -75,7 +75,7 @@ export default function DoctorDetailPage() {
 
           <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.1 }}>
             <Briefcase size={28} style={{ color: 'var(--accent-gold)', marginBottom: '1.5rem' }} />
-            <h3 className="h-3" style={{ marginBottom: '1.5rem' }}>Clinical Practice</h3>
+            <h2 className="h-3" style={{ marginBottom: '1.5rem' }}>Clinical Practice</h2>
             <p className="text-body" style={{ marginBottom: '1.5rem' }}>
               With over 11 years of clinical experience and 1000+ surgeries performed, Dr. Suhas now practices at Deepak Hospital, offering a full range of general and advanced laparoscopic surgical services.
             </p>
