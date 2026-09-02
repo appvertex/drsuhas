@@ -158,9 +158,9 @@ _Submitted via Dr. Suhas S Kumar Website_`
   return (
     <PageWrapper>
       <SEO
-        title="Contact & Book Appointment | Surgeon in Udupi"
-        description="Book a surgical consultation with Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Udupi, Karnataka. Phone: +91 95387 65487."
-        keywords="Book Surgeon Appointment Udupi, Dr Suhas S Kumar contact, Laparoscopic Surgeon Udupi phone, Surgical consultation Udupi, KMC Hospital Udupi surgeon contact"
+        title="Contact & Book Appointment | Surgeon in Bangalore"
+        description="Book a surgical consultation with Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Bangalore, Karnataka. Practicing at Deepak Hospital Jayanagar and Hemalatha Hospital Neelasandra. Phone: +91 95387 65487."
+        keywords="Book Surgeon Appointment Bangalore, Dr Suhas S Kumar contact, Laparoscopic Surgeon Bangalore phone, Surgical consultation Bangalore, Deepak Hospital Jayanagar surgeon contact, Hemalatha Hospital Neelasandra surgeon contact"
         pathname="/contact"
         image="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80"
         schema={[

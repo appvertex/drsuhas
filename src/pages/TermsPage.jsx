@@ -9,7 +9,7 @@ export default function TermsPage() {
     <PageWrapper>
       <SEO
         title="Terms & Conditions | Dr. Suhas S Kumar"
-        description="Terms and conditions for utilizing website appointment features and information provided by Dr. Suhas S Kumar in Udupi, Karnataka."
+        description="Terms and conditions for utilizing website appointment features and information provided by Dr. Suhas S Kumar in Bangalore, Karnataka."
         pathname="/terms-and-conditions"
         schema={[
           organizationSchema,
@@ -40,7 +40,7 @@ export default function TermsPage() {
 
             <h2 className="h-3" style={{ color: 'var(--accent-gold)' }}>3. Emergency Situations</h2>
             <p>
-              This website and online messaging are not designed for life-threatening acute medical emergencies. If you experience severe trauma or critical distress, please visit the emergency casualty room at KMC Hospital or nearest trauma center immediately.
+              This website and online messaging are not designed for life-threatening acute medical emergencies. If you experience severe trauma or critical distress, please visit the emergency casualty room at Deepak Hospital Jayanagar, Hemalatha Hospital Neelasandra, or the nearest trauma center immediately.
             </p>
 
             <h2 className="h-3" style={{ color: 'var(--accent-gold)' }}>4. Intellectual Property</h2>

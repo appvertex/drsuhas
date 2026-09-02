@@ -87,9 +87,9 @@ export default function BlogPage() {
   return (
     <PageWrapper>
       <SEO
-        title="Medical Articles & Surgical Guides | Dr. Suhas S Kumar Udupi"
-        description="Articles and patient guides on laparoscopic surgery, hernia care, gallbladder treatment, diabetic foot, and recovery advice by Dr. Suhas S Kumar in Udupi."
-        keywords="Medical Blog Udupi, Surgical Guides Udupi, Laparoscopic surgery advice Udupi, Hernia care tips Udupi, Dr Suhas S Kumar articles"
+        title="Medical Articles & Surgical Guides | Dr. Suhas S Kumar Bangalore"
+        description="Articles and patient guides on laparoscopic surgery, hernia care, gallbladder treatment, diabetic foot, and recovery advice by Dr. Suhas S Kumar in Bangalore."
+        keywords="Medical Blog Bangalore, Surgical Guides Bangalore, Laparoscopic surgery advice Bangalore, Hernia care tips Bangalore, Dr Suhas S Kumar articles"
         pathname="/blog"
         schema={[
           organizationSchema,

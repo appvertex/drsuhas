@@ -27,9 +27,9 @@ export default function ServiceDetailPage() {
   return (
     <PageWrapper>
       <SEO
-        title={`${service.title} in Udupi – Dr. Suhas S Kumar`}
-        description={`${service.summary} Expert ${service.title} by Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Udupi, Karnataka.`}
-        keywords={`${service.title} Udupi, ${service.title} in Udupi, Dr Suhas S Kumar, Laparoscopic Surgeon Udupi, Surgery Udupi`}
+        title={`${service.title} in Bangalore – Dr. Suhas S Kumar`}
+        description={`${service.summary} Expert ${service.title} by Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Bangalore, Karnataka at Deepak Hospital Jayanagar and Hemalatha Hospital Neelasandra.`}
+        keywords={`${service.title} Bangalore, ${service.title} in Bangalore, Dr Suhas S Kumar, Laparoscopic Surgeon Bangalore, Surgery Bangalore, Deepak Hospital Jayanagar, Hemalatha Hospital Neelasandra`}
         pathname={`/services/${service.slug}`}
         image={service.image}
         schema={[
@@ -59,12 +59,12 @@ export default function ServiceDetailPage() {
       {/* Hero Section */}
       <section style={{ position: 'relative', height: '55vh', minHeight: '440px', display: 'flex', alignItems: 'flex-end', paddingBottom: '3.5rem' }}>
         <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <img src={service.image} alt={`${service.title} in Udupi`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} fetchPriority="high" decoding="async" />
+          <img src={service.image} alt={`${service.title} in Bangalore`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} fetchPriority="high" decoding="async" />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--bg-primary) 0%, rgba(10,10,10,0.45) 100%)' }} />
         </div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="text-eyebrow" style={{ marginBottom: '0.75rem' }}>Surgical Specialty in Udupi</div>
+            <div className="text-eyebrow" style={{ marginBottom: '0.75rem' }}>Surgical Specialty in Bangalore</div>
             <h1 className="h-display" style={{ marginBottom: '1.25rem' }}>{service.title}</h1>
             <p className="text-lead" style={{ maxWidth: '680px' }}>{service.summary}</p>
           </motion.div>
@@ -265,9 +265,9 @@ export default function ServiceDetailPage() {
       <section className="section" style={{ backgroundColor: 'var(--bg-primary)', textAlign: 'center' }}>
         <div className="container">
           <div className="editorial-card" style={{ padding: '3.5rem 2rem', maxWidth: '750px', margin: '0 auto' }}>
-            <h2 className="h-2" style={{ marginBottom: '1rem' }}>Consult Dr. Suhas S Kumar in Udupi</h2>
+            <h2 className="h-2" style={{ marginBottom: '1rem' }}>Consult Dr. Suhas S Kumar in Bangalore</h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '1rem' }}>
-              Schedule a clinical evaluation for {service.title.toLowerCase()} at KMC Hospital / Clinic Udupi.
+              Schedule a clinical evaluation for {service.title.toLowerCase()} at Deepak Hospital Jayanagar or Hemalatha Hospital Neelasandra, Bangalore.
             </p>
             <a href="/contact" className="btn btn-premium" style={{ padding: '0.85rem 2rem' }}>
               Book Consultation Now

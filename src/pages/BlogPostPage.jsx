@@ -91,8 +91,8 @@ export default function BlogPostPage() {
     <PageWrapper>
       <SEO
         title={`${post.title} | Medical Article by Dr. Suhas S Kumar`}
-        description={post.excerpt || `Read medical article on ${post.title} by Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Udupi.`}
-        keywords={`${post.title}, ${post.category || 'Surgery'} Udupi, Dr Suhas S Kumar, Surgeon Udupi, Medical Guide Udupi`}
+        description={post.excerpt || `Read medical article on ${post.title} by Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Bangalore.`}
+        keywords={`${post.title}, ${post.category || 'Surgery'} Bangalore, Dr Suhas S Kumar, Surgeon Bangalore, Medical Guide Bangalore`}
         pathname={`/blog/${post.slug || post.id}`}
         image={post.image || 'https://www.surgeonsuhas.in/images/drsuhas.webp'}
         ogType="article"

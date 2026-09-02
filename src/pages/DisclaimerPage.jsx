@@ -9,7 +9,7 @@ export default function DisclaimerPage() {
     <PageWrapper>
       <SEO
         title="Medical Disclaimer | Dr. Suhas S Kumar"
-        description="Important medical disclaimer regarding online health content and surgical advice provided by Dr. Suhas S Kumar in Udupi, Karnataka."
+        description="Important medical disclaimer regarding online health content and surgical advice provided by Dr. Suhas S Kumar in Bangalore, Karnataka."
         pathname="/disclaimer"
         schema={[
           organizationSchema,

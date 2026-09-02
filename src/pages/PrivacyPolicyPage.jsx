@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
     <PageWrapper>
       <SEO
         title="Privacy Policy | Dr. Suhas S Kumar"
-        description="Privacy policy and data protection practices for patients visiting Dr. Suhas S Kumar's surgical practice website in Udupi, Karnataka."
+        description="Privacy policy and data protection practices for patients visiting Dr. Suhas S Kumar's surgical practice website in Bangalore, Karnataka."
         pathname="/privacy-policy"
         schema={[
           organizationSchema,

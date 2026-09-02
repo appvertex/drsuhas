@@ -13,7 +13,7 @@ export const patientReviews = [
   {
     author: 'Ramesh Shetty',
     date: '2026-07-15',
-    reviewBody: 'Dr. Suhas performed laparoscopic hernia surgery for me in Udupi. Extremely smooth recovery, minimal pain, and I was back to work within 5 days. Highly recommend him!',
+    reviewBody: 'Dr. Suhas performed laparoscopic hernia surgery for me in Bangalore. Extremely smooth recovery, minimal pain, and I was back to work within 5 days. Highly recommend him!',
     ratingValue: '5'
   },
   {
@@ -25,7 +25,7 @@ export const patientReviews = [
   {
     author: 'Kishore Poojary',
     date: '2026-05-10',
-    reviewBody: 'Dr. Suhas treated my father for diabetic foot ulcer in Udupi. His prompt intervention and wound care saved my father from amputation. Grateful for his expertise.',
+    reviewBody: 'Dr. Suhas treated my father for diabetic foot ulcer in Bangalore. His prompt intervention and wound care saved my father from amputation. Grateful for his expertise.',
     ratingValue: '5'
   }
 ];
@@ -54,7 +54,7 @@ export const serviceCatalog = [
       points: [
         'Performs abdominal surgeries via 3–4 tiny incisions (5–10mm) instead of a large open cut.',
         'Reduces post-operative pain by 70% and minimizes hospital stays to 24–48 hours.',
-        'Performs routine and complex laparoscopic appendectomy, cholecystectomy, hernia repair, and GI operations in Udupi.',
+        'Performs routine and complex laparoscopic appendectomy, cholecystectomy, hernia repair, and GI operations in Bangalore.',
         'Led by Dr. Suhas S Kumar (MBBS, MS, FMAS, FIAGES, FALS) with 1000+ successful laparoscopic procedures.'
       ]
     },
@@ -127,8 +127,8 @@ export const serviceCatalog = [
   {
     slug: 'hernia-surgery',
     title: 'Hernia Surgery',
-    intro: 'Advanced laparoscopic (TAPP/TEP) and open mesh repair for groin, umbilical, and abdominal wall hernias in Udupi.',
-    summary: 'A hernia occurs when an internal organ or fatty tissue pushes through a weak spot in the surrounding muscle or connective tissue wall. Dr. Suhas S Kumar provides specialized laparoscopic tension-free mesh hernia repairs in Udupi.',
+    intro: 'Advanced laparoscopic (TAPP/TEP) and open mesh repair for groin, umbilical, and abdominal wall hernias in Bangalore.',
+    summary: 'A hernia occurs when an internal organ or fatty tissue pushes through a weak spot in the surrounding muscle or connective tissue wall. Dr. Suhas S Kumar provides specialized laparoscopic tension-free mesh hernia repairs in Bangalore.',
     image: 'https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=1200&q=80',
     geoSummary: {
       headline: 'Quick Takeaway: Hernia Repair in Udupi',
@@ -207,8 +207,8 @@ export const serviceCatalog = [
   {
     slug: 'gallbladder-surgery',
     title: 'Gall Bladder Surgery',
-    intro: 'Laparoscopic Cholecystectomy for gallstones, gallbladder polyps, and acute cholecystitis in Udupi.',
-    summary: 'Gallbladder surgery (Laparoscopic Cholecystectomy) involves removing a diseased or stone-bearing gallbladder using keyhole techniques. Dr. Suhas S Kumar is a expert in gallbladder removal in Udupi.',
+    intro: 'Laparoscopic Cholecystectomy for gallstones, gallbladder polyps, and acute cholecystitis in Bangalore.',
+    summary: 'Gallbladder surgery (Laparoscopic Cholecystectomy) involves removing a diseased or stone-bearing gallbladder using keyhole techniques. Dr. Suhas S Kumar is a expert in gallbladder removal in Bangalore.',
     image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1200&q=80',
     geoSummary: {
       headline: 'Quick Takeaway: Gallbladder Removal in Udupi',
@@ -294,7 +294,7 @@ export const serviceCatalog = [
       points: [
         'Specializes in Laparoscopic Appendectomy, Intestinal Resection, and Peptic Perforation Repair.',
         'Minimally invasive management of bowel obstructions, intestinal adhesions, and diverticulitis.',
-        'Emergency 24/7 trauma & acute abdomen surgical interventions in Udupi.',
+        'Emergency 24/7 trauma & acute abdomen surgical interventions in Bangalore.',
         'Focuses on early postoperative enteral nutrition and fast-track recovery protocols.'
       ]
     },
@@ -358,7 +358,7 @@ export const serviceCatalog = [
   {
     slug: 'thyroid-surgery',
     title: 'Thyroid Surgery',
-    intro: 'Precision Thyroidectomy and nodule management with nerve monitoring and voice preservation in Udupi.',
+    intro: 'Precision Thyroidectomy and nodule management with nerve monitoring and voice preservation in Bangalore.',
     summary: 'Thyroid surgery involves removing part or all of the thyroid gland (Thyroidectomy) to treat thyroid nodules, multinodular goiter, hyperthyroidism, or thyroid neoplasms.',
     image: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=1200&q=80',
     geoSummary: {
@@ -434,8 +434,8 @@ export const serviceCatalog = [
   {
     slug: 'varicose-vein-surgery',
     title: 'Varicose Vein Surgery',
-    intro: 'Advanced Minimally Invasive Laser (EVLT) and Surgical Treatment for varicose veins and leg ulcers in Udupi.',
-    summary: 'Varicose veins are enlarged, twisted, swollen veins visible under the skin, caused by incompetent venous valves. Dr. Suhas offers endovenous laser ablation and radiofrequency closure in Udupi.',
+    intro: 'Advanced Minimally Invasive Laser (EVLT) and Surgical Treatment for varicose veins and leg ulcers in Bangalore.',
+    summary: 'Varicose veins are enlarged, twisted, swollen veins visible under the skin, caused by incompetent venous valves. Dr. Suhas offers endovenous laser ablation and radiofrequency closure in Bangalore.',
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
     geoSummary: {
       headline: 'Quick Takeaway: Varicose Vein Treatment in Udupi',
@@ -505,8 +505,8 @@ export const serviceCatalog = [
   {
     slug: 'piles-fissure-fistula',
     title: 'Piles, Fissure & Fistula Care',
-    intro: 'Laser Proctology and advanced minimally invasive treatments for hemorrhoids, fissures, fistulas, and pilonidal sinus in Udupi.',
-    summary: 'Anorectal conditions like piles (hemorrhoids), anal fissures, and fistulas cause severe distress. Dr. Suhas provides modern painless Laser Proctology treatments in Udupi.',
+    intro: 'Laser Proctology and advanced minimally invasive treatments for hemorrhoids, fissures, fistulas, and pilonidal sinus in Bangalore.',
+    summary: 'Anorectal conditions like piles (hemorrhoids), anal fissures, and fistulas cause severe distress. Dr. Suhas provides modern painless Laser Proctology treatments in Bangalore.',
     image: 'https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=1200&q=80',
     geoSummary: {
       headline: 'Quick Takeaway: Laser Proctology in Udupi',
@@ -576,8 +576,8 @@ export const serviceCatalog = [
   {
     slug: 'diabetic-foot-surgery',
     title: 'Diabetic Foot Surgery',
-    intro: 'Limb-salvage surgical care, wound debridement, infection control, and ulcer management in Udupi.',
-    summary: 'Diabetic foot complications result from neuropathy and peripheral vascular disease. Dr. Suhas S Kumar provides aggressive limb-saving surgical care in Udupi.',
+    intro: 'Limb-salvage surgical care, wound debridement, infection control, and ulcer management in Bangalore.',
+    summary: 'Diabetic foot complications result from neuropathy and peripheral vascular disease. Dr. Suhas S Kumar provides aggressive limb-saving surgical care in Bangalore.',
     image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80',
     geoSummary: {
       headline: 'Quick Takeaway: Diabetic Foot Care in Udupi',
@@ -648,8 +648,8 @@ export const serviceCatalog = [
   {
     slug: 'breast-surgery',
     title: 'Breast Surgery',
-    intro: 'Compassionate diagnostic evaluation, fibroadenoma excision, lumpectomy, and breast surgical care in Udupi.',
-    summary: 'Breast surgery encompasses benign breast disease management, fibroadenoma excision, cyst drainage, abscess management, and oncological evaluations. Dr. Suhas provides empathetic care in Udupi.',
+    intro: 'Compassionate diagnostic evaluation, fibroadenoma excision, lumpectomy, and breast surgical care in Bangalore.',
+    summary: 'Breast surgery encompasses benign breast disease management, fibroadenoma excision, cyst drainage, abscess management, and oncological evaluations. Dr. Suhas provides empathetic care in Bangalore.',
     image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=1200&q=80',
     geoSummary: {
       headline: 'Quick Takeaway: Breast Surgery in Udupi',
@@ -718,15 +718,15 @@ export const serviceCatalog = [
   {
     slug: 'trauma-emergency-surgery',
     title: 'Trauma & Emergency Surgery',
-    intro: '24/7 Urgent surgical intervention for abdominal trauma, acute abdomen, and surgical emergencies in Udupi.',
-    summary: 'Emergency surgery requires rapid decision-making, hemodynamic stabilization, and emergency operative care. Dr. Suhas S Kumar leads emergency surgical interventions in Udupi.',
+    intro: '24/7 Urgent surgical intervention for abdominal trauma, acute abdomen, and surgical emergencies in Bangalore.',
+    summary: 'Emergency surgery requires rapid decision-making, hemodynamic stabilization, and emergency operative care. Dr. Suhas S Kumar leads emergency surgical interventions in Bangalore.',
     image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80',
     geoSummary: {
       headline: 'Quick Takeaway: Emergency Surgery in Udupi',
       points: [
         '24/7 Availability for Acute Abdomen, Peritonitis, and Abdominal Trauma.',
         'Emergency Laparoscopic Exploratory surgery for intestinal perforation and appendicitis.',
-        'Rapid resuscitation and trauma damage control surgery in Udupi.',
+        'Rapid resuscitation and trauma damage control surgery in Bangalore.',
         'Direct coordination with ICU & Critical Care specialists.'
       ]
     },
@@ -1063,8 +1063,8 @@ export const organizationSchema = {
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: 13.3409,
-    longitude: 74.7421
+    latitude: 12.9255,
+    longitude: 77.5815
   },
   openingHoursSpecification: [
     {
@@ -1074,7 +1074,7 @@ export const organizationSchema = {
       closes: '18:00'
     }
   ],
-  areaServed: ['Udupi', 'Ambalpady', 'Manipal', 'Coastal Karnataka', 'Karnataka'],
+  areaServed: ['Bangalore', 'Jayanagar', 'Neelasandra', 'Bengaluru', 'South Bangalore', 'Karnataka'],
   hasMap: siteSettings.locations[0]?.mapSrc || 'https://maps.google.com',
   aggregateRating: aggregateRatingSchema,
   review: reviewSchemas
@@ -1086,7 +1086,7 @@ export const personSchema = {
   '@id': 'https://www.surgeonsuhas.in/#doctor',
   name: siteSettings.name,
   jobTitle: siteSettings.role,
-  description: 'Senior General & Laparoscopic Surgeon in Udupi, Karnataka specializing in keyhole surgery, hernia repair, gallbladder surgery, thyroid, breast care, diabetic foot, and emergency abdominal procedures.',
+  description: 'Senior General & Laparoscopic Surgeon in Bangalore, Karnataka specializing in keyhole surgery, hernia repair, gallbladder surgery, thyroid, breast care, diabetic foot, and emergency abdominal procedures.',
   url: siteSettings.siteUrl,
   image: `${siteSettings.siteUrl}/images/drsuhas.webp`,
   telephone: siteSettings.phone,
@@ -1095,14 +1095,32 @@ export const personSchema = {
     '@type': 'EducationalOrganization',
     name: "St. John's Medical College Hospital, Bengaluru"
   },
-  worksFor: {
-    '@type': 'MedicalBusiness',
-    name: 'KMC Hospital Udupi',
-    address: {
-      '@type': 'PostalAddress',
-      ...siteSettings.address
+  worksFor: [
+    {
+      '@type': 'MedicalBusiness',
+      name: 'Deepak Hospital',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '4th Block, Jayanagar',
+        addressLocality: 'Bangalore',
+        addressRegion: 'Karnataka',
+        postalCode: '560011',
+        addressCountry: 'IN'
+      }
+    },
+    {
+      '@type': 'MedicalBusiness',
+      name: 'Hemalatha Hospital',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Neelasandra',
+        addressLocality: 'Bangalore',
+        addressRegion: 'Karnataka',
+        postalCode: '560047',
+        addressCountry: 'IN'
+      }
     }
-  }
+  ]
 };
 
 export const physicianSchema = {
@@ -1111,7 +1129,7 @@ export const physicianSchema = {
   '@id': 'https://www.surgeonsuhas.in/#physician',
   name: siteSettings.name,
   jobTitle: siteSettings.role,
-  description: 'Consultant General & Laparoscopic Surgeon in Udupi, Karnataka (MBBS, MS, FMAS, FIAGES, FALS). 11+ years clinical experience, 1000+ keyhole surgeries.',
+  description: 'Consultant General & Laparoscopic Surgeon in Bangalore, Karnataka (MBBS, MS, FMAS, FIAGES, FALS). 11+ years clinical experience, 1000+ keyhole surgeries.',
   medicalSpecialty: ['GeneralSurgery', 'LaparoscopicSurgery'],
   url: siteSettings.siteUrl,
   image: `${siteSettings.siteUrl}/images/drsuhas.webp`,
@@ -1124,8 +1142,8 @@ export const physicianSchema = {
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: 13.3409,
-    longitude: 74.7421
+    latitude: 12.9255,
+    longitude: 77.5815
   },
   openingHoursSpecification: [
     {
@@ -1138,19 +1156,24 @@ export const physicianSchema = {
   hospitalAffiliation: [
     {
       '@type': 'Hospital',
-      name: 'KMC Hospital Udupi',
-      address: 'Ambalpady, Udupi, Karnataka 576103'
+      name: 'Deepak Hospital Jayanagar',
+      address: '4th Block, Jayanagar, Bangalore, Karnataka 560011'
+    },
+    {
+      '@type': 'Hospital',
+      name: 'Hemalatha Hospital Neelasandra',
+      address: 'Neelasandra, Bangalore, Karnataka 560047'
     }
   ],
   aggregateRating: aggregateRatingSchema,
   review: reviewSchemas,
   availableService: [
-    { '@type': 'MedicalProcedure', name: 'Laparoscopic Surgery Udupi' },
-    { '@type': 'MedicalProcedure', name: 'Hernia Repair Udupi' },
-    { '@type': 'MedicalProcedure', name: 'Gallbladder Surgery Udupi' },
-    { '@type': 'MedicalProcedure', name: 'Thyroid Surgery Udupi' },
-    { '@type': 'MedicalProcedure', name: 'Breast Surgery Udupi' },
-    { '@type': 'MedicalProcedure', name: 'Diabetic Foot Care Udupi' }
+    { '@type': 'MedicalProcedure', name: 'Laparoscopic Surgery Bangalore' },
+    { '@type': 'MedicalProcedure', name: 'Hernia Repair Bangalore' },
+    { '@type': 'MedicalProcedure', name: 'Gallbladder Surgery Bangalore' },
+    { '@type': 'MedicalProcedure', name: 'Thyroid Surgery Bangalore' },
+    { '@type': 'MedicalProcedure', name: 'Breast Surgery Bangalore' },
+    { '@type': 'MedicalProcedure', name: 'Diabetic Foot Care Bangalore' }
   ]
 };
 
@@ -1184,11 +1207,11 @@ export const breadcrumbSchema = (items) => ({
 export const faqItems = [
   {
     question: 'Who is the top General & Laparoscopic Surgeon in Udupi?',
-    answer: 'Dr. Suhas S Kumar is a renowned General & Laparoscopic Surgeon practicing in Udupi, Karnataka, specializing in keyhole surgeries, hernia repair, gallbladder treatment, thyroid, breast care, and diabetic foot management.'
+    answer: 'Dr. Suhas S Kumar is a renowned General & Laparoscopic Surgeon practicing in Bangalore, Karnataka, specializing in keyhole surgeries, hernia repair, gallbladder treatment, thyroid, breast care, and diabetic foot management.'
   },
   {
-    question: 'What laparoscopic surgeries are performed in Udupi by Dr. Suhas?',
-    answer: 'Dr. Suhas performs laparoscopic appendectomy, laparoscopic cholecystectomy (gallbladder), laparoscopic hernia repair (inguinal, umbilical), gastrointestinal procedures, and emergency abdominal surgeries in Udupi.'
+    question: 'What laparoscopic surgeries are performed in Bangalore by Dr. Suhas?',
+    answer: 'Dr. Suhas performs laparoscopic appendectomy, laparoscopic cholecystectomy (gallbladder), laparoscopic hernia repair (inguinal, umbilical), gastrointestinal procedures, and emergency abdominal surgeries in Bangalore.'
   },
   {
     question: 'What are the key benefits of laparoscopic surgery over traditional open surgery?',
@@ -1196,11 +1219,11 @@ export const faqItems = [
   },
   {
     question: 'How do I schedule a consultation for hernia or gallbladder surgery in Udupi?',
-    answer: 'You can book an appointment directly through the website contact page, call +91 95387 65487, or send a message via WhatsApp to schedule your consultation in Udupi.'
+    answer: 'You can book an appointment directly through the website contact page, call +91 95387 65487, or send a message via WhatsApp to schedule your consultation in Bangalore.'
   },
   {
     question: 'Does Dr. Suhas provide specialized treatment for diabetic foot ulcers in Udupi?',
-    answer: 'Yes, Dr. Suhas provides comprehensive diabetic foot care, limb-salvage surgical procedures, wound debridement, and infection management to prevent complications in diabetic patients across Udupi and Manipal.'
+    answer: 'Yes, Dr. Suhas provides comprehensive diabetic foot care, limb-salvage surgical procedures, wound debridement, and infection management to prevent complications in diabetic patients across Bangalore and Manipal.'
   }
 ];
 

@@ -9,9 +9,9 @@ export default function ServicesPage() {
   return (
     <PageWrapper>
       <SEO
-        title="Surgical Services & Treatments in Udupi"
-        description="Comprehensive general and laparoscopic surgical treatments in Udupi by Dr. Suhas S Kumar. Keyhole hernia repair, gallbladder, thyroid, breast care, diabetic foot, and emergency surgeries."
-        keywords="Laparoscopic Surgery Udupi, Hernia Repair Udupi, Gallbladder Surgery Udupi, Thyroid Surgery Udupi, Breast Surgery Udupi, Diabetic Foot Surgery Udupi, Surgical Services Udupi"
+        title="Surgical Services & Treatments in Bangalore"
+        description="Comprehensive general and laparoscopic surgical treatments in Bangalore by Dr. Suhas S Kumar. Practicing at Deepak Hospital Jayanagar and Hemalatha Hospital Neelasandra. Keyhole hernia repair, gallbladder, thyroid, breast care, diabetic foot, and emergency surgeries."
+        keywords="Laparoscopic Surgery Bangalore, Hernia Repair Bangalore, Gallbladder Surgery Bangalore, Thyroid Surgery Bangalore, Breast Surgery Bangalore, Diabetic Foot Surgery Bangalore, Surgical Services Bangalore, Surgeon Jayanagar, Surgeon Neelasandra"
         pathname="/services"
         image="https://www.surgeonsuhas.in/images/drsuhas.webp"
         schema={[organizationSchema, physicianSchema, breadcrumbSchema([{ name: 'Home', item: `${siteSettings.siteUrl}/` }, { name: 'Surgical Services', item: `${siteSettings.siteUrl}/services` }])]}

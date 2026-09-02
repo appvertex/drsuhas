@@ -16,9 +16,9 @@ export default function HomePage() {
   return (
     <PageWrapper>
       <SEO
-        title="Best General & Laparoscopic Surgeon in Udupi, Karnataka"
-        description="Dr. Suhas S Kumar is a leading General & Laparoscopic Surgeon in Udupi, Karnataka. Expert care for hernia, gallbladder, thyroid, breast surgery, and diabetic foot care."
-        keywords="General Surgeon in Udupi, Laparoscopic Surgeon in Udupi, Hernia Surgery Udupi, Gallbladder Surgery Udupi, Appendix Surgery Udupi, Breast Surgery Udupi, Thyroid Surgery Udupi, Diabetic Foot Care Udupi"
+        title="Best General & Laparoscopic Surgeon in Bangalore, Karnataka"
+        description="Dr. Suhas S Kumar is a leading General & Laparoscopic Surgeon in Bangalore, Karnataka. Practicing at Deepak Hospital Jayanagar and Hemalatha Hospital Neelasandra. Expert care for hernia, gallbladder, thyroid, breast surgery, and diabetic foot care."
+        keywords="General Surgeon in Bangalore, Laparoscopic Surgeon in Bangalore, Hernia Surgery Bangalore, Gallbladder Surgery Bangalore, Appendix Surgery Bangalore, Breast Surgery Bangalore, Thyroid Surgery Bangalore, Diabetic Foot Care Bangalore, Surgeon Jayanagar, Surgeon Neelasandra, Deepak Hospital Jayanagar, Hemalatha Hospital Neelasandra"
         pathname="/"
         image="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80"
         schema={[websiteSchema, organizationSchema, physicianSchema, personSchema, faqSchema, breadcrumbSchema([{ name: 'Home', item: `${siteSettings.siteUrl}/` }])]}
