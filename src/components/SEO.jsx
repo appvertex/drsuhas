@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { siteSettings } from '../config/siteSettings';
 
 const SITE_NAME = siteSettings.name;
-const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80';
+const DEFAULT_IMAGE = 'https://www.surgeonsuhas.in/images/drsuhas.webp';
 const DEFAULT_DESCRIPTION = `Dr. Suhas S Kumar is a Consultant General & Laparoscopic Surgeon in Udupi, Karnataka, specialising in keyhole hernia repair, gallbladder surgery, thyroid, breast care, diabetic foot, and emergency abdominal surgery.`;
 const DEFAULT_KEYWORDS = `General Surgeon in Udupi, Laparoscopic Surgeon in Udupi, Hernia Surgery Udupi, Gallbladder Surgery Udupi, Appendix Surgery Udupi, Breast Surgery Udupi, Thyroid Surgery Udupi, Diabetic Foot Care Udupi, Laparoscopic Cholecystectomy Udupi, Dr Suhas S Kumar`;
 
@@ -17,6 +17,7 @@ const DEFAULT_KEYWORDS = `General Surgeon in Udupi, Laparoscopic Surgeon in Udup
  * @param {string}   pathname    - Route pathname for canonical URL
  * @param {object[]} schema      - Array of JSON-LD schema objects
  * @param {string}   robots      - Robots meta directive
+ * @param {string}   ogType      - Open Graph type (default: website)
  */
 export default function SEO({
   title,
@@ -26,9 +27,10 @@ export default function SEO({
   pathname = '/',
   schema = [],
   robots = 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+  ogType = 'website',
 }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} | Senior General & Laparoscopic Surgeon in Udupi`;
-  const cleanSiteUrl = (siteSettings.siteUrl || '').replace(/\/$/, '');
+  const cleanSiteUrl = (siteSettings.siteUrl || 'https://www.surgeonsuhas.in').replace(/\/$/, '');
   const cleanPathname = pathname.startsWith('/') ? pathname : `/${pathname}`;
   const canonicalUrl = `${cleanSiteUrl}${cleanPathname}`;
 
@@ -39,6 +41,13 @@ export default function SEO({
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       <meta name="robots" content={robots} />
+      <meta name="author" content={SITE_NAME} />
+      <meta name="publisher" content={cleanSiteUrl} />
+      <meta name="theme-color" content="#2D6BFF" />
+      <meta name="application-name" content={SITE_NAME} />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-title" content="Dr. Suhas" />
+      <meta name="format-detection" content="telephone=no" />
       <link rel="canonical" href={canonicalUrl} />
 
       {/* Favicon */}
@@ -47,7 +56,7 @@ export default function SEO({
       <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
 
       {/* Open Graph */}
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={ogType} />
       <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />

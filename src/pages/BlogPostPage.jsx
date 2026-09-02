@@ -94,7 +94,8 @@ export default function BlogPostPage() {
         description={post.excerpt || `Read medical article on ${post.title} by Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Udupi.`}
         keywords={`${post.title}, ${post.category || 'Surgery'} Udupi, Dr Suhas S Kumar, Surgeon Udupi, Medical Guide Udupi`}
         pathname={`/blog/${post.slug || post.id}`}
-        image={post.image || 'https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&fit=crop&w=1200&q=80'}
+        image={post.image || 'https://www.surgeonsuhas.in/images/drsuhas.webp'}
+        ogType="article"
         schema={[
           organizationSchema,
           articleSchema,
