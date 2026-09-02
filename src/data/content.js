@@ -375,7 +375,7 @@ export const organizationSchema = {
     '@type': 'PostalAddress',
     ...siteSettings.address
   },
-  areaServed: ['Bengaluru', 'Jayanagar', 'Karnataka'],
+  areaServed: ['Udupi', 'Ambalpady', 'Manipal', 'Coastal Karnataka', 'Karnataka'],
 };
 
 export const personSchema = {
@@ -387,8 +387,32 @@ export const personSchema = {
   image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80',
   worksFor: {
     '@type': 'MedicalBusiness',
-    name: siteSettings.name,
+    name: 'KMC Hospital Udupi',
   },
+};
+
+export const physicianSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Physician',
+  name: siteSettings.name,
+  jobTitle: siteSettings.role,
+  medicalSpecialty: ['GeneralSurgery', 'LaparoscopicSurgery'],
+  url: siteSettings.siteUrl,
+  telephone: siteSettings.phone,
+  email: siteSettings.email,
+  address: {
+    '@type': 'PostalAddress',
+    ...siteSettings.address
+  },
+  priceRange: '$$',
+  availableService: [
+    { '@type': 'MedicalProcedure', name: 'Laparoscopic Surgery Udupi' },
+    { '@type': 'MedicalProcedure', name: 'Hernia Repair Udupi' },
+    { '@type': 'MedicalProcedure', name: 'Gallbladder Surgery Udupi' },
+    { '@type': 'MedicalProcedure', name: 'Thyroid Surgery Udupi' },
+    { '@type': 'MedicalProcedure', name: 'Breast Surgery Udupi' },
+    { '@type': 'MedicalProcedure', name: 'Diabetic Foot Care Udupi' }
+  ]
 };
 
 export const websiteSchema = {
@@ -396,6 +420,11 @@ export const websiteSchema = {
   '@type': 'WebSite',
   name: siteSettings.name,
   url: siteSettings.siteUrl,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${siteSettings.siteUrl}/services?q={search_term_string}`,
+    'query-input': 'required name=search_term_string'
+  }
 };
 
 export const breadcrumbSchema = (items) => ({
@@ -411,24 +440,24 @@ export const breadcrumbSchema = (items) => ({
 
 export const faqItems = [
   {
-    question: 'What is laparoscopic surgery?',
-    answer: 'Laparoscopic surgery is a minimally invasive surgical technique where operations are performed through small incisions using a camera and specialized instruments, resulting in less pain and faster recovery.'
+    question: 'Who is the top General & Laparoscopic Surgeon in Udupi?',
+    answer: 'Dr. Suhas S Kumar is a renowned General & Laparoscopic Surgeon practicing in Udupi, Karnataka, specializing in keyhole surgeries, hernia repair, gallbladder treatment, thyroid, breast care, and diabetic foot management.'
   },
   {
-    question: 'What are the benefits compared to traditional surgery?',
-    answer: 'Benefits include smaller incisions, less pain, reduced blood loss, shorter hospital stays, quicker recovery, and less scarring.'
+    question: 'What laparoscopic surgeries are performed in Udupi by Dr. Suhas?',
+    answer: 'Dr. Suhas performs laparoscopic appendectomy, laparoscopic cholecystectomy (gallbladder), laparoscopic hernia repair (inguinal, umbilical), gastrointestinal procedures, and emergency abdominal surgeries in Udupi.'
   },
   {
-    question: 'How long is the recovery time?',
-    answer: 'Most patients can return to normal activities within 1-2 weeks, though this varies depending on the procedure. Dr. Suhas provides personalised recovery guidance for every patient.'
+    question: 'What are the key benefits of laparoscopic surgery over traditional open surgery?',
+    answer: 'Laparoscopic surgery offers significantly smaller incisions, minimal scarring, lower risk of post-operative infection, reduced pain, shorter hospital stays, and a much faster return to daily activities.'
   },
   {
-    question: 'Is laparoscopic surgery safe?',
-    answer: 'Yes, laparoscopic surgery is widely regarded as safe and effective. Dr. Suhas has performed over 1000 successful procedures with a strong track record of patient safety.'
+    question: 'How do I schedule a consultation for hernia or gallbladder surgery in Udupi?',
+    answer: 'You can book an appointment directly through the website contact page, call +91 95387 65487, or send a message via WhatsApp to schedule your consultation in Udupi.'
   },
   {
-    question: 'What conditions can be treated with laparoscopic surgery?',
-    answer: 'Common conditions include gallstones, hernias, appendicitis, gastrointestinal issues, and certain types of cancer. Dr. Suhas can advise whether laparoscopic surgery is appropriate for your condition.'
+    question: 'Does Dr. Suhas provide specialized treatment for diabetic foot ulcers in Udupi?',
+    answer: 'Yes, Dr. Suhas provides comprehensive diabetic foot care, limb-salvage surgical procedures, wound debridement, and infection management to prevent complications in diabetic patients across Udupi and Manipal.'
   }
 ];
 
@@ -447,14 +476,21 @@ export const faqSchema = {
 
 export const buildServiceSchema = (service) => ({
   '@context': 'https://schema.org',
-  '@type': 'Service',
-  name: service.title,
+  '@type': 'MedicalProcedure',
+  name: `${service.title} in Udupi`,
   description: service.summary,
+  procedureType: 'https://schema.org/SurgicalProcedure',
+  bodyLocation: service.title,
+  howPerformed: service.intro,
   provider: {
-    '@type': 'MedicalBusiness',
+    '@type': 'Physician',
     name: siteSettings.name,
     url: siteSettings.siteUrl,
+    address: {
+      '@type': 'PostalAddress',
+      ...siteSettings.address
+    }
   },
-  areaServed: 'Bengaluru',
-  serviceType: service.title,
+  areaServed: 'Udupi, Karnataka',
 });
+

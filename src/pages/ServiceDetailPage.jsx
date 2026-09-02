@@ -27,8 +27,9 @@ export default function ServiceDetailPage() {
   return (
     <PageWrapper>
       <SEO
-        title={service.title}
-        description={service.summary}
+        title={`${service.title} in Udupi – Dr. Suhas S Kumar`}
+        description={`${service.summary} Expert ${service.title} by Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Udupi, Karnataka.`}
+        keywords={`${service.title} Udupi, ${service.title} in Udupi, Dr Suhas S Kumar, Laparoscopic Surgeon Udupi, Surgery Udupi`}
         pathname={`/services/${service.slug}`}
         image={service.image}
         schema={[

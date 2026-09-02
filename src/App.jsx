@@ -19,6 +19,9 @@ const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
+const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 
 /* Admin pages inside head folder */
 const AdminLogin = lazy(() => import('./pages/head/AdminLogin'));
@@ -61,6 +64,9 @@ export default function App() {
         <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
         <Route path="/blog/:slug" element={<Layout><BlogPostPage /></Layout>} />
         <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
+        <Route path="/privacy-policy" element={<Layout><PrivacyPolicyPage /></Layout>} />
+        <Route path="/terms-and-conditions" element={<Layout><TermsPage /></Layout>} />
+        <Route path="/disclaimer" element={<Layout><DisclaimerPage /></Layout>} />
 
         {/* Catch-all 404 route */}
         <Route path="*" element={<Layout><NotFoundPage /></Layout>} />

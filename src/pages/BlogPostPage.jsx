@@ -90,8 +90,9 @@ export default function BlogPostPage() {
   return (
     <PageWrapper>
       <SEO
-        title={post.title}
-        description={post.excerpt || `Read article on ${post.title} by Dr. Suhas S Kumar.`}
+        title={`${post.title} | Medical Article by Dr. Suhas S Kumar`}
+        description={post.excerpt || `Read medical article on ${post.title} by Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Udupi.`}
+        keywords={`${post.title}, ${post.category || 'Surgery'} Udupi, Dr Suhas S Kumar, Surgeon Udupi, Medical Guide Udupi`}
         pathname={`/blog/${post.slug || post.id}`}
         image={post.image || 'https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&fit=crop&w=1200&q=80'}
         schema={[

@@ -19,112 +19,22 @@
     <meta name="apple-mobile-web-app-title" content="Dr. Suhas" />
     <meta name="mobile-web-app-capable" content="yes" />
 
-    <!-- Performance: preconnect to critical origins -->
+    <!-- Geo Meta Tags for Local SEO -->
+    <meta name="geo.region" content="IN-KA" />
+    <meta name="geo.placename" content="Udupi" />
+    <meta name="geo.position" content="13.3409;74.7421" />
+    <meta name="ICBM" content="13.3409, 74.7421" />
+
+    <!-- Preconnect & Preload for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" />
 
-    <!-- Fonts: only load what we use, with font-display: swap -->
+    <!-- Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Structured Data: MedicalOrganization + LocalBusiness -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": ["MedicalOrganization", "LocalBusiness"],
-      "name": "Dr. Suhas S Kumar – Consultant Surgeon",
-      "url": "https://drsuhasskumar.com",
-      "telephone": "+919538765487",
-      "email": "suhassk2@gmail.com",
-      "image": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80",
-      "priceRange": "$$",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "33rd Cross Rd, 7th Block, Jayanagar",
-        "addressLocality": "Bengaluru",
-        "addressRegion": "Karnataka",
-        "postalCode": "560070",
-        "addressCountry": "IN"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 12.9262302,
-        "longitude": 77.5772763
-      },
-      "openingHours": ["Mo-Sa 09:00-18:00"],
-      "sameAs": [
-        "https://facebook.com",
-        "https://instagram.com",
-        "https://linkedin.com"
-      ]
-    }
-    </script>
-
-    <!-- Structured Data: Physician -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Physician",
-      "name": "Dr. Suhas S Kumar",
-      "jobTitle": "Consultant General & Laparoscopic Surgeon",
-      "url": "https://drsuhasskumar.com",
-      "image": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80",
-      "medicalSpecialty": ["General Surgery", "Laparoscopic Surgery"],
-      "alumniOf": {
-        "@type": "CollegeOrUniversity",
-        "name": "St. John's Medical College, Bengaluru"
-      },
-      "worksFor": {
-        "@type": "MedicalOrganization",
-        "name": "Deepak Hospital",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "33rd Cross Rd, 7th Block, Jayanagar",
-          "addressLocality": "Bengaluru",
-          "addressRegion": "Karnataka",
-          "postalCode": "560070",
-          "addressCountry": "IN"
-        }
-      }
-    }
-    </script>
-
-    <!-- Structured Data: FAQ -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is laparoscopic surgery?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Laparoscopic surgery uses small incisions, a camera, and specialised instruments to reduce pain and recovery time compared to traditional open surgery."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What conditions can Dr. Suhas treat?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Dr. Suhas treats hernia, gallbladder disease, thyroid conditions, breast conditions, varicose veins, piles, fissures, diabetic foot, and emergency abdominal conditions."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Where is Dr. Suhas located?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Dr. Suhas practices at Deepak Hospital, 33rd Cross Rd, 7th Block, Jayanagar, Bengaluru 560070, and Dermapulse Clinic, 4th Block, Jayanagar, Bengaluru 560011."
-          }
-        }
-      ]
-    }
-    </script>
   </head>
   <body>
     <div id="root"></div>

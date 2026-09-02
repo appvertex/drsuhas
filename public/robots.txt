@@ -2,8 +2,8 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://drsuhasskumar.com/sitemap.xml
+Sitemap: https://drsuhas.com/sitemap.xml
 
-# Prevent crawling of build artifacts
-Disallow: /assets/
-Disallow: /*.js$
+# Prevent crawling of admin portal
+Disallow: /head/admin/
+

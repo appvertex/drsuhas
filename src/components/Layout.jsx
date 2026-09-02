@@ -398,10 +398,17 @@ export default function Layout({ children }) {
         {/* Footer bottom bar */}
         <div className="footer-bottom-bar">
           <div className="container footer-bottom">
-            <div style={{ flex: '1 1 0%', display: 'flex', justifyContent: 'flex-start' }}>
+            <div style={{ flex: '1 1 0%', display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
               <span className="footer-copyright">
-                &copy; {appSettings.copyrightYear || '2026'} Dr. Suhas S Kumar. All rights reserved.
+                &copy; {appSettings.copyrightYear || '2026'} Dr. Suhas S Kumar.
               </span>
+              <div style={{ display: 'flex', gap: '0.85rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                <Link to="/privacy-policy" style={{ color: 'inherit', textDecoration: 'none' }}>Privacy Policy</Link>
+                <span>·</span>
+                <Link to="/terms-and-conditions" style={{ color: 'inherit', textDecoration: 'none' }}>Terms</Link>
+                <span>·</span>
+                <Link to="/disclaimer" style={{ color: 'inherit', textDecoration: 'none' }}>Disclaimer</Link>
+              </div>
             </div>
             <div className="footer-credits-wrapper" style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center' }}>
               <a href="https://appvertex.in" target="_blank" rel="noopener noreferrer" className="footer-credits credit-line" style={{ textDecoration: 'none', color: 'inherit' }}>

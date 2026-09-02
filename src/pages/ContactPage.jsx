@@ -158,15 +158,16 @@ _Submitted via Dr. Suhas S Kumar Website_`
   return (
     <PageWrapper>
       <SEO
-        title="Contact & Book Appointment"
-        description="Book a surgical consultation, follow-up visit, or second opinion with Dr. Suhas S Kumar in Bengaluru."
+        title="Contact & Book Appointment | Surgeon in Udupi"
+        description="Book a surgical consultation with Dr. Suhas S Kumar, General & Laparoscopic Surgeon in Udupi, Karnataka. Phone: +91 95387 65487."
+        keywords="Book Surgeon Appointment Udupi, Dr Suhas S Kumar contact, Laparoscopic Surgeon Udupi phone, Surgical consultation Udupi, KMC Hospital Udupi surgeon contact"
         pathname="/contact"
         image="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80"
         schema={[
           organizationSchema,
           breadcrumbSchema([
             { name: 'Home', item: `${siteSettings.siteUrl}/` },
-            { name: 'Contact', item: `${siteSettings.siteUrl}/contact` }
+            { name: 'Contact & Book Appointment', item: `${siteSettings.siteUrl}/contact` }
           ])
         ]}
       />
