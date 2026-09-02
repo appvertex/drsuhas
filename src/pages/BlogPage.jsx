@@ -8,6 +8,8 @@ import { siteSettings } from '../config/siteSettings';
 import { organizationSchema, breadcrumbSchema } from '../data/content';
 import { getBlogsAsync } from '../utils/adminStorage';
 
+const DEFAULT_BLOG_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80';
+
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -152,6 +154,10 @@ export default function BlogPage() {
             >
               {blogPosts.map((post) => {
                 const targetPath = `/blog/${post.slug || post.id}`;
+                const imageUrl = (post.image && typeof post.image === 'string' && post.image.trim().length > 5)
+                  ? post.image.trim()
+                  : DEFAULT_BLOG_FALLBACK_IMAGE;
+
                 return (
                   <motion.article 
                     key={post.id || post.slug}
@@ -172,13 +178,17 @@ export default function BlogPage() {
                       aria-label={`Read full article: ${post.title}`}
                     >
                       {/* Image Frame */}
-                      <div style={{ height: '220px', overflow: 'hidden', position: 'relative' }}>
+                      <div style={{ height: '220px', overflow: 'hidden', position: 'relative', backgroundColor: 'rgba(255,255,255,0.04)' }}>
                         <img 
-                          src={post.image || 'https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&fit=crop&w=800&q=80'} 
+                          src={imageUrl} 
                           alt={post.title || 'Medical article'} 
                           loading="lazy"
                           width="800"
                           height="450"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = DEFAULT_BLOG_FALLBACK_IMAGE;
+                          }}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                         <span style={{

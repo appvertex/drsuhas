@@ -208,26 +208,29 @@ export default function BlogPostPage() {
           </motion.div>
 
           {/* Featured Image */}
-          {post.image && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              style={{
-                borderRadius: '24px',
-                overflow: 'hidden',
-                marginBottom: '3rem',
-                border: '1px solid var(--border-subtle, rgba(255,255,255,0.1))',
-                maxHeight: '440px',
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            style={{
+              borderRadius: '24px',
+              overflow: 'hidden',
+              marginBottom: '3rem',
+              border: '1px solid var(--border-subtle, rgba(255,255,255,0.1))',
+              maxHeight: '440px',
+              backgroundColor: 'rgba(255,255,255,0.04)',
+            }}
+          >
+            <img
+              src={(post.image && typeof post.image === 'string' && post.image.trim().length > 5) ? post.image.trim() : 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80'}
+              alt={post.title}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80';
               }}
-            >
-              <img
-                src={post.image}
-                alt={post.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-              />
-            </motion.div>
-          )}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </motion.div>
 
           {/* Article Body */}
           <motion.div

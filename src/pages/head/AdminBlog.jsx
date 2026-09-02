@@ -58,11 +58,15 @@ export default function AdminBlog() {
 
   async function handleSave() {
     if (!form.title.trim() || !form.excerpt.trim()) return;
+    const cleanImage = (form.image && typeof form.image === 'string' && form.image.trim().length > 5)
+      ? form.image.trim()
+      : 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80';
+    const postToSave = { ...form, image: cleanImage };
     if (mode === 'add') {
-      await addBlog(form);
+      await addBlog(postToSave);
       showToast('✓ Blog post added!');
     } else {
-      await updateBlog(editId, form);
+      await updateBlog(editId, postToSave);
       showToast('✓ Blog post updated!');
     }
     refresh();
@@ -137,10 +141,10 @@ export default function AdminBlog() {
                   <div key={post.id} style={s.postCard} data-blog-card data-admin-blog-post>
                     <div style={s.postImageWrap}>
                       <img
-                        src={post.image}
+                        src={(post.image && typeof post.image === 'string' && post.image.trim().length > 5) ? post.image.trim() : 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80'}
                         alt={post.title}
                         style={s.postImg}
-                        onError={e => { e.target.src = 'https://via.placeholder.com/100x100?text=?'; }}
+                        onError={e => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80'; }}
                       />
                     </div>
                     <div style={s.postInfo}>
