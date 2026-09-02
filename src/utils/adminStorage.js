@@ -217,6 +217,7 @@ export const DEFAULT_SITE_SETTINGS = {
   copyrightYear: '2026',
   phone: '+91 95387 65487',
   email: 'suhassk2@gmail.com',
+  email2: '',
   appointmentWhatsApp: '919538765487',
   floatingWhatsApp: '919538765487',
   adminPassword: 'admin123',

@@ -96,7 +96,8 @@ export default function AdminSettings() {
                 </div>
                 <div style={s.fieldsGrid} data-admin-fields>
                   <InputField label="Display Phone Number" name="phone" value={form.phone} onChange={handleChange} placeholder="+91 95387 65487" hint="Appears in header, footer & contact cards" />
-                  <InputField label="Clinic Email Address" name="email" value={form.email} onChange={handleChange} placeholder="suhassk2@gmail.com" type="email" hint="Appears in contact cards & footer" />
+                  <InputField label="Clinic Email Address 1" name="email" value={form.email} onChange={handleChange} placeholder="suhassk2@gmail.com" type="email" hint="Primary email — appears in footer & contact card" />
+                  <InputField label="Clinic Email Address 2" name="email2" value={form.email2 || ''} onChange={handleChange} placeholder="info@surgeonsuhas.in" type="email" hint="Secondary email — also shown in footer" />
                   <InputField label="Appointment WhatsApp No." name="appointmentWhatsApp" value={form.appointmentWhatsApp} onChange={handleChange} placeholder="919538765487" hint="Country code + number (no spaces or +)" />
                   <InputField label="Floating Widget WhatsApp No." name="floatingWhatsApp" value={form.floatingWhatsApp} onChange={handleChange} placeholder="919538765487" hint="Used by the bottom-right chat button" />
                 </div>
@@ -154,6 +155,7 @@ export default function AdminSettings() {
                   <div style={s.previewSectionLabel}>Contact</div>
                   <div style={s.previewRow}>📞 <span>{form.phone || '+91 95387 65487'}</span></div>
                   <div style={s.previewRow}>✉️ <span>{form.email || 'suhassk2@gmail.com'}</span></div>
+                  {form.email2 && <div style={s.previewRow}>✉️ <span>{form.email2}</span></div>}
                   <div style={{ ...s.previewRow, color: '#25D366' }}>💬 <span>{form.appointmentWhatsApp || '919538765487'}</span></div>
                 </div>
 

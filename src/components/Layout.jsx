@@ -357,6 +357,12 @@ export default function Layout({ children }) {
                   <span className="footer-icon-wrap" aria-hidden="true"><Mail size={15} /></span>
                   <span className="footer-link-text">{appSettings.email || siteSettings.email}</span>
                 </a>
+                {appSettings.email2 && (
+                  <a href={`mailto:${appSettings.email2}`} className="footer-contact-link">
+                    <span className="footer-icon-wrap" aria-hidden="true"><Mail size={15} /></span>
+                    <span className="footer-link-text">{appSettings.email2}</span>
+                  </a>
+                )}
               </div>
             </address>
 
