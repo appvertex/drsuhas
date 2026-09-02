@@ -1,11 +1,9 @@
 /**
  * adminStorage.js
  * ─────────────────────────────────────────────────────────────────
- * Storage engine for Blogs & Gallery with 100% safe storage fallbacks
- * for private browsing/incognito mode DOMExceptions:
- * 1. Fetches live data from Cloudflare Workers / D1 Database & R2 Storage.
- * 2. Caches items in localStorage/memory for instant offline/re-render access.
- * 3. Contains ZERO hardcoded default posts or gallery items.
+ * Storage engine for Blogs & Gallery with 100% safe storage fallbacks.
+ * Ensures PERMANENT DELETION for blog posts and gallery items across
+ * memory, localStorage, and Cloudflare D1 API.
  */
 
 import {
@@ -39,9 +37,12 @@ export function getBlogs() {
 
   try {
     const stored = localStorage.getItem(BLOGS_KEY);
-    if (stored) {
-      memoryBlogs = JSON.parse(stored);
-      return memoryBlogs;
+    if (stored !== null) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        memoryBlogs = parsed;
+        return memoryBlogs;
+      }
     }
   } catch {/* ignore */}
 
@@ -63,18 +64,21 @@ export async function getBlogsAsync() {
   }
   try {
     const stored = localStorage.getItem(BLOGS_KEY);
-    if (stored) {
-      memoryBlogs = JSON.parse(stored);
-      return memoryBlogs;
+    if (stored !== null) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        memoryBlogs = parsed;
+        return memoryBlogs;
+      }
     }
   } catch {/* ignore */}
   return memoryBlogs || [];
 }
 
 export function saveBlogs(blogs) {
-  memoryBlogs = blogs;
+  memoryBlogs = Array.isArray(blogs) ? blogs : [];
   try {
-    localStorage.setItem(BLOGS_KEY, JSON.stringify(blogs));
+    localStorage.setItem(BLOGS_KEY, JSON.stringify(memoryBlogs));
   } catch {/* ignore */}
 }
 
@@ -93,7 +97,8 @@ export async function addBlog(blog) {
 }
 
 export async function updateBlog(id, blog) {
-  const blogs = getBlogs().map(b => (b.id === id ? { ...b, ...blog } : b));
+  const cleanId = String(id);
+  const blogs = getBlogs().map(b => (String(b.id) === cleanId || String(b.slug) === cleanId ? { ...b, ...blog } : b));
   saveBlogs(blogs);
 
   // Sync to Cloudflare D1
@@ -101,22 +106,26 @@ export async function updateBlog(id, blog) {
 }
 
 export async function deleteBlog(id) {
-  const blogs = getBlogs().filter(b => b.id !== id);
-  saveBlogs(blogs);
+  const cleanId = String(id);
+  const currentBlogs = getBlogs();
+  const filtered = currentBlogs.filter(b => String(b.id) !== cleanId && String(b.slug) !== cleanId);
+  
+  saveBlogs(filtered);
 
-  // Sync to Cloudflare D1
+  // Sync permanent deletion to Cloudflare D1
   await deleteBlogApi(id);
+  return filtered;
 }
 
 /* ─── GALLERY CRUD ───────────────────────────────────────────── */
 export function getGalleryImages() {
-  if (memoryGallery && Array.isArray(memoryGallery) && memoryGallery.length > 0) return memoryGallery;
+  if (memoryGallery && Array.isArray(memoryGallery)) return memoryGallery;
 
   try {
     const stored = localStorage.getItem(GALLERY_KEY);
-    if (stored) {
+    if (stored !== null) {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         memoryGallery = parsed;
         return memoryGallery;
       }
@@ -125,7 +134,7 @@ export function getGalleryImages() {
 
   // Trigger background sync with Cloudflare D1
   fetchGalleryFromApi().then(apiGallery => {
-    if (apiGallery && Array.isArray(apiGallery) && apiGallery.length > 0) {
+    if (apiGallery && Array.isArray(apiGallery)) {
       saveGalleryImages(apiGallery);
     }
   });
@@ -136,27 +145,27 @@ export function getGalleryImages() {
 
 export async function getGalleryImagesAsync() {
   const apiGallery = await fetchGalleryFromApi();
-  if (apiGallery && Array.isArray(apiGallery) && apiGallery.length > 0) {
+  if (apiGallery && Array.isArray(apiGallery)) {
     saveGalleryImages(apiGallery);
     return apiGallery;
   }
   try {
     const stored = localStorage.getItem(GALLERY_KEY);
-    if (stored) {
+    if (stored !== null) {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         memoryGallery = parsed;
         return memoryGallery;
       }
     }
   } catch {/* ignore */}
-  return (memoryGallery && memoryGallery.length > 0) ? memoryGallery : galleryImages;
+  return memoryGallery || galleryImages;
 }
 
 export function saveGalleryImages(images) {
-  memoryGallery = images;
+  memoryGallery = Array.isArray(images) ? images : [];
   try {
-    localStorage.setItem(GALLERY_KEY, JSON.stringify(images));
+    localStorage.setItem(GALLERY_KEY, JSON.stringify(memoryGallery));
   } catch {/* ignore */}
 }
 
@@ -175,7 +184,8 @@ export async function addGalleryImage(img) {
 }
 
 export async function updateGalleryImage(id, img) {
-  const images = getGalleryImages().map(g => (g.id === id ? { ...g, ...img } : g));
+  const cleanId = String(id);
+  const images = getGalleryImages().map(g => (String(g.id) === cleanId ? { ...g, ...img } : g));
   saveGalleryImages(images);
 
   // Sync to Cloudflare D1
@@ -183,11 +193,15 @@ export async function updateGalleryImage(id, img) {
 }
 
 export async function deleteGalleryImage(id) {
-  const images = getGalleryImages().filter(g => g.id !== id);
-  saveGalleryImages(images);
+  const cleanId = String(id);
+  const currentGallery = getGalleryImages();
+  const filtered = currentGallery.filter(g => String(g.id) !== cleanId);
 
-  // Sync to Cloudflare D1
+  saveGalleryImages(filtered);
+
+  // Sync permanent deletion to Cloudflare D1
   await deleteGalleryApi(id);
+  return filtered;
 }
 
 /* ─── SITE SETTINGS ──────────────────────────────────────────── */
@@ -273,4 +287,3 @@ export function isAdminAuthed() {
     return memoryAuth;
   }
 }
-
