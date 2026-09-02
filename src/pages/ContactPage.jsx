@@ -280,12 +280,16 @@ _Submitted via Dr. Suhas S Kumar Website_`
                   />
 
                   {errorMsg && (
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: '0.75rem',
-                      background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
-                      color: '#f87171', padding: '0.85rem 1.1rem', borderRadius: '12px', fontSize: '0.88rem',
-                    }}>
-                      <AlertCircle size={18} style={{ flexShrink: 0 }} />
+                    <div
+                      role="alert"
+                      aria-live="assertive"
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '0.75rem',
+                        background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
+                        color: '#f87171', padding: '0.85rem 1.1rem', borderRadius: '12px', fontSize: '0.88rem',
+                      }}
+                    >
+                      <AlertCircle size={18} style={{ flexShrink: 0 }} aria-hidden="true" />
                       <span>{errorMsg}</span>
                     </div>
                   )}
@@ -296,7 +300,7 @@ _Submitted via Dr. Suhas S Kumar Website_`
                       Full Name <span style={{ color: 'var(--accent-gold)' }}>*</span>
                     </label>
                     <div style={{ position: 'relative' }}>
-                      <User size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                      <User size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} aria-hidden="true" />
                       <input
                         id="apt-name"
                         type="text"
@@ -304,7 +308,9 @@ _Submitted via Dr. Suhas S Kumar Website_`
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="e.g. Rahul Sharma"
+                        autoComplete="name"
                         required
+                        aria-required="true"
                         style={inputStyle}
                       />
                     </div>
@@ -317,7 +323,7 @@ _Submitted via Dr. Suhas S Kumar Website_`
                         Phone Number <span style={{ color: 'var(--accent-gold)' }}>*</span>
                       </label>
                       <div style={{ position: 'relative' }}>
-                        <Phone size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                        <Phone size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} aria-hidden="true" />
                         <input
                           id="apt-phone"
                           type="tel"
@@ -325,7 +331,9 @@ _Submitted via Dr. Suhas S Kumar Website_`
                           value={formData.phone}
                           onChange={handleChange}
                           placeholder="+91 98765 43210"
+                          autoComplete="tel"
                           required
+                          aria-required="true"
                           style={inputStyle}
                         />
                       </div>
@@ -336,7 +344,7 @@ _Submitted via Dr. Suhas S Kumar Website_`
                         Email Address
                       </label>
                       <div style={{ position: 'relative' }}>
-                        <Mail size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                        <Mail size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} aria-hidden="true" />
                         <input
                           id="apt-email"
                           type="email"
@@ -344,6 +352,7 @@ _Submitted via Dr. Suhas S Kumar Website_`
                           value={formData.email}
                           onChange={handleChange}
                           placeholder="name@example.com"
+                          autoComplete="email"
                           style={inputStyle}
                         />
                       </div>
@@ -357,7 +366,7 @@ _Submitted via Dr. Suhas S Kumar Website_`
                         Preferred Date <span style={{ color: 'var(--accent-gold)' }}>*</span>
                       </label>
                       <div style={{ position: 'relative' }}>
-                        <Calendar size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <Calendar size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }} aria-hidden="true" />
                         <input
                           id="apt-date"
                           type="date"
@@ -366,6 +375,7 @@ _Submitted via Dr. Suhas S Kumar Website_`
                           value={formData.date}
                           onChange={handleChange}
                           required
+                          aria-required="true"
                           style={inputStyle}
                         />
                       </div>
@@ -376,7 +386,7 @@ _Submitted via Dr. Suhas S Kumar Website_`
                         Preferred Time Slot
                       </label>
                       <div style={{ position: 'relative' }}>
-                        <Clock size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <Clock size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }} aria-hidden="true" />
                         <select
                           id="apt-time"
                           name="time"
@@ -414,6 +424,8 @@ _Submitted via Dr. Suhas S Kumar Website_`
                       name="consent"
                       checked={formData.consent}
                       onChange={handleChange}
+                      required
+                      aria-required="true"
                       style={{ marginTop: '0.2rem', accentColor: 'var(--accent-gold)', width: '18px', height: '18px' }}
                     />
                     <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
