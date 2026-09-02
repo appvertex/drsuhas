@@ -3,22 +3,54 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
 
+const STATIC_ROUTES = [
+  'about',
+  'services',
+  'services/laparoscopic-surgery',
+  'services/hernia-surgery',
+  'services/gallbladder-surgery',
+  'services/gastrointestinal-surgery',
+  'services/thyroid-surgery',
+  'services/varicose-vein-surgery',
+  'services/piles-fissure-fistula',
+  'services/diabetic-foot-surgery',
+  'services/breast-surgery',
+  'services/trauma-emergency-surgery',
+  'blog',
+  'contact',
+  'gallery',
+  'privacy-policy',
+  'terms-and-conditions',
+  'disclaimer',
+];
+
 export default defineConfig(({ command }) => ({
-  // Absolute base path — required for Cloudflare Pages SPA routing (lazy chunks must resolve from site root)
+  // Absolute base path — required for Cloudflare Pages SPA routing
   base: '/',
   plugins: [
     react(),
     {
-      name: 'copy-404',
+      name: 'generate-route-html',
       closeBundle() {
         try {
-          const indexHtml = path.resolve(__dirname, 'dist/index.html');
-          const fallbackHtml = path.resolve(__dirname, 'dist/404.html');
-          if (fs.existsSync(indexHtml)) {
-            fs.copyFileSync(indexHtml, fallbackHtml);
-          }
+          const indexHtmlPath = path.resolve(__dirname, 'dist/index.html');
+          if (!fs.existsSync(indexHtmlPath)) return;
+
+          const indexHtmlContent = fs.readFileSync(indexHtmlPath, 'utf-8');
+
+          // 1. Copy index.html to dist/404.html
+          fs.writeFileSync(path.resolve(__dirname, 'dist/404.html'), indexHtmlContent, 'utf-8');
+
+          // 2. Generate physical index.html for all static routes to guarantee 200 OK HTTP responses
+          STATIC_ROUTES.forEach((route) => {
+            const routeDir = path.resolve(__dirname, `dist/${route}`);
+            fs.mkdirSync(routeDir, { recursive: true });
+            fs.writeFileSync(path.join(routeDir, 'index.html'), indexHtmlContent, 'utf-8');
+          });
+
+          console.log(`✓ Generated physical HTML route entrypoints for ${STATIC_ROUTES.length} static routes.`);
         } catch (e) {
-          console.error('Failed to copy index.html to 404.html:', e);
+          console.error('Failed in generate-route-html plugin:', e);
         }
       },
     },
@@ -44,24 +76,20 @@ export default defineConfig(({ command }) => ({
     cssCodeSplit: true,
     rollupOptions: {
       output: {
-        // Manual chunks: vendor libraries separate from app code
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-motion': ['framer-motion'],
           'vendor-ui': ['lucide-react'],
           'vendor-helmet': ['react-helmet-async'],
         },
-        // Asset naming with content hash for cache busting
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
     },
-    // Raise chunk warning threshold slightly
     chunkSizeWarningLimit: 600,
   },
 
-  // Performance: preload module directives
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'framer-motion', 'lucide-react', 'react-helmet-async'],
   },
