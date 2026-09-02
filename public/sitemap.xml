@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://drsuhas.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://drsuhas.com/images/drsuhas.webp</image:loc>
+      <image:title>Dr. Suhas S Kumar - General &amp; Laparoscopic Surgeon Udupi</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://drsuhas.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://drsuhas.com/images/abt.webp</image:loc>
+      <image:title>Dr. Suhas S Kumar Qualification &amp; Background</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://drsuhas.com/services</loc>
@@ -19,16 +28,28 @@
     <loc>https://drsuhas.com/services/laparoscopic-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Laparoscopic Surgery in Udupi</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://drsuhas.com/services/hernia-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Laparoscopic Hernia Repair in Udupi</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://drsuhas.com/services/gallbladder-surgery</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Gallbladder Surgery in Udupi</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://drsuhas.com/services/gastrointestinal-surgery</loc>
