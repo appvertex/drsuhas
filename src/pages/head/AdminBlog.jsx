@@ -134,7 +134,7 @@ export default function AdminBlog() {
             ) : (
               <div style={s.postList}>
                 {posts.map(post => (
-                  <div key={post.id} style={s.postCard}>
+                  <div key={post.id} style={s.postCard} data-blog-card data-admin-blog-post>
                     <div style={s.postImageWrap}>
                       <img
                         src={post.image}
@@ -151,7 +151,7 @@ export default function AdminBlog() {
                       <div style={s.postMeta}>{post.author} · {post.date}</div>
                       <p style={s.postExcerpt}>{post.excerpt?.slice(0, 120)}{post.excerpt?.length > 120 ? '…' : ''}</p>
                     </div>
-                    <div style={s.postActions}>
+                    <div style={s.postActions} data-card-actions>
                       <button onClick={() => openEdit(post)} style={s.editBtn}>
                         <Pencil size={14} /> Edit
                       </button>
@@ -184,9 +184,9 @@ export default function AdminBlog() {
               </button>
             </div>
 
-            <div style={s.formGrid}>
+            <div style={s.formGrid} data-admin-grid>
               {/* Left — Main content */}
-              <div style={s.formPanel}>
+              <div style={s.formPanel} data-admin-card>
                 <div style={s.panelLabel}>Post Content</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <Field label="Title *" name="title" value={form.title} onChange={handleChange} placeholder="e.g. Understanding Laparoscopic Surgery" />
@@ -198,7 +198,7 @@ export default function AdminBlog() {
               {/* Right — Metadata + Actions */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 {/* Post Details card */}
-                <div style={s.formPanel}>
+                <div style={s.formPanel} data-admin-card>
                   <div style={s.panelLabel}>Post Details</div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
                     <Field label="Category" name="category" value={form.category} onChange={handleChange} placeholder="e.g. Laparoscopy" />
@@ -208,7 +208,7 @@ export default function AdminBlog() {
                 </div>
 
                 {/* Image card */}
-                <div style={s.formPanel}>
+                <div style={s.formPanel} data-admin-card>
                   <div style={s.panelLabel}>Post Image</div>
                   <Field label="Image URL" name="image" value={form.image} onChange={handleChange} placeholder="https://..." />
 

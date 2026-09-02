@@ -74,6 +74,9 @@ export default function AdminLayout({ children }) {
           [data-admin-preview] { position: static !important; }
           /* Settings page title */
           [data-admin-page] h1 { font-size: 1.3rem !important; }
+          /* Blog post cards: stack vertically */
+          [data-admin-blog-post] { flex-direction: column !important; }
+          [data-admin-blog-post] > div:first-child { width: 100% !important; height: 160px !important; }
         }
         @media (max-width: 400px) {
           [data-upload-grid] { grid-template-columns: 1fr !important; }
