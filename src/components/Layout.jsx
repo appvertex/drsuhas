@@ -364,14 +364,22 @@ export default function Layout({ children }) {
               <div className="footer-section-label">Locations</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {siteSettings.locations.map((loc, i) => (
-                  <div key={i} className="footer-contact-link" style={{ alignItems: 'flex-start' }}>
+                  <a
+                    key={i}
+                    href={loc.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="footer-contact-link"
+                    style={{ alignItems: 'flex-start', textDecoration: 'none', cursor: 'pointer' }}
+                    aria-label={`Open ${loc.name} in Google Maps`}
+                  >
                     <span className="footer-icon-wrap" style={{ marginTop: '2px' }} aria-hidden="true"><MapPin size={15} /></span>
                     <span>
                       <strong style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{loc.name}</strong>
                       <br />
                       <span className="footer-link-text">{loc.address.split(',')[0]}</span>
                     </span>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
