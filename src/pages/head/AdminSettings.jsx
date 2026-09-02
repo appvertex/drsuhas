@@ -66,7 +66,7 @@ export default function AdminSettings() {
               <p style={s.pageSub}>Manage clinic details, WhatsApp numbers, counters, and security.</p>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }} data-admin-actions>
             <button onClick={handleReset} style={s.ghostBtn} type="button">
               <RotateCcw size={15} /> Reset Defaults
             </button>
@@ -78,13 +78,13 @@ export default function AdminSettings() {
 
         {/* Main Layout: 3-col sections + sidebar preview */}
         <form onSubmit={handleSave}>
-          <div style={s.layout}>
+          <div style={s.layout} data-admin-grid>
 
             {/* ── Left/Center: Settings cards ── */}
             <div style={s.settingsCol}>
 
               {/* Contact & WhatsApp */}
-              <div style={s.card}>
+              <div style={s.card} data-admin-card>
                 <div style={s.cardHeader}>
                   <div style={s.cardIconWrap}>
                     <Phone size={18} color="#c9a96e" />
@@ -94,7 +94,7 @@ export default function AdminSettings() {
                     <div style={s.cardDesc}>Phone numbers, email, and WhatsApp targets</div>
                   </div>
                 </div>
-                <div style={s.fieldsGrid}>
+                <div style={s.fieldsGrid} data-admin-fields>
                   <InputField label="Display Phone Number" name="phone" value={form.phone} onChange={handleChange} placeholder="+91 95387 65487" hint="Appears in header, footer & contact cards" />
                   <InputField label="Clinic Email Address" name="email" value={form.email} onChange={handleChange} placeholder="suhassk2@gmail.com" type="email" hint="Appears in contact cards & footer" />
                   <InputField label="Appointment WhatsApp No." name="appointmentWhatsApp" value={form.appointmentWhatsApp} onChange={handleChange} placeholder="919538765487" hint="Country code + number (no spaces or +)" />
@@ -103,7 +103,7 @@ export default function AdminSettings() {
               </div>
 
               {/* Practice Statistics */}
-              <div style={s.card}>
+              <div style={s.card} data-admin-card>
                 <div style={s.cardHeader}>
                   <div style={s.cardIconWrap}>
                     <Award size={18} color="#c9a96e" />
@@ -113,7 +113,7 @@ export default function AdminSettings() {
                     <div style={s.cardDesc}>Numbers shown on homepage & about page counters</div>
                   </div>
                 </div>
-                <div style={s.statsGrid}>
+                <div style={s.statsGrid} data-admin-fields>
                   <StatField label="Years of Experience" nameVal="yearsOfExperience" nameSuffix="yearsSuffix" form={form} onChange={handleChange} placeholder="11" />
                   <StatField label="Surgeries Performed"  nameVal="surgeriesPerformed" nameSuffix="surgeriesSuffix" form={form} onChange={handleChange} placeholder="1000" />
                   <StatField label="Patients Treated"     nameVal="patientsTreated"   nameSuffix="patientsSuffix"   form={form} onChange={handleChange} placeholder="2500" />
@@ -122,7 +122,7 @@ export default function AdminSettings() {
               </div>
 
               {/* Footer & Security */}
-              <div style={s.card}>
+              <div style={s.card} data-admin-card>
                 <div style={s.cardHeader}>
                   <div style={s.cardIconWrap}>
                     <Lock size={18} color="#c9a96e" />
@@ -132,7 +132,7 @@ export default function AdminSettings() {
                     <div style={s.cardDesc}>Copyright year and Admin Portal login password</div>
                   </div>
                 </div>
-                <div style={s.fieldsGrid}>
+                <div style={s.fieldsGrid} data-admin-fields>
                   <InputField label="Copyright Year" name="copyrightYear" value={form.copyrightYear} onChange={handleChange} placeholder="2026" hint={`Displays as: © ${form.copyrightYear || '2026'} Dr. Suhas S Kumar. All rights reserved.`} />
                   <InputField label="Admin Portal Password" name="adminPassword" value={form.adminPassword || ''} onChange={handleChange} placeholder="admin123" hint="Used to log into /head/admin/login" />
                 </div>
@@ -141,7 +141,7 @@ export default function AdminSettings() {
             </div>
 
             {/* ── Right: Live Preview sidebar ── */}
-            <div style={s.previewCol}>
+            <div style={s.previewCol} data-admin-preview>
               <div style={s.previewCard}>
                 <div style={s.previewTitleRow}>
                   <Eye size={16} color="#c9a96e" />

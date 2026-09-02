@@ -70,6 +70,10 @@ export default function AdminLayout({ children }) {
           [data-blog-card] { padding: 1rem !important; }
           /* Action buttons in blog/gallery cards */
           [data-card-actions] { flex-direction: row !important; flex-wrap: wrap !important; gap: 0.4rem !important; }
+          /* Settings preview sidebar: unstick on mobile */
+          [data-admin-preview] { position: static !important; }
+          /* Settings page title */
+          [data-admin-page] h1 { font-size: 1.3rem !important; }
         }
         @media (max-width: 400px) {
           [data-upload-grid] { grid-template-columns: 1fr !important; }
